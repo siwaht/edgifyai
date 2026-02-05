@@ -1,205 +1,179 @@
-import React, { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { ArrowRight, Twitter, Linkedin, Github, Mail, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Twitter, Linkedin, Github, CheckCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const SocialLink = ({ icon: Icon, href, label }) => {
-  const { isDark } = useTheme();
-  return (
-    <motion.a
-      href={href}
-      aria-label={label}
-      className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-all duration-300 ${
-        isDark 
-          ? 'border-white/10 text-gray-400 hover:text-cyan-400 hover:border-cyan-400/30 hover:bg-cyan-400/5' 
-          : 'border-gray-200 text-gray-500 hover:text-cyan-600 hover:border-cyan-600/30 hover:bg-cyan-600/5'
-      }`}
-      whileHover={{ scale: 1.05, y: -2 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      <Icon size={18} />
-    </motion.a>
-  );
+const footerLinks = {
+  Product: ['Features', 'Pricing', 'Integrations', 'API Docs'],
+  Company: ['About', 'Blog', 'Careers', 'Press'],
+  Resources: ['Documentation', 'Guides', 'Support', 'Status'],
+  Legal: ['Privacy', 'Terms', 'Security', 'Cookies'],
 };
 
-const FooterLink = ({ href, children }) => {
-  const { isDark } = useTheme();
-  return (
-    <motion.a
-      href={href}
-      className={`relative group transition-colors duration-300 ${
-        isDark ? 'text-gray-400 hover:text-cyan-400' : 'text-gray-500 hover:text-cyan-600'
-      }`}
-      whileHover={{ x: 4 }}
-    >
-      {children}
-      <span className={`absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity ${
-        isDark ? 'bg-cyan-400' : 'bg-cyan-600'
-      }`} />
-    </motion.a>
-  );
-};
+const socialLinks = [
+  { icon: Twitter, href: '#', label: 'Twitter' },
+  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Github, href: '#', label: 'GitHub' },
+];
 
 const Footer = () => {
-  const footerRef = useRef(null);
-  const isInView = useInView(footerRef, { once: true, margin: "-50px" });
-  const [email, setEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const { isDark } = useTheme();
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email) {
-      setIsSubmitted(true);
-      setTimeout(() => { setIsSubmitted(false); setEmail(''); }, 3000);
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setEmail('');
+      }, 3000);
     }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
   };
 
   return (
     <footer 
-      ref={footerRef}
-      className={`relative pt-20 md:pt-28 pb-8 overflow-hidden transition-colors duration-300 ${
-        isDark ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'
-      }`}
+      className="relative pt-16 md:pt-24 pb-8"
+      style={{ 
+        background: isDark ? '#0c0c0f' : '#fafafa',
+        borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}` 
+      }}
     >
-      <motion.div 
-        className="absolute top-0 left-0 right-0 h-px"
-        style={{
-          background: isDark 
-            ? 'linear-gradient(90deg, transparent 0%, rgba(0,255,255,0.5) 50%, transparent 100%)'
-            : 'linear-gradient(90deg, transparent 0%, rgba(8,145,178,0.5) 50%, transparent 100%)',
-        }}
-        initial={{ scaleX: 0 }}
-        animate={isInView ? { scaleX: 1 } : {}}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      />
-
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full opacity-20"
-          style={{
-            background: isDark 
-              ? 'radial-gradient(circle, rgba(0,255,255,0.1) 0%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(8,145,178,0.1) 0%, transparent 70%)',
-            filter: 'blur(100px)',
-          }}
-        />
-      </div>
-
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-16 md:mb-24"
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-        >
-          <motion.div variants={itemVariants}>
-            <h2 className={`text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-8 leading-[0.9] ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
-              <span>See the</span><br />
-              <span className={isDark ? 'text-gray-600' : 'text-gray-400'}>Invisible.</span>
-            </h2>
-
-            <form onSubmit={handleSubmit} className="max-w-md">
-              <div className="relative">
-                <div className={`flex items-center border-b transition-colors duration-300 ${
-                  isDark ? 'border-white/20 focus-within:border-cyan-400/50' : 'border-gray-300 focus-within:border-cyan-600/50'
-                }`}>
-                  <Mail size={20} className={isDark ? 'text-gray-500' : 'text-gray-400'} />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className={`bg-transparent border-none outline-none text-base md:text-lg w-full py-3 ml-3 ${
-                      isDark ? 'text-white placeholder-gray-600' : 'text-gray-900 placeholder-gray-400'
-                    }`}
-                    disabled={isSubmitted}
-                  />
-                  <motion.button
-                    type="submit"
-                    className={`p-2 transition-colors ${isDark ? 'text-cyan-400 hover:text-white' : 'text-cyan-600 hover:text-cyan-800'}`}
-                    whileHover={{ scale: 1.1, x: 4 }}
-                    whileTap={{ scale: 0.9 }}
-                    disabled={isSubmitted}
-                  >
-                    {isSubmitted ? <CheckCircle size={24} className="text-green-500" /> : <ArrowRight size={24} />}
-                  </motion.button>
-                </div>
-                {isSubmitted && (
-                  <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-green-500 text-sm mt-2">
-                    Thanks for subscribing!
-                  </motion.p>
-                )}
+      <div className="container-custom">
+        {/* Top section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-12 md:mb-16">
+          {/* Brand & Newsletter */}
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-2 mb-4">
+              <div 
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)' }}
+              >
+                <span className="text-white font-bold text-sm">A</span>
               </div>
-            </form>
-          </motion.div>
+              <span 
+                className="font-bold text-lg"
+                style={{ color: isDark ? '#fafafa' : '#09090b' }}
+              >
+                Agenticos
+              </span>
+            </div>
 
-          <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            <div>
-              <h4 className={`font-semibold mb-6 uppercase text-xs tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Platform</h4>
-              <ul className="space-y-4">
-                {['Agents', 'Orchestration', 'Integrations', 'Security'].map((item) => (
-                  <li key={item}><FooterLink href="#">{item}</FooterLink></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className={`font-semibold mb-6 uppercase text-xs tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Company</h4>
-              <ul className="space-y-4">
-                {['About', 'Careers', 'Blog', 'Contact'].map((item) => (
-                  <li key={item}><FooterLink href="#">{item}</FooterLink></li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-2 md:col-span-1">
-              <h4 className={`font-semibold mb-6 uppercase text-xs tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Connect</h4>
-              <div className="flex gap-3">
-                <SocialLink icon={Twitter} href="#" label="Twitter" />
-                <SocialLink icon={Linkedin} href="#" label="LinkedIn" />
-                <SocialLink icon={Github} href="#" label="GitHub" />
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        <motion.div 
-          className={`border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 ${
-            isDark ? 'border-white/10' : 'border-gray-200'
-          }`}
-          variants={itemVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-        >
-          <div className="flex items-center gap-3">
-            <motion.div
-              className={`w-2 h-2 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-cyan-600'}`}
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <p className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-              &copy; {new Date().getFullYear()} Agenticos Labs Inc. All rights reserved.
+            <p 
+              className="text-sm mb-6 max-w-sm"
+              style={{ color: isDark ? '#a1a1aa' : '#52525b' }}
+            >
+              Building the future of autonomous AI. Deploy intelligent agents that 
+              work around the clock.
             </p>
+
+            {/* Newsletter */}
+            <form onSubmit={handleSubmit} className="max-w-sm">
+              <label 
+                className="text-sm font-medium mb-2 block"
+                style={{ color: isDark ? '#fafafa' : '#09090b' }}
+              >
+                Subscribe to updates
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  disabled={submitted}
+                  className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
+                  style={{
+                    background: isDark ? '#18181b' : '#ffffff',
+                    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                    color: isDark ? '#fafafa' : '#09090b',
+                  }}
+                />
+                <button 
+                  type="submit"
+                  disabled={submitted}
+                  className="px-4 py-2.5 rounded-xl transition-all"
+                  style={{
+                    background: 'var(--accent)',
+                    color: '#fff',
+                  }}
+                >
+                  {submitted ? <CheckCircle size={18} /> : <ArrowRight size={18} />}
+                </button>
+              </div>
+              {submitted && (
+                <motion.p
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-sm mt-2"
+                  style={{ color: '#10b981' }}
+                >
+                  Thanks for subscribing!
+                </motion.p>
+              )}
+            </form>
           </div>
-          <div className="flex gap-6 text-sm">
-            <motion.a href="#" className={`transition-colors ${isDark ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`} whileHover={{ y: -2 }}>
-              Privacy Policy
-            </motion.a>
-            <motion.a href="#" className={`transition-colors ${isDark ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`} whileHover={{ y: -2 }}>
-              Terms of Service
-            </motion.a>
+
+          {/* Links */}
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+              {Object.entries(footerLinks).map(([category, links]) => (
+                <div key={category}>
+                  <h4 
+                    className="text-sm font-semibold mb-4"
+                    style={{ color: isDark ? '#fafafa' : '#09090b' }}
+                  >
+                    {category}
+                  </h4>
+                  <ul className="space-y-3">
+                    {links.map((link) => (
+                      <li key={link}>
+                        <a
+                          href="#"
+                          className="text-sm transition-colors hover:underline"
+                          style={{ color: isDark ? '#a1a1aa' : '#52525b' }}
+                        >
+                          {link}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
-        </motion.div>
+        </div>
+
+        {/* Bottom section */}
+        <div 
+          className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+          style={{ borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}` }}
+        >
+          <p 
+            className="text-sm"
+            style={{ color: isDark ? '#71717a' : '#a1a1aa' }}
+          >
+            © {new Date().getFullYear()} Agenticos Labs Inc. All rights reserved.
+          </p>
+
+          <div className="flex items-center gap-2">
+            {socialLinks.map(({ icon: Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="p-2.5 rounded-xl transition-colors"
+                style={{
+                  color: isDark ? '#71717a' : '#a1a1aa',
+                  background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
+                }}
+              >
+                <Icon size={18} />
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
     </footer>
   );

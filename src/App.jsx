@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Navbar from './components/Navbar';
@@ -12,27 +12,45 @@ const PageLoader = ({ onComplete }) => {
   const { isDark } = useTheme();
   
   useEffect(() => {
-    const timer = setTimeout(onComplete, 1800);
+    const timer = setTimeout(onComplete, 1500);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center"
-      style={{ background: isDark ? '#09090b' : '#ffffff' }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 100,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: isDark ? '#09090b' : '#ffffff',
+      }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.4 }}
     >
-      <div className="relative flex items-center justify-center">
+      <div style={{ position: 'relative' }}>
         <motion.div
-          className="w-12 h-12 rounded-full border-2"
-          style={{ borderColor: isDark ? 'rgba(6, 182, 212, 0.2)' : 'rgba(8, 145, 178, 0.2)' }}
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            border: `2px solid ${isDark ? 'rgba(6, 182, 212, 0.2)' : 'rgba(8, 145, 178, 0.2)'}`,
+          }}
           animate={{ rotate: 360 }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
-          className="absolute w-12 h-12 rounded-full border-2 border-transparent"
-          style={{ borderTopColor: isDark ? '#06b6d4' : '#0891b2' }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            border: '2px solid transparent',
+            borderTopColor: isDark ? '#06b6d4' : '#0891b2',
+          }}
           animate={{ rotate: -360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         />
@@ -52,36 +70,24 @@ const AppContent = () => {
       </AnimatePresence>
 
       <motion.div 
-        className="relative overflow-x-hidden"
-        style={{ 
+        style={{
+          position: 'relative',
+          overflowX: 'hidden',
           background: isDark ? '#09090b' : '#ffffff',
-          color: isDark ? '#fafafa' : '#09090b'
+          color: isDark ? '#fafafa' : '#09090b',
+          minHeight: '100vh',
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: isLoading ? 0 : 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       >
-        {/* Ambient gradients */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div 
-            className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full opacity-30 blur-[120px]"
-            style={{ background: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(8, 145, 178, 0.1)' }}
-          />
-          <div 
-            className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full opacity-30 blur-[120px]"
-            style={{ background: isDark ? 'rgba(139, 92, 246, 0.1)' : 'rgba(124, 58, 237, 0.08)' }}
-          />
-        </div>
-
         <Navbar />
-        
-        <main className="relative z-10">
+        <main>
           <Hero />
           <ServiceMatrix />
           <Features />
           <CTA />
         </main>
-
         <Footer />
       </motion.div>
     </>

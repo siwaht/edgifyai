@@ -1,161 +1,229 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const Hero = () => {
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true });
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
   const { isDark } = useTheme();
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const sectionStyle = {
+    position: 'relative',
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '120px 20px 80px',
+    background: isDark ? '#09090b' : '#ffffff',
+    overflow: 'hidden',
+  };
+
+  const containerStyle = {
+    maxWidth: 900,
+    margin: '0 auto',
+    textAlign: 'center',
+    position: 'relative',
+    zIndex: 10,
+  };
+
+  const badgeStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '10px 18px',
+    fontSize: 12,
+    fontWeight: 600,
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+    borderRadius: 100,
+    background: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(8, 145, 178, 0.1)',
+    color: isDark ? '#06b6d4' : '#0891b2',
+    marginBottom: 32,
+  };
+
+  const headingStyle = {
+    fontSize: 'clamp(36px, 8vw, 72px)',
+    fontWeight: 800,
+    lineHeight: 1.1,
+    letterSpacing: '-0.02em',
+    marginBottom: 24,
+    color: isDark ? '#fafafa' : '#09090b',
+  };
+
+  const gradientTextStyle = {
+    background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+  };
+
+  const subtitleStyle = {
+    fontSize: 'clamp(16px, 2.5vw, 20px)',
+    lineHeight: 1.7,
+    color: isDark ? '#a1a1aa' : '#52525b',
+    maxWidth: 640,
+    margin: '0 auto 40px',
+  };
+
+  const buttonContainerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const primaryButtonStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: '16px 28px',
+    fontSize: 16,
+    fontWeight: 600,
+    borderRadius: 12,
+    border: 'none',
+    cursor: 'pointer',
+    background: isDark ? '#fafafa' : '#09090b',
+    color: isDark ? '#09090b' : '#fafafa',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    width: '100%',
+    maxWidth: 220,
+    justifyContent: 'center',
+  };
+
+  const secondaryButtonStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: '16px 28px',
+    fontSize: 16,
+    fontWeight: 600,
+    borderRadius: 12,
+    border: `1px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)'}`,
+    cursor: 'pointer',
+    background: 'transparent',
+    color: isDark ? '#fafafa' : '#09090b',
+    transition: 'all 0.2s ease',
+    width: '100%',
+    maxWidth: 220,
+    justifyContent: 'center',
+  };
+
+  const statsContainerStyle = {
+    marginTop: 64,
+    paddingTop: 48,
+    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: 32,
+  };
+
+  const statStyle = {
+    textAlign: 'center',
+  };
+
+  const statValueStyle = {
+    fontSize: 'clamp(24px, 4vw, 36px)',
+    fontWeight: 700,
+    color: isDark ? '#fafafa' : '#09090b',
+    marginBottom: 4,
+  };
+
+  const statLabelStyle = {
+    fontSize: 14,
+    color: isDark ? '#71717a' : '#a1a1aa',
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.12, delayChildren: 0.1 }
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] }
-    }
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
   };
 
+  const stats = [
+    { value: '99.9%', label: 'Uptime SLA' },
+    { value: '50ms', label: 'Avg Latency' },
+    { value: '10M+', label: 'API Calls/Day' },
+    { value: '500+', label: 'Enterprise Clients' },
+  ];
+
   return (
-    <section 
-      ref={containerRef}
-      className="relative min-h-screen flex items-center overflow-hidden"
-      style={{ background: isDark ? '#09090b' : '#ffffff' }}
-    >
-      {/* Grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(${isDark ? '#fff' : '#000'} 1px, transparent 1px),
-            linear-gradient(90deg, ${isDark ? '#fff' : '#000'} 1px, transparent 1px)`,
-          backgroundSize: '64px 64px'
-        }}
-      />
+    <section ref={ref} style={sectionStyle}>
+      {/* Background gradient orbs */}
+      <div style={{
+        position: 'absolute',
+        top: '10%',
+        left: '-10%',
+        width: 500,
+        height: 500,
+        borderRadius: '50%',
+        background: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(8, 145, 178, 0.1)',
+        filter: 'blur(100px)',
+        pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute',
+        bottom: '10%',
+        right: '-10%',
+        width: 400,
+        height: 400,
+        borderRadius: '50%',
+        background: isDark ? 'rgba(139, 92, 246, 0.12)' : 'rgba(124, 58, 237, 0.08)',
+        filter: 'blur(100px)',
+        pointerEvents: 'none',
+      }} />
 
-      {/* Gradient orbs */}
-      <motion.div 
-        className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full blur-[100px] opacity-40"
-        style={{ background: isDark ? 'rgba(6, 182, 212, 0.3)' : 'rgba(8, 145, 178, 0.2)' }}
-        animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div 
-        className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] rounded-full blur-[100px] opacity-30"
-        style={{ background: isDark ? 'rgba(139, 92, 246, 0.3)' : 'rgba(124, 58, 237, 0.2)' }}
-        animate={{ x: [0, -20, 0], y: [0, 30, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      <motion.div 
-        className="container-custom relative z-10 py-32 md:py-40"
-        style={{ y, opacity }}
+      <motion.div
+        style={containerStyle}
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
       >
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="max-w-4xl mx-auto text-center"
-        >
-          {/* Badge */}
-          <motion.div variants={itemVariants} className="mb-8">
-            <span className="badge">
-              <Sparkles size={14} />
-              Next-Gen AI Platform
-            </span>
-          </motion.div>
+        <motion.div variants={itemVariants}>
+          <span style={badgeStyle}>
+            <Sparkles size={14} />
+            Next-Gen AI Platform
+          </span>
+        </motion.div>
 
-          {/* Heading */}
-          <motion.h1 
-            variants={itemVariants}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]"
-          >
-            <span style={{ color: isDark ? '#fafafa' : '#09090b' }}>
-              Build the Future with
-            </span>
-            <br />
-            <span className="text-gradient">Autonomous AI</span>
-          </motion.h1>
+        <motion.h1 variants={itemVariants} style={headingStyle}>
+          Build the Future with{' '}
+          <span style={gradientTextStyle}>Autonomous AI</span>
+        </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p 
-            variants={itemVariants}
-            className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
-            style={{ color: isDark ? '#a1a1aa' : '#52525b' }}
-          >
-            Deploy intelligent agents that work 24/7. Scale your operations with 
-            AI-powered automation that learns, adapts, and delivers results.
-          </motion.p>
+        <motion.p variants={itemVariants} style={subtitleStyle}>
+          Deploy intelligent agents that work 24/7. Scale your operations with 
+          AI-powered automation that learns, adapts, and delivers results.
+        </motion.p>
 
-          {/* CTAs */}
-          <motion.div 
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <button className="btn-primary w-full sm:w-auto">
-              Start Free Trial
-              <ArrowRight size={18} />
-            </button>
-            <button className="btn-secondary w-full sm:w-auto">
-              <Play size={18} />
-              Watch Demo
-            </button>
-          </motion.div>
+        <motion.div variants={itemVariants} style={buttonContainerStyle} className="flex-col sm:flex-row">
+          <button style={primaryButtonStyle}>
+            Start Free Trial
+            <ArrowRight size={18} />
+          </button>
+          <button style={secondaryButtonStyle}>
+            <Play size={18} />
+            Watch Demo
+          </button>
+        </motion.div>
 
-          {/* Stats */}
-          <motion.div 
-            variants={itemVariants}
-            className="mt-16 pt-10 border-t grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
-            style={{ borderColor: 'var(--border-primary)' }}
-          >
-            {[
-              { value: '99.9%', label: 'Uptime SLA' },
-              { value: '50ms', label: 'Avg Latency' },
-              { value: '10M+', label: 'API Calls/Day' },
-              { value: '500+', label: 'Enterprise Clients' },
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div 
-                  className="text-2xl sm:text-3xl font-bold mb-1"
-                  style={{ color: isDark ? '#fafafa' : '#09090b' }}
-                >
-                  {stat.value}
-                </div>
-                <div 
-                  className="text-sm"
-                  style={{ color: isDark ? '#71717a' : '#a1a1aa' }}
-                >
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </motion.div>
+        <motion.div variants={itemVariants} style={statsContainerStyle} className="grid-cols-2 md:grid-cols-4">
+          {stats.map((stat, i) => (
+            <div key={i} style={statStyle}>
+              <div style={statValueStyle}>{stat.value}</div>
+              <div style={statLabelStyle}>{stat.label}</div>
+            </div>
+          ))}
         </motion.div>
       </motion.div>
-
-      {/* Bottom fade */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-        style={{
-          background: `linear-gradient(to top, ${isDark ? '#09090b' : '#ffffff'}, transparent)`
-        }}
-      />
     </section>
   );
 };

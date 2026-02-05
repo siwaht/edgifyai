@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Twitter, Linkedin, Github, CheckCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -10,12 +10,6 @@ const footerLinks = {
   Legal: ['Privacy', 'Terms', 'Security', 'Cookies'],
 };
 
-const socialLinks = [
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Github, href: '#', label: 'GitHub' },
-];
-
 const Footer = () => {
   const { isDark } = useTheme();
   const [email, setEmail] = useState('');
@@ -25,89 +19,182 @@ const Footer = () => {
     e.preventDefault();
     if (email) {
       setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setEmail('');
-      }, 3000);
+      setTimeout(() => { setSubmitted(false); setEmail(''); }, 3000);
     }
   };
 
-  return (
-    <footer 
-      className="relative pt-16 md:pt-24 pb-8"
-      style={{ 
-        background: isDark ? '#0c0c0f' : '#fafafa',
-        borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}` 
-      }}
-    >
-      <div className="container-custom">
-        {/* Top section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-12 md:mb-16">
-          {/* Brand & Newsletter */}
-          <div className="lg:col-span-5">
-            <div className="flex items-center gap-2 mb-4">
-              <div 
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)' }}
-              >
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
-              <span 
-                className="font-bold text-lg"
-                style={{ color: isDark ? '#fafafa' : '#09090b' }}
-              >
-                Agenticos
-              </span>
-            </div>
+  const sectionStyle = {
+    padding: '64px 20px 32px',
+    background: isDark ? '#09090b' : '#ffffff',
+    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
+  };
 
-            <p 
-              className="text-sm mb-6 max-w-sm"
-              style={{ color: isDark ? '#a1a1aa' : '#52525b' }}
-            >
+  const containerStyle = {
+    maxWidth: 1200,
+    margin: '0 auto',
+  };
+
+  const topStyle = {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: 48,
+    marginBottom: 48,
+  };
+
+  const brandStyle = {
+    maxWidth: 320,
+  };
+
+  const logoStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 16,
+    textDecoration: 'none',
+    color: isDark ? '#fafafa' : '#09090b',
+  };
+
+  const logoIconStyle = {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#fff',
+    fontWeight: 700,
+    fontSize: 14,
+  };
+
+  const descStyle = {
+    fontSize: 14,
+    lineHeight: 1.7,
+    color: isDark ? '#a1a1aa' : '#52525b',
+    marginBottom: 24,
+  };
+
+  const inputContainerStyle = {
+    display: 'flex',
+    gap: 8,
+  };
+
+  const inputStyle = {
+    flex: 1,
+    padding: '12px 16px',
+    fontSize: 14,
+    borderRadius: 10,
+    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+    background: isDark ? '#18181b' : '#fafafa',
+    color: isDark ? '#fafafa' : '#09090b',
+    outline: 'none',
+  };
+
+  const submitButtonStyle = {
+    padding: '12px 16px',
+    borderRadius: 10,
+    border: 'none',
+    background: isDark ? '#06b6d4' : '#0891b2',
+    color: '#fff',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const linksContainerStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: 32,
+  };
+
+  const linkGroupStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+  };
+
+  const linkTitleStyle = {
+    fontSize: 13,
+    fontWeight: 600,
+    color: isDark ? '#fafafa' : '#09090b',
+    marginBottom: 4,
+  };
+
+  const linkStyle = {
+    fontSize: 14,
+    color: isDark ? '#a1a1aa' : '#52525b',
+    textDecoration: 'none',
+    transition: 'color 0.2s ease',
+  };
+
+  const bottomStyle = {
+    paddingTop: 32,
+    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  };
+
+  const copyrightStyle = {
+    fontSize: 14,
+    color: isDark ? '#71717a' : '#a1a1aa',
+  };
+
+  const socialStyle = {
+    display: 'flex',
+    gap: 8,
+  };
+
+  const socialButtonStyle = {
+    padding: 10,
+    borderRadius: 10,
+    border: 'none',
+    background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+    color: isDark ? '#71717a' : '#a1a1aa',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  return (
+    <footer style={sectionStyle}>
+      <div style={containerStyle}>
+        <div style={topStyle} className="lg:grid-cols-2">
+          <div style={brandStyle}>
+            <a href="#" style={logoStyle}>
+              <div style={logoIconStyle}>A</div>
+              <span style={{ fontWeight: 700, fontSize: 18 }}>Agenticos</span>
+            </a>
+            <p style={descStyle}>
               Building the future of autonomous AI. Deploy intelligent agents that 
               work around the clock.
             </p>
-
-            {/* Newsletter */}
-            <form onSubmit={handleSubmit} className="max-w-sm">
-              <label 
-                className="text-sm font-medium mb-2 block"
-                style={{ color: isDark ? '#fafafa' : '#09090b' }}
-              >
+            <form onSubmit={handleSubmit}>
+              <label style={{ fontSize: 14, fontWeight: 500, color: isDark ? '#fafafa' : '#09090b', marginBottom: 8, display: 'block' }}>
                 Subscribe to updates
               </label>
-              <div className="flex gap-2">
+              <div style={inputContainerStyle}>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   disabled={submitted}
-                  className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
-                  style={{
-                    background: isDark ? '#18181b' : '#ffffff',
-                    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    color: isDark ? '#fafafa' : '#09090b',
-                  }}
+                  style={inputStyle}
                 />
-                <button 
-                  type="submit"
-                  disabled={submitted}
-                  className="px-4 py-2.5 rounded-xl transition-all"
-                  style={{
-                    background: 'var(--accent)',
-                    color: '#fff',
-                  }}
-                >
+                <button type="submit" disabled={submitted} style={submitButtonStyle}>
                   {submitted ? <CheckCircle size={18} /> : <ArrowRight size={18} />}
                 </button>
               </div>
               {submitted && (
                 <motion.p
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-sm mt-2"
-                  style={{ color: '#10b981' }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  style={{ fontSize: 13, color: '#10b981', marginTop: 8 }}
                 >
                   Thanks for subscribing!
                 </motion.p>
@@ -115,62 +202,27 @@ const Footer = () => {
             </form>
           </div>
 
-          {/* Links */}
-          <div className="lg:col-span-7">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-              {Object.entries(footerLinks).map(([category, links]) => (
-                <div key={category}>
-                  <h4 
-                    className="text-sm font-semibold mb-4"
-                    style={{ color: isDark ? '#fafafa' : '#09090b' }}
-                  >
-                    {category}
-                  </h4>
-                  <ul className="space-y-3">
-                    {links.map((link) => (
-                      <li key={link}>
-                        <a
-                          href="#"
-                          className="text-sm transition-colors hover:underline"
-                          style={{ color: isDark ? '#a1a1aa' : '#52525b' }}
-                        >
-                          {link}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+          <div style={linksContainerStyle} className="sm:grid-cols-4">
+            {Object.entries(footerLinks).map(([category, links]) => (
+              <div key={category} style={linkGroupStyle}>
+                <span style={linkTitleStyle}>{category}</span>
+                {links.map((link) => (
+                  <a key={link} href="#" style={linkStyle}>{link}</a>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Bottom section */}
-        <div 
-          className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}` }}
-        >
-          <p 
-            className="text-sm"
-            style={{ color: isDark ? '#71717a' : '#a1a1aa' }}
-          >
+        <div style={bottomStyle} className="sm:flex-row">
+          <p style={copyrightStyle}>
             © {new Date().getFullYear()} Agenticos Labs Inc. All rights reserved.
           </p>
-
-          <div className="flex items-center gap-2">
-            {socialLinks.map(({ icon: Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                className="p-2.5 rounded-xl transition-colors"
-                style={{
-                  color: isDark ? '#71717a' : '#a1a1aa',
-                  background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
-                }}
-              >
+          <div style={socialStyle}>
+            {[Twitter, Linkedin, Github].map((Icon, i) => (
+              <button key={i} style={socialButtonStyle}>
                 <Icon size={18} />
-              </a>
+              </button>
             ))}
           </div>
         </div>

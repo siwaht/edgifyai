@@ -1,229 +1,112 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Twitter, Linkedin, Github, CheckCircle } from 'lucide-react';
+import { ArrowRight, Twitter, Linkedin, Github, CheckCircle, Heart, Globe, Shield } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const footerLinks = {
-  Product: ['Features', 'Pricing', 'Integrations', 'API Docs'],
-  Company: ['About', 'Blog', 'Careers', 'Press'],
-  Resources: ['Documentation', 'Guides', 'Support', 'Status'],
-  Legal: ['Privacy', 'Terms', 'Security', 'Cookies'],
+  Product: ['Features', 'Pricing', 'Integrations', 'API Docs', 'Changelog'],
+  Company: ['About Us', 'Careers', 'Blog', 'Press Kit', 'Contact'],
+  Resources: ['Community', 'Help Center', 'Status', 'Terms of Service', 'Privacy Policy'],
 };
 
 const Footer = () => {
   const { isDark } = useTheme();
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email) {
-      setSubmitted(true);
-      setTimeout(() => { setSubmitted(false); setEmail(''); }, 3000);
-    }
-  };
 
   const sectionStyle = {
-    padding: '64px 20px 32px',
-    background: isDark ? '#09090b' : '#ffffff',
-    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
+    position: 'relative',
+    padding: '80px 20px 40px',
+    background: isDark ? '#020617' : '#ffffff', // obsidian-deep
+    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
+    overflow: 'hidden',
   };
 
   const containerStyle = {
     maxWidth: 1200,
     margin: '0 auto',
+    position: 'relative',
+    zIndex: 10,
   };
 
-  const topStyle = {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: 48,
-    marginBottom: 48,
-  };
-
-  const brandStyle = {
-    maxWidth: 320,
-  };
-
-  const logoStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 16,
-    textDecoration: 'none',
-    color: isDark ? '#fafafa' : '#09090b',
-  };
-
-  const logoIconStyle = {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#fff',
-    fontWeight: 700,
-    fontSize: 14,
-  };
-
-  const descStyle = {
-    fontSize: 14,
-    lineHeight: 1.7,
-    color: isDark ? '#a1a1aa' : '#52525b',
-    marginBottom: 24,
-  };
-
-  const inputContainerStyle = {
-    display: 'flex',
-    gap: 8,
-  };
-
-  const inputStyle = {
-    flex: 1,
-    padding: '12px 16px',
-    fontSize: 14,
-    borderRadius: 10,
-    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-    background: isDark ? '#18181b' : '#fafafa',
-    color: isDark ? '#fafafa' : '#09090b',
-    outline: 'none',
-  };
-
-  const submitButtonStyle = {
-    padding: '12px 16px',
-    borderRadius: 10,
-    border: 'none',
-    background: isDark ? '#06b6d4' : '#0891b2',
-    color: '#fff',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const linksContainerStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: 32,
-  };
-
-  const linkGroupStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  };
-
-  const linkTitleStyle = {
-    fontSize: 13,
-    fontWeight: 600,
-    color: isDark ? '#fafafa' : '#09090b',
-    marginBottom: 4,
-  };
-
-  const linkStyle = {
-    fontSize: 14,
-    color: isDark ? '#a1a1aa' : '#52525b',
-    textDecoration: 'none',
-    transition: 'color 0.2s ease',
-  };
-
-  const bottomStyle = {
-    paddingTop: 32,
-    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-
-  const copyrightStyle = {
-    fontSize: 14,
-    color: isDark ? '#71717a' : '#a1a1aa',
-  };
-
-  const socialStyle = {
-    display: 'flex',
-    gap: 8,
-  };
-
-  const socialButtonStyle = {
-    padding: 10,
-    borderRadius: 10,
-    border: 'none',
-    background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-    color: isDark ? '#71717a' : '#a1a1aa',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
+  // Background Mesh
+  const FooterBackground = () => (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+      <div className="absolute bottom-0 left-[-20%] w-[600px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
+      <div className="absolute bottom-0 right-[-20%] w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
+    </div>
+  );
 
   return (
     <footer style={sectionStyle}>
+      <FooterBackground />
       <div style={containerStyle}>
-        <div style={topStyle} className="lg:grid-cols-2">
-          <div style={brandStyle}>
-            <a href="#" style={logoStyle}>
-              <div style={logoIconStyle}>A</div>
-              <span style={{ fontWeight: 700, fontSize: 18 }}>Agenticos</span>
-            </a>
-            <p style={descStyle}>
-              Building the future of autonomous AI. Deploy intelligent agents that 
-              work around the clock.
-            </p>
-            <form onSubmit={handleSubmit}>
-              <label style={{ fontSize: 14, fontWeight: 500, color: isDark ? '#fafafa' : '#09090b', marginBottom: 8, display: 'block' }}>
-                Subscribe to updates
-              </label>
-              <div style={inputContainerStyle}>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  disabled={submitted}
-                  style={inputStyle}
-                />
-                <button type="submit" disabled={submitted} style={submitButtonStyle}>
-                  {submitted ? <CheckCircle size={18} /> : <ArrowRight size={18} />}
-                </button>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+          {/* Brand Column */}
+          <div className="lg:col-span-4">
+            <a href="#" className="flex items-center gap-3 mb-6 no-underline">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-cyan-500/20">
+                A
               </div>
-              {submitted && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  style={{ fontSize: 13, color: '#10b981', marginTop: 8 }}
+              <span className={`text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Agenticos
+              </span>
+            </a>
+            <p className={`text-base leading-relaxed mb-8 max-w-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Building the operating system for the autonomous enterprise. Deploy intelligent agents that scale with your ambitions.
+            </p>
+            <div className="flex items-center gap-4">
+              {[Twitter, Linkedin, Github].map((Icon, i) => (
+                <button
+                  key={i}
+                  className={`p-3 rounded-xl transition-all duration-300 group ${isDark
+                      ? 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-cyan-400'
+                      : 'bg-black/5 hover:bg-black/10 text-slate-500 hover:text-cyan-600'
+                    }`}
                 >
-                  Thanks for subscribing!
-                </motion.p>
-              )}
-            </form>
+                  <Icon size={20} className="group-hover:scale-110 transition-transform" />
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div style={linksContainerStyle} className="sm:grid-cols-4">
+          {/* Links Columns */}
+          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
             {Object.entries(footerLinks).map(([category, links]) => (
-              <div key={category} style={linkGroupStyle}>
-                <span style={linkTitleStyle}>{category}</span>
-                {links.map((link) => (
-                  <a key={link} href="#" style={linkStyle}>{link}</a>
-                ))}
+              <div key={category} className="flex flex-col gap-4">
+                <h4 className={`text-sm font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+                  {category}
+                </h4>
+                <div className="flex flex-col gap-3">
+                  {links.map((link) => (
+                    <a
+                      key={link}
+                      href="#"
+                      className={`text-[15px] transition-colors duration-200 hover:translate-x-1 ${isDark ? 'text-slate-400 hover:text-cyan-400' : 'text-slate-500 hover:text-cyan-600'
+                        }`}
+                      style={{ display: 'inline-block' }}
+                    >
+                      {link}
+                    </a>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={bottomStyle} className="sm:flex-row">
-          <p style={copyrightStyle}>
-            © {new Date().getFullYear()} Agenticos Labs Inc. All rights reserved.
+        {/* Bottom Bar */}
+        <div className={`pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-6 ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+          <p className={`text-sm flex items-center gap-2 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            © {new Date().getFullYear()} Agenticos Labs Inc. <span className="w-1 h-1 rounded-full bg-slate-700" /> All rights reserved.
           </p>
-          <div style={socialStyle}>
-            {[Twitter, Linkedin, Github].map((Icon, i) => (
-              <button key={i} style={socialButtonStyle}>
-                <Icon size={18} />
-              </button>
-            ))}
+          <div className="flex items-center gap-6">
+            <div className={`flex items-center gap-2 text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              <Globe size={14} />
+              <span>English (US)</span>
+            </div>
+            <div className={`flex items-center gap-2 text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              <Shield size={14} />
+              <span>SOC2 Compliant</span>
+            </div>
           </div>
         </div>
       </div>

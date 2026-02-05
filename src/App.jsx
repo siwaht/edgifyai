@@ -7,6 +7,7 @@ import Features from './components/Features';
 import ServiceMatrix from './components/ServiceMatrix';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
+import Contact from './components/Contact';
 
 const PageLoader = ({ onComplete }) => {
   const { isDark } = useTheme();
@@ -89,6 +90,7 @@ const AppContent = () => {
           <ServiceMatrix />
           <Features />
           <CTA />
+          <Contact />
         </main>
         <Footer />
       </motion.div>

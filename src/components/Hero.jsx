@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
 import { ArrowDown, Sparkles } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-// Optimized particle system with connection lines
 const ParticleField = () => {
   const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const { isDark } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -15,6 +16,8 @@ const ParticleField = () => {
     let animationFrameId;
     let particles = [];
     const particleCount = 80;
+
+    const particleColor = isDark ? '0, 255, 255' : '8, 145, 178';
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -44,7 +47,6 @@ const ParticleField = () => {
       }
 
       update(time) {
-        // Mouse interaction
         const dx = mouseRef.current.x - this.x;
         const dy = mouseRef.current.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -55,17 +57,12 @@ const ParticleField = () => {
           this.vy += (dy / dist) * force * 0.02;
         }
 
-        // Apply velocity with damping
         this.vx = this.vx * 0.98 + this.baseVx * 0.02;
         this.vy = this.vy * 0.98 + this.baseVy * 0.02;
-
         this.x += this.vx;
         this.y += this.vy;
-
-        // Pulse effect
         this.alpha = this.baseAlpha + Math.sin(time * 0.002 + this.pulseOffset) * 0.1;
 
-        // Wrap around edges
         if (this.x < -10) this.x = canvas.width + 10;
         if (this.x > canvas.width + 10) this.x = -10;
         if (this.y < -10) this.y = canvas.height + 10;
@@ -74,22 +71,16 @@ const ParticleField = () => {
 
       draw() {
         if (!ctx) return;
-        
-        // Glow effect
-        const gradient = ctx.createRadialGradient(
-          this.x, this.y, 0,
-          this.x, this.y, this.size * 3
-        );
-        gradient.addColorStop(0, `rgba(0, 255, 255, ${this.alpha})`);
-        gradient.addColorStop(1, 'rgba(0, 255, 255, 0)');
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+        gradient.addColorStop(0, `rgba(${particleColor}, ${this.alpha})`);
+        gradient.addColorStop(1, `rgba(${particleColor}, 0)`);
         
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
         ctx.fill();
 
-        // Core
-        ctx.fillStyle = `rgba(0, 255, 255, ${this.alpha * 1.5})`;
+        ctx.fillStyle = `rgba(${particleColor}, ${this.alpha * 1.5})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -113,7 +104,7 @@ const ParticleField = () => {
           if (distance < 120) {
             const alpha = (1 - distance / 120) * 0.15;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+            ctx.strokeStyle = `rgba(${particleColor}, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -128,12 +119,7 @@ const ParticleField = () => {
       if (!ctx) return;
       time++;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach(p => {
-        p.update(time);
-        p.draw();
-      });
-
+      particles.forEach(p => { p.update(time); p.draw(); });
       drawConnections();
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -149,13 +135,13 @@ const ParticleField = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isDark]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />;
 };
 
-// Floating orbs decoration
 const FloatingOrbs = () => {
+  const { isDark } = useTheme();
   const orbs = useMemo(() => [
     { size: 300, x: '10%', y: '20%', delay: 0, color: 'cyan' },
     { size: 200, x: '80%', y: '60%', delay: 2, color: 'purple' },
@@ -174,21 +160,14 @@ const FloatingOrbs = () => {
             left: orb.x,
             top: orb.y,
             background: orb.color === 'cyan' 
-              ? 'radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%)'
+              ? isDark 
+                ? 'radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%)'
+                : 'radial-gradient(circle, rgba(8, 145, 178, 0.12) 0%, transparent 70%)'
               : 'radial-gradient(circle, rgba(124, 58, 237, 0.08) 0%, transparent 70%)',
             filter: 'blur(40px)',
           }}
-          animate={{
-            y: [0, -30, 0],
-            scale: [1, 1.1, 1],
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 8,
-            delay: orb.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          animate={{ y: [0, -30, 0], scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+          transition={{ duration: 8, delay: orb.delay, repeat: Infinity, ease: "easeInOut" }}
         />
       ))}
     </div>
@@ -198,10 +177,8 @@ const FloatingOrbs = () => {
 const Hero = () => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true });
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
+  const { isDark } = useTheme();
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
 
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
@@ -213,31 +190,20 @@ const Hero = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.3,
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.3 } }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1],
-      }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
   };
 
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-obsidian text-white"
+      className={`relative min-h-screen flex flex-col items-center justify-center overflow-hidden transition-colors duration-300 ${
+        isDark ? 'bg-[#030712] text-white' : 'bg-white text-gray-900'
+      }`}
     >
       <ParticleField />
       <FloatingOrbs />
@@ -252,11 +218,14 @@ const Hero = () => {
           animate={isInView ? "visible" : "hidden"}
           className="flex flex-col items-center"
         >
-          {/* Badge */}
           <motion.div variants={itemVariants} className="mb-8">
             <motion.div 
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-widest text-electric-cyan uppercase border border-electric-cyan/20 rounded-full bg-electric-cyan/5 backdrop-blur-sm"
-              whileHover={{ scale: 1.05, borderColor: 'rgba(0, 255, 255, 0.4)' }}
+              className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-widest uppercase border rounded-full backdrop-blur-sm ${
+                isDark 
+                  ? 'text-cyan-400 border-cyan-400/20 bg-cyan-400/5' 
+                  : 'text-cyan-600 border-cyan-600/20 bg-cyan-600/5'
+              }`}
+              whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
               <Sparkles size={14} className="animate-pulse" />
@@ -264,62 +233,49 @@ const Hero = () => {
             </motion.div>
           </motion.div>
 
-          {/* Main Heading */}
-          <motion.h1
-            variants={itemVariants}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[0.9]"
-          >
-            <span className="text-gradient-white">The Era of the</span>
+          <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[0.9]">
+            <span className={isDark ? 'text-white' : 'text-gray-900'}>The Era of the</span>
             <br />
             <motion.span 
-              className="text-gradient-cyan inline-block"
-              animate={{ 
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              }}
-              transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+              className="inline-block"
               style={{
+                background: isDark 
+                  ? 'linear-gradient(135deg, #00ffff 0%, #00d4ff 25%, #7c3aed 50%, #00d4ff 75%, #00ffff 100%)'
+                  : 'linear-gradient(135deg, #0891b2 0%, #06b6d4 25%, #7c3aed 50%, #06b6d4 75%, #0891b2 100%)',
                 backgroundSize: '200% 200%',
-                background: 'linear-gradient(135deg, #00ffff 0%, #00d4ff 25%, #7c3aed 50%, #00d4ff 75%, #00ffff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
               }}
+              animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
             >
               Autonomous Enterprise
             </motion.span>
           </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p
-            variants={itemVariants}
-            className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-gray-400 font-light leading-relaxed mb-12"
-          >
+          <motion.p variants={itemVariants} className={`max-w-2xl mx-auto text-base sm:text-lg md:text-xl font-light leading-relaxed mb-12 ${
+            isDark ? 'text-gray-400' : 'text-gray-600'
+          }`}>
             Orchestrating the invisible hand of digital labor.
             <br className="hidden sm:block" />
             Scalable, sentient, and perpetually active systems designed for the future of work.
           </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div 
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4"
-          >
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
             <motion.button
-              className="group relative px-8 py-4 bg-white text-obsidian font-semibold rounded-xl overflow-hidden"
+              className={`group relative px-8 py-4 font-semibold rounded-xl overflow-hidden ${
+                isDark ? 'bg-white text-[#030712]' : 'bg-gray-900 text-white'
+              }`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 Get Started
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  →
-                </motion.span>
+                <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
               </span>
               <motion.div 
-                className="absolute inset-0 bg-electric-cyan"
+                className={`absolute inset-0 ${isDark ? 'bg-cyan-400' : 'bg-cyan-600'}`}
                 initial={{ x: '-100%' }}
                 whileHover={{ x: 0 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -327,7 +283,11 @@ const Hero = () => {
             </motion.button>
 
             <motion.button
-              className="px-8 py-4 border border-white/20 text-white font-semibold rounded-xl hover:border-electric-cyan/50 hover:bg-white/5 transition-all duration-300"
+              className={`px-8 py-4 border font-semibold rounded-xl transition-all duration-300 ${
+                isDark 
+                  ? 'border-white/20 text-white hover:border-cyan-400/50 hover:bg-white/5' 
+                  : 'border-gray-300 text-gray-900 hover:border-cyan-600/50 hover:bg-gray-50'
+              }`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -337,7 +297,6 @@ const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator */}
       <motion.div 
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
         initial={{ opacity: 0, y: -20 }}
@@ -345,7 +304,7 @@ const Hero = () => {
         transition={{ delay: 1.5, duration: 0.8 }}
       >
         <motion.div
-          className="flex flex-col items-center gap-2 text-gray-500"
+          className={`flex flex-col items-center gap-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -354,8 +313,11 @@ const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-obsidian via-obsidian/80 to-transparent z-10 pointer-events-none" />
+      <div className={`absolute bottom-0 w-full h-40 pointer-events-none z-10 ${
+        isDark 
+          ? 'bg-gradient-to-t from-[#030712] via-[#030712]/80 to-transparent' 
+          : 'bg-gradient-to-t from-white via-white/80 to-transparent'
+      }`} />
     </section>
   );
 };

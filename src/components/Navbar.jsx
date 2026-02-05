@@ -31,14 +31,20 @@ const Navbar = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '12px 20px',
-    borderRadius: 16,
-    background: scrolled 
-      ? isDark ? 'rgba(9, 9, 11, 0.95)' : 'rgba(255, 255, 255, 0.95)'
+    padding: scrolled ? '12px 24px' : '16px 24px',
+    borderRadius: 24,
+    background: scrolled
+      ? isDark ? 'rgba(2, 6, 23, 0.6)' : 'rgba(255, 255, 255, 0.7)'
       : 'transparent',
-    backdropFilter: scrolled ? 'blur(20px)' : 'none',
-    border: scrolled ? `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}` : 'none',
-    transition: 'all 0.3s ease',
+    backdropFilter: scrolled ? 'blur(16px) saturate(180%)' : 'none',
+    WebkitBackdropFilter: scrolled ? 'blur(16px) saturate(180%)' : 'none',
+    border: scrolled
+      ? `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`
+      : '1px solid transparent',
+    boxShadow: scrolled
+      ? isDark ? '0 10px 40px -10px rgba(0,0,0,0.5)' : '0 10px 30px -10px rgba(0,0,0,0.1)'
+      : 'none',
+    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
   };
 
   const logoStyle = {
@@ -50,16 +56,17 @@ const Navbar = () => {
   };
 
   const logoIconStyle = {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    background: 'linear-gradient(135deg, #00FFFF 0%, #7c3aed 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#fff',
-    fontWeight: 700,
-    fontSize: 14,
+    color: '#000',
+    fontWeight: 800,
+    fontSize: 20,
+    boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)',
   };
 
   const navLinksStyle = {
@@ -79,15 +86,16 @@ const Navbar = () => {
   };
 
   const buttonStyle = {
-    padding: '10px 20px',
+    padding: '10px 24px',
     fontSize: 14,
     fontWeight: 600,
-    borderRadius: 10,
+    borderRadius: 100,
     border: 'none',
     cursor: 'pointer',
-    background: isDark ? '#fafafa' : '#09090b',
-    color: isDark ? '#09090b' : '#fafafa',
-    transition: 'all 0.2s ease',
+    background: isDark ? '#ffffff' : '#030712',
+    color: isDark ? '#030712' : '#ffffff',
+    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+    boxShadow: isDark ? '0 0 20px rgba(255, 255, 255, 0.1)' : '0 10px 20px rgba(0,0,0,0.1)',
   };
 
   const themeButtonStyle = {

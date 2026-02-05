@@ -10,7 +10,7 @@ import Footer from './components/Footer';
 
 const PageLoader = ({ onComplete }) => {
   const { isDark } = useTheme();
-  
+
   useEffect(() => {
     const timer = setTimeout(onComplete, 1500);
     return () => clearTimeout(timer);
@@ -69,7 +69,9 @@ const AppContent = () => {
         {isLoading && <PageLoader onComplete={() => setIsLoading(false)} />}
       </AnimatePresence>
 
-      <motion.div 
+      <div className="noise-overlay" />
+
+      <motion.div
         style={{
           position: 'relative',
           overflowX: 'hidden',

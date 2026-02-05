@@ -114,33 +114,33 @@ const CTA = () => {
           style={cardStyle}
         >
           {/* Background gradients */}
+          {/* Premium Glowing Background */}
           <div style={{
             position: 'absolute',
-            top: -100,
-            right: -100,
-            width: 300,
-            height: 300,
-            borderRadius: '50%',
-            background: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(8, 145, 178, 0.1)',
-            filter: 'blur(80px)',
-            pointerEvents: 'none',
+            inset: 0,
+            background: isDark
+              ? 'radial-gradient(circle at 50% -20%, rgba(6, 182, 212, 0.15), transparent 70%), radial-gradient(circle at 50% 120%, rgba(124, 58, 237, 0.15), transparent 70%)'
+              : 'radial-gradient(circle at 50% -20%, rgba(6, 182, 212, 0.1), transparent 70%), radial-gradient(circle at 50% 120%, rgba(124, 58, 237, 0.1), transparent 70%)',
+            zIndex: 0,
           }} />
+
           <div style={{
             position: 'absolute',
-            bottom: -100,
-            left: -100,
-            width: 250,
-            height: 250,
-            borderRadius: '50%',
-            background: isDark ? 'rgba(139, 92, 246, 0.12)' : 'rgba(124, 58, 237, 0.08)',
-            filter: 'blur(80px)',
-            pointerEvents: 'none',
+            inset: 0,
+            background: isDark
+              ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(139, 92, 246, 0.05))'
+              : 'linear-gradient(135deg, rgba(6, 182, 212, 0.03), rgba(139, 92, 246, 0.03))',
+            zIndex: 0,
           }} />
+
+          {/* Animated Orbs */}
+          <div className="absolute top-[-50%] left-[-20%] w-[600px] h-[600px] bg-cyan-500/10 blur-[100px] rounded-full animate-float" />
+          <div className="absolute bottom-[-50%] right-[-20%] w-[600px] h-[600px] bg-purple-500/10 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-2s' }} />
 
           <div style={{ position: 'relative', zIndex: 10 }}>
             <h2 style={titleStyle}>Ready to Get Started?</h2>
             <p style={subtitleStyle}>
-              Join thousands of companies using Agenticos to automate their operations 
+              Join thousands of companies using Agenticos to automate their operations
               and scale their business.
             </p>
 

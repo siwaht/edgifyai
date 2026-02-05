@@ -8,6 +8,7 @@ export default {
     extend: {
       colors: {
         'obsidian': '#030712',
+        'obsidian-deep': '#020617', // Deeper, richer black
         'obsidian-light': '#0a0f1a',
         'electric-cyan': '#00FFFF',
         'electric-cyan-dark': '#00d4ff',
@@ -30,6 +31,8 @@ export default {
         'spin-slower': 'spin 12s linear infinite',
         'bounce-slow': 'bounce 3s infinite',
         'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'shimmer': 'shimmer 2s linear infinite',
       },
       transitionTimingFunction: {
         'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
@@ -44,20 +47,32 @@ export default {
       },
       backdropBlur: {
         xs: '2px',
+        md: '12px',
+        lg: '24px',
+        xl: '40px',
       },
       boxShadow: {
         'glow-sm': '0 0 15px rgba(0, 255, 255, 0.1)',
         'glow': '0 0 30px rgba(0, 255, 255, 0.15)',
         'glow-lg': '0 0 60px rgba(0, 255, 255, 0.2)',
-        'glow-xl': '0 0 100px rgba(0, 255, 255, 0.25)',
-        'inner-glow': 'inset 0 0 30px rgba(0, 255, 255, 0.1)',
+        'glow-xl': '0 0 100px rgba(5, 255, 255, 0.3)',
+        'inner-glow': 'inset 0 0 30px rgba(0, 255, 255, 0.05)',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'mesh-gradient': 'linear-gradient(135deg, #030712 0%, #0a0f1a 25%, #030712 50%, #0f172a 75%, #030712 100%)',
+        'aurora': 'linear-gradient(to right, #000000, #130f40, #000000)',
       },
       keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
         'fade-in-up': {
           '0%': { opacity: '0', transform: 'translateY(30px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },

@@ -15,9 +15,28 @@ const Hero = () => {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '120px 20px 80px',
-    background: isDark ? '#09090b' : '#ffffff',
+    background: isDark ? '#020617' : '#ffffff', // obsidian-deep
     overflow: 'hidden',
   };
+
+  // Background Elements
+  const AuroraBackground = () => (
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-purple-500/20 blur-[120px] rounded-full animate-float" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-cyan-500/10 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-3s' }} />
+      <div className="absolute top-[20%] right-[20%] w-[30vw] h-[30vw] bg-blue-600/10 blur-[80px] rounded-full animate-pulse-slow" />
+
+      {/* Mesh Grid Overlay */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `linear-gradient(${isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'} 1px, transparent 1px), linear-gradient(90deg, ${isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'} 1px, transparent 1px)`,
+        backgroundSize: '40px 40px',
+        maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
+      }} />
+    </div>
+  );
 
   const containerStyle = {
     maxWidth: 900,
@@ -31,39 +50,45 @@ const Hero = () => {
     display: 'inline-flex',
     alignItems: 'center',
     gap: 8,
-    padding: '10px 18px',
-    fontSize: 12,
-    fontWeight: 600,
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase',
+    padding: '8px 16px',
+    fontSize: 13,
+    fontWeight: 500,
+    letterSpacing: '0.02em',
+    // textTransform: 'uppercase', // Removing uppercase for modern feel
     borderRadius: 100,
-    background: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(8, 145, 178, 0.1)',
-    color: isDark ? '#06b6d4' : '#0891b2',
+    background: isDark ? 'rgba(30, 41, 59, 0.5)' : 'rgba(240, 249, 255, 0.8)',
+    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}`,
+    color: isDark ? '#e2e8f0' : '#475569',
     marginBottom: 32,
+    backdropFilter: 'blur(8px)',
+    boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.2)' : '0 4px 10px rgba(0,0,0,0.05)',
   };
 
   const headingStyle = {
-    fontSize: 'clamp(36px, 8vw, 72px)',
+    fontSize: 'clamp(48px, 8vw, 86px)', // Increased size
     fontWeight: 800,
-    lineHeight: 1.1,
-    letterSpacing: '-0.02em',
-    marginBottom: 24,
-    color: isDark ? '#fafafa' : '#09090b',
+    lineHeight: 1.05,
+    letterSpacing: '-0.04em', // Tighter spacing
+    marginBottom: 32,
+    color: isDark ? '#ffffff' : '#020617',
   };
 
   const gradientTextStyle = {
-    background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
+    background: 'linear-gradient(to right, #22d3ee, #8b5cf6, #22d3ee)', // Animated gradient base
+    backgroundSize: '200% auto',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
+    animation: 'shimmer 4s linear infinite',
   };
 
   const subtitleStyle = {
-    fontSize: 'clamp(16px, 2.5vw, 20px)',
-    lineHeight: 1.7,
-    color: isDark ? '#a1a1aa' : '#52525b',
-    maxWidth: 640,
-    margin: '0 auto 40px',
+    fontSize: 'clamp(18px, 2.5vw, 22px)',
+    lineHeight: 1.6,
+    color: isDark ? '#94a3b8' : '#475569',
+    maxWidth: 680,
+    margin: '0 auto 48px',
+    fontWeight: 400,
   };
 
   const buttonContainerStyle = {
@@ -77,62 +102,64 @@ const Hero = () => {
   const primaryButtonStyle = {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 10,
-    padding: '16px 28px',
+    gap: 12,
+    padding: '18px 36px',
     fontSize: 16,
     fontWeight: 600,
-    borderRadius: 12,
+    borderRadius: 100,
     border: 'none',
     cursor: 'pointer',
-    background: isDark ? '#fafafa' : '#09090b',
-    color: isDark ? '#09090b' : '#fafafa',
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    background: isDark ? '#ffffff' : '#020617', // High contrast
+    color: isDark ? '#020617' : '#ffffff',
+    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+    boxShadow: isDark ? '0 0 40px rgba(255, 255, 255, 0.2)' : '0 10px 30px rgba(0,0,0,0.2)',
     width: '100%',
-    maxWidth: 220,
+    maxWidth: 240,
     justifyContent: 'center',
   };
 
   const secondaryButtonStyle = {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 10,
-    padding: '16px 28px',
+    gap: 12,
+    padding: '18px 36px',
     fontSize: 16,
     fontWeight: 600,
-    borderRadius: 12,
-    border: `1px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)'}`,
+    borderRadius: 100,
+    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
     cursor: 'pointer',
-    background: 'transparent',
-    color: isDark ? '#fafafa' : '#09090b',
+    background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+    color: isDark ? '#ffffff' : '#020617',
     transition: 'all 0.2s ease',
+    backdropFilter: 'blur(10px)',
     width: '100%',
-    maxWidth: 220,
+    maxWidth: 240,
     justifyContent: 'center',
   };
 
   const statsContainerStyle = {
-    marginTop: 64,
-    paddingTop: 48,
-    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+    marginTop: 80,
+    paddingTop: 40,
+    borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: 32,
-  };
-
-  const statStyle = {
-    textAlign: 'center',
+    gap: 40,
   };
 
   const statValueStyle = {
-    fontSize: 'clamp(24px, 4vw, 36px)',
+    fontSize: 'clamp(32px, 4vw, 48px)',
     fontWeight: 700,
-    color: isDark ? '#fafafa' : '#09090b',
+    color: isDark ? '#ffffff' : '#020617',
     marginBottom: 4,
+    letterSpacing: '-0.03em',
   };
 
   const statLabelStyle = {
     fontSize: 14,
-    color: isDark ? '#71717a' : '#a1a1aa',
+    fontWeight: 500,
+    color: isDark ? '#64748b' : '#64748b', // Slate-500
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
   };
 
   const containerVariants = {
@@ -144,8 +171,8 @@ const Hero = () => {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    hidden: { opacity: 0, y: 30, filter: 'blur(10px)' }, // Added blur to exit
+    visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
   };
 
   const stats = [
@@ -157,29 +184,7 @@ const Hero = () => {
 
   return (
     <section ref={ref} style={sectionStyle}>
-      {/* Background gradient orbs */}
-      <div style={{
-        position: 'absolute',
-        top: '10%',
-        left: '-10%',
-        width: 500,
-        height: 500,
-        borderRadius: '50%',
-        background: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(8, 145, 178, 0.1)',
-        filter: 'blur(100px)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '10%',
-        right: '-10%',
-        width: 400,
-        height: 400,
-        borderRadius: '50%',
-        background: isDark ? 'rgba(139, 92, 246, 0.12)' : 'rgba(124, 58, 237, 0.08)',
-        filter: 'blur(100px)',
-        pointerEvents: 'none',
-      }} />
+      <AuroraBackground />
 
       <motion.div
         style={containerStyle}
@@ -189,8 +194,8 @@ const Hero = () => {
       >
         <motion.div variants={itemVariants}>
           <span style={badgeStyle}>
-            <Sparkles size={14} />
-            Next-Gen AI Platform
+            <Sparkles size={14} className="text-cyan-400" />
+            <span style={{ opacity: 0.9 }}>Next-Generation AI Platform</span>
           </span>
         </motion.div>
 
@@ -200,25 +205,27 @@ const Hero = () => {
         </motion.h1>
 
         <motion.p variants={itemVariants} style={subtitleStyle}>
-          Deploy intelligent agents that work 24/7. Scale your operations with 
+          Deploy intelligent agents that work 24/7. Scale your operations with
           AI-powered automation that learns, adapts, and delivers results.
         </motion.p>
 
         <motion.div variants={itemVariants} style={buttonContainerStyle} className="flex-col sm:flex-row">
-          <button style={primaryButtonStyle}>
+          <button style={primaryButtonStyle} className="group hover:scale-105 active:scale-95">
             Start Free Trial
-            <ArrowRight size={18} />
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
-          <button style={secondaryButtonStyle}>
-            <Play size={18} />
+          <button style={secondaryButtonStyle} className="group hover:bg-white/5 active:scale-95">
+            <Play size={18} className="fill-current" />
             Watch Demo
           </button>
         </motion.div>
 
         <motion.div variants={itemVariants} style={statsContainerStyle} className="grid-cols-2 md:grid-cols-4">
           {stats.map((stat, i) => (
-            <div key={i} style={statStyle}>
-              <div style={statValueStyle}>{stat.value}</div>
+            <div key={i} className="text-center group cursor-default">
+              <div style={statValueStyle} className="group-hover:text-cyan-400 transition-colors duration-300">
+                {stat.value}
+              </div>
               <div style={statLabelStyle}>{stat.label}</div>
             </div>
           ))}

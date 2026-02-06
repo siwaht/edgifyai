@@ -4,10 +4,10 @@ import { ArrowRight, Play, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const STATS = [
-  { value: '99.9%', label: 'Uptime SLA' },
-  { value: '50ms', label: 'Avg Latency' },
-  { value: '10M+', label: 'API Calls/Day' },
-  { value: '500+', label: 'Enterprise Clients' },
+  { value: '40+', label: 'Languages Supported' },
+  { value: '85%', label: 'Cost Reduction' },
+  { value: '24/7', label: 'Autonomous Operation' },
+  { value: '3min', label: 'Avg Deploy Time' },
 ];
 
 const containerVariants = {

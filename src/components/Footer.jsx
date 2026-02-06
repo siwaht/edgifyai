@@ -15,7 +15,7 @@ const Footer = () => {
   return (
     <footer style={{
       padding: '48px 20px 32px',
-      background: isDark ? '#020617' : '#ffffff',
+      background: isDark ? '#0d0d14' : '#ffffff',
       borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'}`,
     }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>

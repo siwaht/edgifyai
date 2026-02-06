@@ -93,12 +93,14 @@ const Hero = () => {
           lineHeight: 1.05, letterSpacing: '-0.04em', marginBottom: 28, color: colors.text,
         }}>
           Build the Future with{' '}
-          <span style={{
-            background: `linear-gradient(135deg, ${colors.accent}, #14b8a6, ${colors.accent})`,
-            backgroundSize: '200% auto',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text', animation: 'shimmer 4s linear infinite',
-          }}>Autonomous AI</span>
+          <span
+            className="gradient-text"
+            style={{
+              background: `linear-gradient(135deg, ${colors.accent}, #14b8a6, ${colors.accent})`,
+              backgroundSize: '200% auto',
+              animation: 'shimmer 4s linear infinite',
+            }}
+          >Autonomous AI</span>
         </motion.h1>
 
         <motion.p variants={itemVariants} style={{

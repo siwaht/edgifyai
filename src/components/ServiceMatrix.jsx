@@ -40,7 +40,7 @@ const ServiceCard = ({ service, index }) => {
       className="group"
       style={{
         position: 'relative', padding: 32, borderRadius: 24, overflow: 'hidden',
-        background: isDark ? 'rgba(30, 41, 59, 0.2)' : '#ffffff',
+        background: isDark ? 'rgba(30, 30, 42, 0.5)' : '#ffffff',
         border: `1px solid ${colors.border}`,
         height: '100%', display: 'flex', flexDirection: 'column',
         transition: 'transform 0.3s ease',
@@ -62,7 +62,7 @@ const ServiceCard = ({ service, index }) => {
       <div style={{
         width: 64, height: 64, borderRadius: 16,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+        background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.03)',
         color: service.color, marginBottom: 24,
         border: `1px solid ${colors.border}`,
         boxShadow: `0 0 20px -5px ${service.color}40`,

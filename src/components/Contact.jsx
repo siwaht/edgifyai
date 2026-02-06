@@ -109,7 +109,7 @@ const Contact = () => {
   return (
     <section ref={ref} id="contact" style={{
       padding: 'clamp(60px, 10vw, 120px) 20px',
-      background: isDark ? '#020617' : '#f8fafc',
+      background: isDark ? '#0d0d14' : '#f8fafc',
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -152,11 +152,10 @@ const Contact = () => {
             color: colors.text, marginBottom: 16, lineHeight: 1.15, letterSpacing: '-0.03em',
           }}>
             Ready to transform your{' '}
-            <span style={{
-              background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>Enterprise?</span>
+            <span
+              className="gradient-text"
+              style={{ background: 'linear-gradient(135deg, #06b6d4, #0284c7)' }}
+            >Enterprise?</span>
           </h2>
 
           <p style={{

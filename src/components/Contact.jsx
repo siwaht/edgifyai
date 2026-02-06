@@ -8,6 +8,33 @@ const PROJECT_TYPES = ['Enterprise AI', 'Voice Agents', 'Consulting', 'Custom De
 
 const INITIAL_FORM = { name: '', email: '', type: 'Enterprise AI', message: '' };
 
+const ContactInfo = ({ isDark, colors }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+    {[
+      { icon: Mail, title: 'Email Us', lines: ['hello@agenticos.ai', 'support@agenticos.ai'] },
+      { icon: MapPin, title: 'Headquarters', lines: ['100 Innovation Dr, Suite 500', 'San Francisco, CA 94103'] },
+    ].map(({ icon: Icon, title, lines }) => (
+      <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+        <div style={{
+          padding: 14, borderRadius: 16,
+          background: isDark ? 'rgba(255,255,255,0.04)' : '#ffffff',
+          boxShadow: isDark ? 'none' : '0 4px 20px rgba(0,0,0,0.06)',
+          border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)'}`,
+          flexShrink: 0,
+        }}>
+          <Icon size={22} style={{ color: '#06b6d4' }} />
+        </div>
+        <div>
+          <h4 style={{ fontSize: 16, fontWeight: 600, color: colors.text, marginBottom: 4 }}>{title}</h4>
+          {lines.map((line) => (
+            <p key={line} style={{ fontSize: 14, color: colors.textMuted, lineHeight: 1.6 }}>{line}</p>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 const Contact = () => {
   const { isDark, colors } = useTheme();
   const ref = useRef(null);
@@ -17,6 +44,7 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
 
   const updateField = useCallback((field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -48,150 +76,254 @@ const Contact = () => {
     setTimeout(() => setIsSuccess(false), 5000);
   }, [form]);
 
-  const inputClass = `w-full px-4 py-3.5 rounded-xl outline-none transition-all duration-300 border text-[15px] ${
-    isDark
-      ? 'bg-white/5 text-white border-white/10 focus:border-cyan-500/50 focus:bg-white/10 placeholder:text-white/25'
-      : 'bg-slate-50 text-slate-900 border-slate-200 focus:border-cyan-500/50 focus:bg-white placeholder:text-slate-400'
-  }`;
+  const inputStyle = (field) => ({
+    width: '100%',
+    padding: '14px 16px',
+    borderRadius: 12,
+    border: `1px solid ${focusedField === field
+      ? '#06b6d4'
+      : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)'}`,
+    background: isDark
+      ? (focusedField === field ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)')
+      : (focusedField === field ? '#ffffff' : '#f8fafc'),
+    color: colors.text,
+    fontSize: 15,
+    outline: 'none',
+    transition: 'all 0.2s ease',
+    fontFamily: 'inherit',
+    boxShadow: focusedField === field
+      ? isDark ? '0 0 0 3px rgba(6,182,212,0.15)' : '0 0 0 3px rgba(6,182,212,0.1)'
+      : 'none',
+  });
 
-  const labelClass = `text-xs font-semibold uppercase tracking-wider mb-2 block ${
-    isDark ? 'text-slate-400' : 'text-slate-500'
-  }`;
+  const labelStyle = {
+    display: 'block',
+    fontSize: 12,
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+    color: colors.textMuted,
+    marginBottom: 8,
+  };
 
   return (
-    <section ref={ref} id="contact" className="relative overflow-hidden" style={{
-      padding: '120px 20px',
+    <section ref={ref} id="contact" style={{
+      padding: 'clamp(60px, 10vw, 120px) 20px',
       background: isDark ? '#020617' : '#f8fafc',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full"
-          style={{ background: isDark ? 'rgba(6,182,212,0.05)' : 'rgba(6,182,212,0.03)', filter: 'blur(120px)' }} />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full"
-          style={{ background: isDark ? 'rgba(14,165,233,0.04)' : 'rgba(14,165,233,0.03)', filter: 'blur(120px)' }} />
-      </div>
+      <div style={{
+        position: 'absolute', top: -200, right: -200, width: 600, height: 600,
+        borderRadius: '50%', pointerEvents: 'none',
+        background: isDark ? 'rgba(6,182,212,0.06)' : 'rgba(6,182,212,0.04)',
+        filter: 'blur(120px)',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: -200, left: -200, width: 500, height: 500,
+        borderRadius: '50%', pointerEvents: 'none',
+        background: isDark ? 'rgba(14,165,233,0.05)' : 'rgba(14,165,233,0.03)',
+        filter: 'blur(120px)',
+      }} />
 
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 relative z-10">
+      <div style={{
+        maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1,
+        display: 'grid', gridTemplateColumns: '1fr', gap: 48,
+      }} className="contact-grid">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
         >
-          <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase mb-6 ${
-            isDark ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'bg-cyan-100/50 text-cyan-700 border border-cyan-200'
-          }`}>
-            <MessageSquare size={14} />
-            Get in Touch
-          </span>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '8px 16px', borderRadius: 100, marginBottom: 24,
+            background: isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.08)',
+            border: `1px solid ${isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.2)'}`,
+          }}>
+            <MessageSquare size={14} style={{ color: '#06b6d4' }} />
+            <span style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: isDark ? '#22d3ee' : '#0891b2' }}>
+              Get in Touch
+            </span>
+          </div>
 
-          <h2 className={`text-4xl md:text-5xl font-bold mb-6 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h2 style={{
+            fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 700,
+            color: colors.text, marginBottom: 16, lineHeight: 1.15, letterSpacing: '-0.03em',
+          }}>
             Ready to transform your{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-sky-600">Enterprise?</span>
+            <span style={{
+              background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>Enterprise?</span>
           </h2>
 
-          <p className={`text-lg leading-relaxed mb-12 max-w-lg ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p style={{
+            fontSize: 'clamp(15px, 2vw, 17px)', lineHeight: 1.7,
+            color: colors.textSecondary, maxWidth: 520, marginBottom: 40,
+          }}>
             Book a consultation with our AI architects. We'll analyze your workflows and propose a custom automation strategy.
           </p>
 
-          <div className="space-y-8">
-            {[
-              { icon: Mail, title: 'Email Us', lines: ['hello@agenticos.ai', 'support@agenticos.ai'] },
-              { icon: MapPin, title: 'Headquarters', lines: ['100 Innovation Dr, Suite 500', 'San Francisco, CA 94103'] },
-            ].map(({ icon: Icon, title, lines }) => (
-              <div key={title} className="flex items-start gap-4">
-                <div className={`p-4 rounded-2xl ${isDark ? 'bg-white/5' : 'bg-white shadow-lg shadow-slate-200/50'}`}>
-                  <Icon className="text-cyan-500" size={24} />
-                </div>
-                <div>
-                  <h4 className={`text-lg font-semibold mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>{title}</h4>
-                  {lines.map((line) => (
-                    <p key={line} className="text-slate-500 text-[15px]">{line}</p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <ContactInfo isDark={isDark} colors={colors} />
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className={`rounded-3xl p-8 md:p-10 relative overflow-hidden backdrop-blur-xl border ${
-            isDark ? 'bg-white/[0.02] border-white/10' : 'bg-white/80 border-slate-200 shadow-2xl shadow-slate-200/50'
-          }`}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.15 }}
         >
-          <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none -z-10"
-            style={{ background: isDark ? 'rgba(6,182,212,0.1)' : 'rgba(6,182,212,0.05)', filter: 'blur(80px)' }} />
+          <div style={{
+            borderRadius: 24, padding: 'clamp(24px, 4vw, 40px)',
+            background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.9)',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+            backdropFilter: 'blur(20px)',
+            boxShadow: isDark ? 'none' : '0 20px 60px rgba(0,0,0,0.06)',
+            position: 'relative', overflow: 'hidden',
+          }}>
+            <div style={{
+              position: 'absolute', top: -60, right: -60, width: 200, height: 200,
+              borderRadius: '50%', pointerEvents: 'none',
+              background: isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.04)',
+              filter: 'blur(60px)',
+            }} />
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className={labelClass}>Your Name</label>
-                <input type="text" required value={form.name}
-                  onChange={(e) => updateField('name', e.target.value)}
-                  className={inputClass} placeholder="John Doe" />
+            <form onSubmit={handleSubmit} style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }} className="form-name-email">
+                <div>
+                  <label style={labelStyle}>Your Name</label>
+                  <input
+                    type="text" required value={form.name}
+                    onChange={(e) => updateField('name', e.target.value)}
+                    onFocus={() => setFocusedField('name')}
+                    onBlur={() => setFocusedField(null)}
+                    style={inputStyle('name')}
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Email Address</label>
+                  <input
+                    type="email" required value={form.email}
+                    onChange={(e) => updateField('email', e.target.value)}
+                    onFocus={() => setFocusedField('email')}
+                    onBlur={() => setFocusedField(null)}
+                    style={inputStyle('email')}
+                    placeholder="john@company.com"
+                  />
+                </div>
               </div>
-              <div>
-                <label className={labelClass}>Email Address</label>
-                <input type="email" required value={form.email}
-                  onChange={(e) => updateField('email', e.target.value)}
-                  className={inputClass} placeholder="john@company.com" />
+
+              <div style={{ marginBottom: 20 }}>
+                <label style={labelStyle}>Project Type</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }} className="form-project-types">
+                  {PROJECT_TYPES.map((type) => {
+                    const isActive = form.type === type;
+                    return (
+                      <button key={type} type="button"
+                        onClick={() => updateField('type', type)}
+                        style={{
+                          padding: '10px 12px', borderRadius: 10, fontSize: 13, fontWeight: 500,
+                          cursor: 'pointer', transition: 'all 0.2s ease',
+                          border: `1px solid ${isActive
+                            ? isDark ? 'rgba(6,182,212,0.3)' : 'rgba(6,182,212,0.3)'
+                            : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'}`,
+                          background: isActive
+                            ? isDark ? 'rgba(6,182,212,0.12)' : 'rgba(6,182,212,0.08)'
+                            : isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc',
+                          color: isActive
+                            ? isDark ? '#22d3ee' : '#0891b2'
+                            : colors.textSecondary,
+                        }}
+                      >{type}</button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className={labelClass}>Project Type</label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {PROJECT_TYPES.map((type) => (
-                  <button key={type} type="button"
-                    onClick={() => updateField('type', type)}
-                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 border cursor-pointer ${
-                      form.type === type
-                        ? isDark ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30' : 'bg-cyan-100 text-cyan-700 border-cyan-200'
-                        : isDark ? 'bg-white/5 text-slate-400 border-transparent hover:bg-white/10' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >{type}</button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className={labelClass}>Message</label>
-              <textarea rows={4} required value={form.message}
-                onChange={(e) => updateField('message', e.target.value)}
-                className={`${inputClass} resize-none`}
-                placeholder="Tell us about your project..." />
-            </div>
-
-            {error && (
-              <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                <AlertCircle size={16} />
-                {error}
-              </div>
-            )}
-
-            <button type="submit" disabled={isSubmitting || isSuccess}
-              className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer group border-none ${
-                isSuccess
-                  ? 'bg-emerald-500 text-white cursor-default'
-                  : 'bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-400 hover:to-sky-500 text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40'
-              }`}
-            >
-              {isSubmitting ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+              <div style={{ marginBottom: 24 }}>
+                <label style={labelStyle}>Message</label>
+                <textarea
+                  rows={4} required value={form.message}
+                  onChange={(e) => updateField('message', e.target.value)}
+                  onFocus={() => setFocusedField('message')}
+                  onBlur={() => setFocusedField(null)}
+                  style={{ ...inputStyle('message'), resize: 'none' }}
+                  placeholder="Tell us about your project..."
                 />
-              ) : isSuccess ? (
-                <><CheckCircle size={20} /> Message Sent!</>
-              ) : (
-                <>Send Message <Send size={18} className="group-hover:translate-x-1 transition-transform" /></>
+              </div>
+
+              {error && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '12px 16px', borderRadius: 12, marginBottom: 20,
+                  background: 'rgba(239,68,68,0.08)',
+                  border: '1px solid rgba(239,68,68,0.15)',
+                  color: '#f87171', fontSize: 14,
+                }}>
+                  <AlertCircle size={16} />
+                  {error}
+                </div>
               )}
-            </button>
-          </form>
+
+              <button type="submit" disabled={isSubmitting || isSuccess}
+                style={{
+                  width: '100%', padding: '16px 24px', borderRadius: 14,
+                  border: 'none', cursor: isSubmitting ? 'wait' : 'pointer',
+                  fontSize: 16, fontWeight: 600,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                  background: isSuccess
+                    ? '#10b981'
+                    : 'linear-gradient(135deg, #06b6d4, #0284c7)',
+                  color: '#ffffff',
+                  boxShadow: isSuccess ? 'none' : '0 8px 30px rgba(6,182,212,0.3)',
+                  transition: 'all 0.3s ease',
+                  opacity: isSubmitting ? 0.7 : 1,
+                }}
+              >
+                {isSubmitting ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    style={{
+                      width: 20, height: 20,
+                      border: '2px solid rgba(255,255,255,0.3)',
+                      borderTopColor: '#ffffff',
+                      borderRadius: '50%',
+                    }}
+                  />
+                ) : isSuccess ? (
+                  <><CheckCircle size={20} /> Message Sent!</>
+                ) : (
+                  <><Send size={18} /> Send Message</>
+                )}
+              </button>
+            </form>
+          </div>
         </motion.div>
       </div>
+
+      <style>{`
+        @media (min-width: 768px) {
+          .contact-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 64px !important;
+            align-items: start;
+          }
+        }
+        @media (max-width: 600px) {
+          .form-name-email {
+            grid-template-columns: 1fr !important;
+          }
+          .form-project-types {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+        input::placeholder, textarea::placeholder {
+          color: ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.3)'};
+        }
+      `}</style>
     </section>
   );
 };

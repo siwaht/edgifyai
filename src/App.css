@@ -1,14 +1,1 @@
-/* App-specific styles - most styles are now in index.css with Tailwind */
-
-/* Additional utility classes if needed */
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
-}
+/* Intentionally empty - all styles in index.css and inline */

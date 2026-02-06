@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Mic, MessageSquare, User, Video, Film, ArrowUpRight } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const services = [
+const SERVICES = [
   { icon: Mic, title: 'Voice Agents', description: 'Natural voice interactions powered by advanced speech recognition.', color: '#06b6d4' },
   { icon: MessageSquare, title: 'Chat Intelligence', description: 'Omnichannel messaging with context-aware responses.', color: '#8b5cf6' },
   { icon: User, title: 'Digital Avatars', description: 'Photorealistic AI representatives for engagement.', color: '#f59e0b' },
@@ -11,119 +11,76 @@ const services = [
   { icon: Film, title: 'Post-Production', description: 'Automated editing and optimization for media.', color: '#10b981' },
 ];
 
-const ServiceCard = ({ service, index, isDark }) => {
+const ServiceCard = ({ service, index }) => {
+  const { isDark, colors } = useTheme();
   const Icon = service.icon;
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+  const cardRef = useRef(null);
+  const [spotlight, setSpotlight] = useState({ x: 0, y: 0, opacity: 0 });
 
-  const handleMouseMove = (e) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
+  const handleMouseMove = useCallback((e) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setSpotlight({ x: e.clientX - rect.left, y: e.clientY - rect.top, opacity: 1 });
+  }, []);
 
-  const handleFocus = () => {
-    setOpacity(1);
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
-    setOpacity(0);
-    setIsFocused(false);
-  };
-
-  const handleMouseEnter = () => setOpacity(1);
-  const handleMouseLeave = () => setOpacity(0);
-
-  const ref = useRef(null);
-
-  const cardStyle = {
-    position: 'relative',
-    padding: 32, // Increased padding
-    borderRadius: 24, // More rounded
-    background: isDark ? 'rgba(30, 41, 59, 0.2)' : '#ffffff', // Lighter bg for obsidian theme contrast or white
-    border: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-    overflow: 'hidden',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    transition: 'transform 0.3s ease',
-  };
-
-  const iconContainerStyle = {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
-    color: service.color,
-    marginBottom: 24,
-    border: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-    boxShadow: `0 0 20px -5px ${service.color}40`, // Add colored glow
-  };
+  const handleMouseLeave = useCallback(() => {
+    setSpotlight((prev) => ({ ...prev, opacity: 0 }));
+  }, []);
 
   return (
     <motion.div
-      ref={ref}
+      ref={cardRef}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -8 }}
       onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={cardStyle}
       className="group"
+      style={{
+        position: 'relative', padding: 32, borderRadius: 24, overflow: 'hidden',
+        background: isDark ? 'rgba(30, 41, 59, 0.2)' : '#ffffff',
+        border: `1px solid ${colors.border}`,
+        height: '100%', display: 'flex', flexDirection: 'column',
+        transition: 'transform 0.3s ease',
+      }}
     >
-      {/* Spotlight Effect */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'}, transparent 40%)`,
-          transition: 'opacity 0.2s',
-          pointerEvents: 'none',
-        }}
-      />
+      {/* Spotlight effect */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: spotlight.opacity,
+        background: `radial-gradient(600px circle at ${spotlight.x}px ${spotlight.y}px, ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'}, transparent 40%)`,
+        transition: 'opacity 0.2s', pointerEvents: 'none',
+      }} />
+      {/* Border glow */}
+      <div style={{
+        position: 'absolute', inset: -1, opacity: spotlight.opacity,
+        background: `radial-gradient(400px circle at ${spotlight.x}px ${spotlight.y}px, ${service.color}40, transparent 40%)`,
+        transition: 'opacity 0.2s', borderRadius: 'inherit', zIndex: -1,
+      }} />
 
-      {/* Border Glow */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: -1,
-          opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, ${service.color}40, transparent 40%)`,
-          transition: 'opacity 0.2s',
-          borderRadius: 'inherit',
-          zIndex: -1,
-        }}
-      />
-
-      <div style={iconContainerStyle}>
+      <div style={{
+        width: 64, height: 64, borderRadius: 16,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+        color: service.color, marginBottom: 24,
+        border: `1px solid ${colors.border}`,
+        boxShadow: `0 0 20px -5px ${service.color}40`,
+      }}>
         <Icon size={28} />
       </div>
-      <div style={{ // Title Style
-        fontSize: 20,
-        fontWeight: 700,
-        color: isDark ? '#f8fafc' : '#0f172a',
-        marginBottom: 12,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+
+      <div style={{
+        fontSize: 20, fontWeight: 700, color: colors.text, marginBottom: 12,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         {service.title}
         <ArrowUpRight size={20} className="opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 text-cyan-400" />
       </div>
-      <p style={{ // Desc Style
-        fontSize: 15,
-        lineHeight: 1.6,
-        color: isDark ? '#94a3b8' : '#64748b',
-        flex: 1,
-      }}>{service.description}</p>
+
+      <p style={{ fontSize: 15, lineHeight: 1.6, color: colors.textSecondary, flex: 1 }}>
+        {service.description}
+      </p>
     </motion.div>
   );
 };
@@ -131,77 +88,34 @@ const ServiceCard = ({ service, index, isDark }) => {
 const ServiceMatrix = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const { isDark } = useTheme();
-
-  const sectionStyle = {
-    padding: '80px 20px',
-    background: isDark ? '#0c0c0f' : '#f4f4f5',
-  };
-
-  const containerStyle = {
-    maxWidth: 1200,
-    margin: '0 auto',
-  };
-
-  const headerStyle = {
-    textAlign: 'center',
-    marginBottom: 56,
-  };
-
-  const badgeStyle = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 8,
-    padding: '8px 16px',
-    fontSize: 12,
-    fontWeight: 600,
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase',
-    borderRadius: 100,
-    background: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(8, 145, 178, 0.1)',
-    color: isDark ? '#06b6d4' : '#0891b2',
-    marginBottom: 20,
-  };
-
-  const titleStyle = {
-    fontSize: 'clamp(28px, 5vw, 44px)',
-    fontWeight: 700,
-    color: isDark ? '#fafafa' : '#09090b',
-    marginBottom: 16,
-  };
-
-  const subtitleStyle = {
-    fontSize: 'clamp(15px, 2vw, 18px)',
-    color: isDark ? '#a1a1aa' : '#52525b',
-    maxWidth: 500,
-    margin: '0 auto',
-  };
-
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: 20,
-  };
+  const { isDark, colors } = useTheme();
 
   return (
-    <section ref={ref} style={sectionStyle}>
-      <div style={containerStyle}>
+    <section ref={ref} style={{ padding: '80px 20px', background: colors.bgAlt }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <motion.div
-          style={headerStyle}
+          style={{ textAlign: 'center', marginBottom: 56 }}
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
-          <span style={badgeStyle}>Services</span>
-          <h2 style={titleStyle}>Complete AI Suite</h2>
-          <p style={subtitleStyle}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '8px 16px', fontSize: 12, fontWeight: 600,
+            letterSpacing: '0.05em', textTransform: 'uppercase', borderRadius: 100,
+            background: colors.accentMuted, color: colors.accent, marginBottom: 20,
+          }}>Services</span>
+          <h2 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
+            Complete AI Suite
+          </h2>
+          <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary, maxWidth: 500, margin: '0 auto' }}>
             Everything you need to build, deploy, and scale intelligent automation.
           </p>
         </motion.div>
 
-        <div style={gridStyle}>
-          {services.map((service, index) => (
-            <ServiceCard key={service.title} service={service} index={index} isDark={isDark} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+          {SERVICES.map((service, i) => (
+            <ServiceCard key={service.title} service={service} index={i} />
           ))}
 
           {/* CTA Card */}
@@ -211,37 +125,25 @@ const ServiceMatrix = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.5 }}
             style={{
-              padding: 28,
-              borderRadius: 20,
+              padding: 28, borderRadius: 24, display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', textAlign: 'center',
               background: isDark
-                ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)'
-                : 'linear-gradient(135deg, rgba(8, 145, 178, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)',
-              border: `1px solid ${isDark ? 'rgba(6, 182, 212, 0.2)' : 'rgba(8, 145, 178, 0.2)'}`,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
+                ? 'linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1))'
+                : 'linear-gradient(135deg, rgba(8,145,178,0.08), rgba(124,58,237,0.08))',
+              border: `1px solid ${isDark ? 'rgba(6,182,212,0.2)' : 'rgba(8,145,178,0.2)'}`,
             }}
           >
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: isDark ? '#fafafa' : '#09090b', marginBottom: 8 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 600, color: colors.text, marginBottom: 8 }}>
               Need something custom?
             </h3>
-            <p style={{ fontSize: 14, color: isDark ? '#a1a1aa' : '#52525b', marginBottom: 20 }}>
+            <p style={{ fontSize: 14, color: colors.textSecondary, marginBottom: 20 }}>
               Let's build your perfect solution.
             </p>
             <button style={{
-              padding: '12px 24px',
-              fontSize: 14,
-              fontWeight: 600,
-              borderRadius: 10,
-              border: `1px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)'}`,
-              background: 'transparent',
-              color: isDark ? '#fafafa' : '#09090b',
-              cursor: 'pointer',
-            }}>
-              Contact Sales
-            </button>
+              padding: '12px 24px', fontSize: 14, fontWeight: 600, borderRadius: 10,
+              border: `1px solid ${colors.borderHover}`, background: 'transparent',
+              color: colors.text, cursor: 'pointer',
+            }}>Contact Sales</button>
           </motion.div>
         </div>
       </div>

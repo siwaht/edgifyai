@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Twitter, Linkedin, Github } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import LegalModal from './LegalModal';
+import Logo from './Logo';
 
 const SOCIAL_LINKS = [
   { icon: Twitter, label: 'Twitter', href: '#' },
@@ -31,18 +32,8 @@ const Footer = () => {
           display: 'flex', flexWrap: 'wrap', alignItems: 'center',
           justifyContent: 'space-between', gap: 24, marginBottom: 32,
         }}>
-          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            textDecoration: 'none',
-          }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10, display: 'flex',
-              alignItems: 'center', justifyContent: 'center',
-              background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
-              color: '#ffffff', fontWeight: 700, fontSize: 16,
-              boxShadow: '0 4px 12px rgba(6,182,212,0.25)',
-            }}>E</div>
-            <span style={{ fontSize: 18, fontWeight: 700, color: colors.text }}>EdgeifyAI</span>
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ textDecoration: 'none' }}>
+            <Logo size={36} />
           </a>
 
           <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 28, alignItems: 'center' }} className="footer-nav">

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import Logo from './Logo';
 
 const NAV_ITEMS = [
   { label: 'Services', href: '#services' },
@@ -50,15 +51,8 @@ const Navbar = () => {
           transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}>
           {/* Logo */}
-          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: colors.text }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 12,
-              background: 'linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fff', fontWeight: 800, fontSize: 20,
-              boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
-            }}>E</div>
-            <span style={{ fontWeight: 700, fontSize: 18 }}>EdgeifyAI</span>
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ textDecoration: 'none' }}>
+            <Logo size={40} />
           </a>
 
           {/* Desktop Nav */}

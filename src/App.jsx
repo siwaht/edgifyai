@@ -8,6 +8,7 @@ import ServiceMatrix from './components/ServiceMatrix';
 import CTA from './components/CTA';
 import NeuralNetworkViz from './components/NeuralNetworkViz';
 import Contact from './components/Contact';
+import Logo from './components/Logo';
 import Footer from './components/Footer';
 import Marquee from './components/Marquee';
 
@@ -49,15 +50,13 @@ const PageLoader = ({ onComplete }) => {
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
       </div>
-      <motion.span
-        className="font-display"
-        style={{ fontSize: 16, fontWeight: 600, letterSpacing: '-0.02em', color: colors.textMuted }}
+      <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
       >
-        EdgeifyAI
-      </motion.span>
+        <Logo size={36} />
+      </motion.div>
     </motion.div>
   );
 };

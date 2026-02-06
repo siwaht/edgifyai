@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import AIAgentsAnimation from './AIAgentsAnimation';
 
 const STATS = [
   { value: '40+', label: 'Languages Supported' },
@@ -136,7 +137,10 @@ const Hero = () => {
           </button>
         </motion.div>
 
-        {/* Stats */}
+        <motion.div variants={itemVariants} style={{ marginTop: 64 }}>
+          <AIAgentsAnimation />
+        </motion.div>
+
         <motion.div variants={itemVariants} className="grid-cols-2 md:grid-cols-4" style={{
           marginTop: 80, paddingTop: 40,
           borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,

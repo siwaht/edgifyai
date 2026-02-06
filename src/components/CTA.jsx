@@ -20,8 +20,10 @@ const CTA = () => {
           style={{
             position: 'relative', padding: 'clamp(40px, 8vw, 80px)',
             borderRadius: 28, textAlign: 'center', overflow: 'hidden',
-            background: colors.bgCard,
-            border: `1px solid ${colors.border}`,
+            background: isDark ? 'rgba(28, 28, 36, 0.65)' : colors.bgCard,
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : colors.border}`,
+            backdropFilter: 'blur(12px)',
+            boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.3)' : 'none',
           }}
         >
           {/* Background glows */}
@@ -60,7 +62,9 @@ const CTA = () => {
                 display: 'inline-flex', alignItems: 'center', gap: 10,
                 padding: '16px 32px', fontSize: 16, fontWeight: 600, borderRadius: 100,
                 border: 'none', cursor: 'pointer',
-                background: colors.text, color: colors.bg,
+                background: isDark ? 'linear-gradient(135deg, #06b6d4, #0891b2)' : colors.text,
+                color: isDark ? '#ffffff' : colors.bg,
+                boxShadow: isDark ? '0 8px 30px rgba(6,182,212,0.25)' : '0 8px 20px rgba(0,0,0,0.12)',
                 width: '100%', maxWidth: 220, justifyContent: 'center',
               }}>
                 Start Free Trial <ArrowRight size={18} />

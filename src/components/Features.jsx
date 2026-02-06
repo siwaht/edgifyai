@@ -27,16 +27,17 @@ const FeatureCard = ({ feature, index }) => {
         padding: 28, borderRadius: 20,
         background: colors.bgCard,
         border: `1px solid ${colors.border}`,
+        backdropFilter: 'blur(12px)',
         transition: 'all 0.3s ease',
-        '--card-hover-shadow': colors.bg === '#09090b'
-          ? '0 16px 32px rgba(0,0,0,0.2)'
+        '--card-hover-shadow': colors.bg === '#0a0a0f'
+          ? '0 16px 40px rgba(0,0,0,0.35)'
           : '0 16px 32px rgba(0,0,0,0.08)',
       }}
     >
       <div style={{
         width: 52, height: 52, borderRadius: 14,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: `${feature.accent}14`, color: feature.accent, marginBottom: 20,
+        background: `${feature.accent}1a`, color: feature.accent, marginBottom: 20,
       }}>
         <Icon size={24} strokeWidth={1.8} />
       </div>

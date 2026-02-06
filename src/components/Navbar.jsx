@@ -19,7 +19,7 @@ const Navbar = () => {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const navBg = scrolled
-    ? isDark ? 'rgba(2, 6, 23, 0.6)' : 'rgba(255, 255, 255, 0.7)'
+    ? isDark ? 'rgba(10, 10, 15, 0.75)' : 'rgba(255, 255, 255, 0.7)'
     : 'transparent';
 
   const navBorder = scrolled

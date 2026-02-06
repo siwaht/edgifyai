@@ -78,8 +78,8 @@ const Hero = () => {
             display: 'inline-flex', alignItems: 'center', gap: 8,
             padding: '8px 20px', fontSize: 13, fontWeight: 500,
             borderRadius: 100, marginBottom: 32,
-            background: isDark ? 'rgba(6,182,212,0.06)' : 'rgba(6,182,212,0.06)',
-            border: `1px solid ${isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.15)'}`,
+            background: isDark ? 'rgba(6,182,212,0.1)' : 'rgba(6,182,212,0.06)',
+            border: `1px solid ${isDark ? 'rgba(6,182,212,0.2)' : 'rgba(6,182,212,0.15)'}`,
             color: isDark ? '#22d3ee' : '#0891b2',
             backdropFilter: 'blur(12px)',
           }}>
@@ -130,8 +130,8 @@ const Hero = () => {
           <button className="group hover:scale-[1.03] active:scale-95 transition-all duration-200" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,
             padding: '18px 36px', fontSize: 16, fontWeight: 600, borderRadius: 100,
-            border: `1px solid ${colors.border}`, cursor: 'pointer',
-            background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : colors.border}`, cursor: 'pointer',
+            background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
             color: colors.text, backdropFilter: 'blur(10px)',
             width: '100%', maxWidth: 240, justifyContent: 'center',
           }}>

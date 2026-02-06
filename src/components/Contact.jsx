@@ -17,9 +17,9 @@ const ContactInfo = ({ isDark, colors }) => (
       <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
         <div style={{
           padding: 14, borderRadius: 16,
-          background: isDark ? 'rgba(255,255,255,0.04)' : '#ffffff',
-          boxShadow: isDark ? 'none' : '0 4px 20px rgba(0,0,0,0.06)',
-          border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)'}`,
+          background: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
+          boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.2)' : '0 4px 20px rgba(0,0,0,0.06)',
+          border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'}`,
           flexShrink: 0,
         }}>
           <Icon size={22} style={{ color: '#06b6d4' }} />
@@ -84,7 +84,7 @@ const Contact = () => {
       ? '#06b6d4'
       : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)'}`,
     background: isDark
-      ? (focusedField === field ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)')
+      ? (focusedField === field ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.05)')
       : (focusedField === field ? '#ffffff' : '#f8fafc'),
     color: colors.text,
     fontSize: 15,
@@ -175,10 +175,10 @@ const Contact = () => {
         >
           <div style={{
             borderRadius: 24, padding: 'clamp(24px, 4vw, 40px)',
-            background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.9)',
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+            background: isDark ? 'rgba(28, 28, 36, 0.6)' : 'rgba(255,255,255,0.9)',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}`,
             backdropFilter: 'blur(20px)',
-            boxShadow: isDark ? 'none' : '0 20px 60px rgba(0,0,0,0.06)',
+            boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.3)' : '0 20px 60px rgba(0,0,0,0.06)',
             position: 'relative', overflow: 'hidden',
           }}>
             <div style={{
@@ -235,10 +235,10 @@ const Contact = () => {
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                           border: `1px solid ${isActive
                             ? isDark ? 'rgba(6,182,212,0.3)' : 'rgba(6,182,212,0.3)'
-                            : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'}`,
+                            : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
                           background: isActive
-                            ? isDark ? 'rgba(6,182,212,0.12)' : 'rgba(6,182,212,0.08)'
-                            : isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc',
+                            ? isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.08)'
+                            : isDark ? 'rgba(255,255,255,0.05)' : '#f8fafc',
                           color: isActive
                             ? isDark ? '#22d3ee' : '#0891b2'
                             : colors.textSecondary,

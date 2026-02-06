@@ -40,8 +40,9 @@ const ServiceCard = ({ service, index }) => {
       className="group"
       style={{
         position: 'relative', padding: 32, borderRadius: 24, overflow: 'hidden',
-        background: isDark ? 'rgba(30, 30, 42, 0.5)' : '#ffffff',
-        border: `1px solid ${colors.border}`,
+        background: isDark ? 'rgba(28, 28, 36, 0.55)' : '#ffffff',
+        border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : colors.border}`,
+        backdropFilter: 'blur(12px)',
         height: '100%', display: 'flex', flexDirection: 'column',
         transition: 'transform 0.3s ease',
       }}

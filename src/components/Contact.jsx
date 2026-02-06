@@ -1,18 +1,18 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Send, CheckCircle, MapPin, Mail, MessageSquare, AlertCircle } from 'lucide-react';
+import { Send, CheckCircle, Clock, Mail, MessageSquare, AlertCircle, Check } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { supabase } from '../lib/supabase';
 
 const PROJECT_TYPES = ['Enterprise AI', 'Voice Agents', 'Consulting', 'Custom Dev'];
 
-const INITIAL_FORM = { name: '', email: '', type: 'Enterprise AI', message: '' };
+const INITIAL_FORM = { name: '', email: '', types: [], message: '' };
 
 const ContactInfo = ({ isDark, colors }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
     {[
       { icon: Mail, title: 'Email Us', lines: ['hello@agenticos.ai', 'support@agenticos.ai'] },
-      { icon: MapPin, title: 'Headquarters', lines: ['100 Innovation Dr, Suite 500', 'San Francisco, CA 94103'] },
+      { icon: Clock, title: 'Response Time', lines: ['We typically respond within 24 hours', 'Mon - Fri, 9am - 6pm PST'] },
     ].map(({ icon: Icon, title, lines }) => (
       <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
         <div style={{
@@ -60,7 +60,7 @@ const Contact = () => {
       .insert({
         name: form.name.trim(),
         email: form.email.trim(),
-        project_type: form.type,
+        project_type: form.types.join(', '),
         message: form.message.trim(),
       });
 
@@ -216,16 +216,24 @@ const Contact = () => {
               </div>
 
               <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle}>Project Type</label>
+                <label style={labelStyle}>Services Needed <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(select all that apply)</span></label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }} className="form-project-types">
                   {PROJECT_TYPES.map((type) => {
-                    const isActive = form.type === type;
+                    const isActive = form.types.includes(type);
                     return (
                       <button key={type} type="button"
-                        onClick={() => updateField('type', type)}
+                        onClick={() => {
+                          setForm((prev) => ({
+                            ...prev,
+                            types: isActive
+                              ? prev.types.filter((t) => t !== type)
+                              : [...prev.types, type],
+                          }));
+                        }}
                         style={{
                           padding: '10px 12px', borderRadius: 10, fontSize: 13, fontWeight: 500,
                           cursor: 'pointer', transition: 'all 0.2s ease',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                           border: `1px solid ${isActive
                             ? isDark ? 'rgba(6,182,212,0.3)' : 'rgba(6,182,212,0.3)'
                             : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'}`,
@@ -236,7 +244,10 @@ const Contact = () => {
                             ? isDark ? '#22d3ee' : '#0891b2'
                             : colors.textSecondary,
                         }}
-                      >{type}</button>
+                      >
+                        {isActive && <Check size={14} strokeWidth={2.5} />}
+                        {type}
+                      </button>
                     );
                   })}
                 </div>

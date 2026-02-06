@@ -20,16 +20,18 @@ const CTA = () => {
           style={{
             position: 'relative', padding: 'clamp(40px, 8vw, 80px)',
             borderRadius: 28, textAlign: 'center', overflow: 'hidden',
-            background: colors.bgCard,
-            border: `1px solid ${colors.border}`,
+            background: isDark ? 'rgba(28, 28, 36, 0.65)' : colors.bgCard,
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : colors.border}`,
+            backdropFilter: 'blur(12px)',
+            boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.3)' : 'none',
           }}
         >
           {/* Background glows */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0,
             background: isDark
-              ? 'radial-gradient(circle at 50% -20%, rgba(6,182,212,0.15), transparent 70%), radial-gradient(circle at 50% 120%, rgba(124,58,237,0.15), transparent 70%)'
-              : 'radial-gradient(circle at 50% -20%, rgba(6,182,212,0.1), transparent 70%), radial-gradient(circle at 50% 120%, rgba(124,58,237,0.1), transparent 70%)',
+              ? 'radial-gradient(circle at 50% -20%, rgba(6,182,212,0.15), transparent 70%), radial-gradient(circle at 50% 120%, rgba(20,184,166,0.12), transparent 70%)'
+              : 'radial-gradient(circle at 50% -20%, rgba(8,145,178,0.1), transparent 70%), radial-gradient(circle at 50% 120%, rgba(20,184,166,0.08), transparent 70%)',
           }} />
           <div
             className="absolute top-[-50%] left-[-20%] w-[600px] h-[600px] rounded-full animate-float"
@@ -37,11 +39,11 @@ const CTA = () => {
           />
           <div
             className="absolute bottom-[-50%] right-[-20%] w-[600px] h-[600px] rounded-full animate-float"
-            style={{ background: isDark ? 'rgba(139,92,246,0.1)' : 'rgba(139,92,246,0.06)', filter: 'blur(100px)', animationDelay: '-2s' }}
+            style={{ background: isDark ? 'rgba(20,184,166,0.1)' : 'rgba(20,184,166,0.06)', filter: 'blur(100px)', animationDelay: '-2s' }}
           />
 
           <div style={{ position: 'relative', zIndex: 10 }}>
-            <h2 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
+            <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
               Ready to Get Started?
             </h2>
             <p style={{
@@ -60,7 +62,9 @@ const CTA = () => {
                 display: 'inline-flex', alignItems: 'center', gap: 10,
                 padding: '16px 32px', fontSize: 16, fontWeight: 600, borderRadius: 100,
                 border: 'none', cursor: 'pointer',
-                background: colors.text, color: colors.bg,
+                background: isDark ? 'linear-gradient(135deg, #06b6d4, #0891b2)' : colors.text,
+                color: isDark ? '#ffffff' : colors.bg,
+                boxShadow: isDark ? '0 8px 30px rgba(6,182,212,0.25)' : '0 8px 20px rgba(0,0,0,0.12)',
                 width: '100%', maxWidth: 220, justifyContent: 'center',
               }}>
                 Get in Touch <ArrowRight size={18} />

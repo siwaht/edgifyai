@@ -19,7 +19,7 @@ const Navbar = () => {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const navBg = scrolled
-    ? isDark ? 'rgba(2, 6, 23, 0.6)' : 'rgba(255, 255, 255, 0.7)'
+    ? isDark ? 'rgba(10, 10, 15, 0.75)' : 'rgba(255, 255, 255, 0.7)'
     : 'transparent';
 
   const navBorder = scrolled
@@ -49,10 +49,10 @@ const Navbar = () => {
           <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: colors.text }}>
             <div style={{
               width: 40, height: 40, borderRadius: 12,
-              background: 'linear-gradient(135deg, #00FFFF 0%, #7c3aed 100%)',
+              background: 'linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#000', fontWeight: 800, fontSize: 20,
-              boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)',
+              color: '#fff', fontWeight: 800, fontSize: 20,
+              boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
             }}>A</div>
             <span style={{ fontWeight: 700, fontSize: 18 }}>Agenticos</span>
           </a>

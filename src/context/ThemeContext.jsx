@@ -15,35 +15,42 @@ const getInitialTheme = () => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
 };
 
-// Shared color tokens derived from theme state
 const darkColors = {
-  bg: '#09090b',
-  bgAlt: '#0c0c0f',
-  bgCard: '#18181b',
-  text: '#fafafa',
+  bg: '#0a0a0f',
+  bgAlt: '#111118',
+  bgCard: 'rgba(28, 28, 36, 0.65)',
+  bgCardSolid: '#1c1c24',
+  text: '#f4f4f5',
   textSecondary: '#a1a1aa',
   textMuted: '#71717a',
   border: 'rgba(255,255,255,0.08)',
-  borderHover: 'rgba(255,255,255,0.15)',
-  accent: '#06b6d4',
-  accentMuted: 'rgba(6, 182, 212, 0.15)',
-  purple: '#8b5cf6',
-  purpleMuted: 'rgba(139, 92, 246, 0.12)',
+  borderHover: 'rgba(255,255,255,0.16)',
+  accent: '#22d3ee',
+  accentLight: '#67e8f9',
+  accentMuted: 'rgba(34, 211, 238, 0.1)',
+  warm: '#f59e0b',
+  warmMuted: 'rgba(245, 158, 11, 0.12)',
+  success: '#10b981',
+  successMuted: 'rgba(16, 185, 129, 0.12)',
 };
 
 const lightColors = {
   bg: '#ffffff',
-  bgAlt: '#f4f4f5',
-  bgCard: '#ffffff',
+  bgAlt: '#f8fafc',
+  bgCard: 'rgba(255, 255, 255, 0.8)',
+  bgCardSolid: '#ffffff',
   text: '#09090b',
   textSecondary: '#52525b',
   textMuted: '#a1a1aa',
-  border: 'rgba(0,0,0,0.08)',
-  borderHover: 'rgba(0,0,0,0.15)',
+  border: 'rgba(0,0,0,0.06)',
+  borderHover: 'rgba(0,0,0,0.12)',
   accent: '#0891b2',
-  accentMuted: 'rgba(8, 145, 178, 0.1)',
-  purple: '#7c3aed',
-  purpleMuted: 'rgba(124, 58, 237, 0.08)',
+  accentLight: '#06b6d4',
+  accentMuted: 'rgba(8, 145, 178, 0.08)',
+  warm: '#d97706',
+  warmMuted: 'rgba(217, 119, 6, 0.08)',
+  success: '#059669',
+  successMuted: 'rgba(5, 150, 105, 0.08)',
 };
 
 export const ThemeProvider = ({ children }) => {
@@ -56,7 +63,6 @@ export const ThemeProvider = ({ children }) => {
     root.classList.toggle('light', !isDark);
   }, [isDark]);
 
-  // Listen for system theme changes
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e) => {

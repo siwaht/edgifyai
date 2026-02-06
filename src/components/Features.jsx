@@ -4,12 +4,12 @@ import { Network, Shield, Cpu, Globe, Zap, Lock } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const FEATURES = [
-  { icon: Network, title: 'Neural Orchestration', description: 'Self-organizing agent swarms that adapt to workload spikes in real-time.' },
-  { icon: Shield, title: 'Enterprise Security', description: 'SOC2 Type II compliant with end-to-end encryption and audit logging.' },
-  { icon: Globe, title: 'Global Edge Network', description: '200+ edge locations ensuring sub-50ms latency worldwide.' },
-  { icon: Cpu, title: 'Hyper-Scale Compute', description: 'Dedicated GPU clusters optimized for transformer inference.' },
-  { icon: Zap, title: 'Real-Time Processing', description: 'Stream processing with instant response times for critical operations.' },
-  { icon: Lock, title: 'Data Privacy', description: 'Your data never leaves your environment. Full GDPR compliance.' },
+  { icon: Network, title: 'Neural Orchestration', description: 'Self-organizing agent swarms that adapt to workload spikes in real-time.', accent: '#06b6d4' },
+  { icon: Shield, title: 'Enterprise Security', description: 'SOC2 Type II compliant with end-to-end encryption and audit logging.', accent: '#10b981' },
+  { icon: Globe, title: 'Global Edge Network', description: '200+ edge locations ensuring sub-50ms latency worldwide.', accent: '#14b8a6' },
+  { icon: Cpu, title: 'Hyper-Scale Compute', description: 'Dedicated GPU clusters optimized for transformer inference.', accent: '#0891b2' },
+  { icon: Zap, title: 'Real-Time Processing', description: 'Stream processing with instant response times for critical operations.', accent: '#f59e0b' },
+  { icon: Lock, title: 'Data Privacy', description: 'Your data never leaves your environment. Full GDPR compliance.', accent: '#059669' },
 ];
 
 const FeatureCard = ({ feature, index }) => {
@@ -27,20 +27,21 @@ const FeatureCard = ({ feature, index }) => {
         padding: 28, borderRadius: 20,
         background: colors.bgCard,
         border: `1px solid ${colors.border}`,
+        backdropFilter: 'blur(12px)',
         transition: 'all 0.3s ease',
-        '--card-hover-shadow': colors.bg === '#09090b'
-          ? '0 16px 32px rgba(0,0,0,0.2)'
+        '--card-hover-shadow': colors.bg === '#0a0a0f'
+          ? '0 16px 40px rgba(0,0,0,0.35)'
           : '0 16px 32px rgba(0,0,0,0.08)',
       }}
     >
       <div style={{
         width: 52, height: 52, borderRadius: 14,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: colors.accentMuted, color: colors.accent, marginBottom: 20,
+        background: `${feature.accent}1a`, color: feature.accent, marginBottom: 20,
       }}>
-        <Icon size={24} />
+        <Icon size={24} strokeWidth={1.8} />
       </div>
-      <h3 style={{ fontSize: 18, fontWeight: 600, color: colors.text, marginBottom: 10 }}>
+      <h3 className="font-display" style={{ fontSize: 18, fontWeight: 600, color: colors.text, marginBottom: 10 }}>
         {feature.title}
       </h3>
       <p style={{ fontSize: 14, lineHeight: 1.7, color: colors.textSecondary }}>
@@ -82,7 +83,7 @@ const Features = () => {
             letterSpacing: '0.05em', textTransform: 'uppercase', borderRadius: 100,
             background: colors.accentMuted, color: colors.accent, marginBottom: 20,
           }}>Capabilities</span>
-          <h2 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
+          <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
             Built for Scale
           </h2>
           <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary, lineHeight: 1.7 }}>

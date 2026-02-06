@@ -3,7 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const NAV_ITEMS = ['Services', 'Capabilities', 'How It Works', 'Contact'];
+const NAV_ITEMS = [
+  { label: 'Services', href: '#services' },
+  { label: 'Capabilities', href: '#capabilities' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Contact', href: '#contact' },
+];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -78,7 +83,7 @@ const Navbar = () => {
             }}>
               {isDark ? <Moon size={18} /> : <Sun size={18} />}
             </button>
-            <button style={{
+            <button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} style={{
               padding: '10px 24px', fontSize: 14, fontWeight: 600, borderRadius: 100,
               border: 'none', cursor: 'pointer',
               background: colors.text, color: colors.bg,
@@ -142,7 +147,7 @@ const Navbar = () => {
                 ))}
               </nav>
               <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${colors.border}` }}>
-                <button style={{
+                <button onClick={() => { closeMenu(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} style={{
                   width: '100%', padding: '14px 20px', fontSize: 14, fontWeight: 600,
                   borderRadius: 100, border: 'none', cursor: 'pointer',
                   background: colors.text, color: colors.bg,

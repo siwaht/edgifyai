@@ -114,7 +114,7 @@ const Hero = () => {
           display: 'flex', flexDirection: 'column', gap: 16,
           alignItems: 'center', justifyContent: 'center',
         }}>
-          <button className="group hover:scale-[1.03] active:scale-95 transition-all duration-300" style={{
+          <button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} className="group hover:scale-[1.03] active:scale-95 transition-all duration-300" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,
             padding: '18px 36px', fontSize: 16, fontWeight: 600, borderRadius: 100,
             border: 'none', cursor: 'pointer',
@@ -126,7 +126,7 @@ const Hero = () => {
             Get a Consultation
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
-          <button className="group hover:scale-[1.03] active:scale-95 transition-all duration-200" style={{
+          <button onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })} className="group hover:scale-[1.03] active:scale-95 transition-all duration-200" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,
             padding: '18px 36px', fontSize: 16, fontWeight: 600, borderRadius: 100,
             border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : colors.border}`, cursor: 'pointer',

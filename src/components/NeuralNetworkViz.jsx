@@ -164,7 +164,7 @@ const NeuralNetworkViz = () => {
   const animatedEdges = EDGES.filter((_, i) => i % 3 === 0);
 
   return (
-    <section ref={ref} style={{
+    <section ref={ref} id="how-it-works" style={{
       padding: '80px 20px 40px',
       background: isDark ? '#0d0d14' : '#f8fafc',
       position: 'relative',

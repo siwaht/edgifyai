@@ -93,7 +93,7 @@ const ServiceMatrix = () => {
   const { isDark, colors } = useTheme();
 
   return (
-    <section ref={ref} style={{ padding: '80px 20px', background: colors.bgAlt }}>
+    <section ref={ref} id="services" style={{ padding: '80px 20px', background: colors.bgAlt }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <motion.div
           style={{ textAlign: 'center', marginBottom: 56 }}

@@ -59,7 +59,7 @@ const Features = () => {
   const { isDark, colors } = useTheme();
 
   return (
-    <section ref={ref} style={{
+    <section ref={ref} id="capabilities" style={{
       padding: '80px 20px', background: colors.bg,
       position: 'relative', overflow: 'hidden',
     }}>

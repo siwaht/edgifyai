@@ -57,7 +57,7 @@ const CTA = () => {
               display: 'flex', flexDirection: 'column', gap: 16,
               alignItems: 'center', justifyContent: 'center', marginBottom: 32,
             }}>
-              <button style={{
+              <button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 10,
                 padding: '16px 32px', fontSize: 16, fontWeight: 600, borderRadius: 100,
                 border: 'none', cursor: 'pointer',
@@ -68,7 +68,7 @@ const CTA = () => {
               }}>
                 Get in Touch <ArrowRight size={18} />
               </button>
-              <button style={{
+              <button onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 10,
                 padding: '16px 32px', fontSize: 16, fontWeight: 600, borderRadius: 100,
                 border: `1px solid ${colors.borderHover}`, cursor: 'pointer',

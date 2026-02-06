@@ -146,13 +146,6 @@ const Navbar = () => {
                   }}>{item.label}</a>
                 ))}
               </nav>
-              <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${colors.border}` }}>
-                <button onClick={() => { closeMenu(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} style={{
-                  width: '100%', padding: '14px 20px', fontSize: 14, fontWeight: 600,
-                  borderRadius: 100, border: 'none', cursor: 'pointer',
-                  background: colors.text, color: colors.bg,
-                }}>Contact Us</button>
-              </div>
             </motion.div>
           </>
         )}

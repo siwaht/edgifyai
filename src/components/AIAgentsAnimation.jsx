@@ -1,281 +1,284 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
-const AGENTS = [
-  { id: 'orchestrator', label: 'Orchestrator', x: 300, y: 200, size: 44, isCenter: true },
-  { id: 'data', label: 'Data Agent', x: 120, y: 80, size: 34 },
-  { id: 'code', label: 'Code Agent', x: 480, y: 80, size: 34 },
-  { id: 'analysis', label: 'Analysis', x: 520, y: 260, size: 34 },
-  { id: 'deploy', label: 'Deploy', x: 80, y: 260, size: 34 },
-  { id: 'monitor', label: 'Monitor', x: 180, y: 370, size: 30 },
-  { id: 'optimize', label: 'Optimize', x: 420, y: 370, size: 30 },
-];
+function seededRandom(seed) {
+  let s = seed;
+  return () => {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
 
-const CONNECTIONS = [
-  { from: 'orchestrator', to: 'data', delay: 0 },
-  { from: 'orchestrator', to: 'code', delay: 0.5 },
-  { from: 'orchestrator', to: 'analysis', delay: 1 },
-  { from: 'orchestrator', to: 'deploy', delay: 1.5 },
-  { from: 'orchestrator', to: 'monitor', delay: 2 },
-  { from: 'orchestrator', to: 'optimize', delay: 2.5 },
-  { from: 'data', to: 'analysis', delay: 0.8 },
-  { from: 'code', to: 'deploy', delay: 1.2 },
-  { from: 'monitor', to: 'optimize', delay: 1.8 },
-];
+function generateGraph() {
+  const rng = seededRandom(42);
+  const W = 700;
+  const H = 420;
+  const cx = W / 2;
+  const cy = H / 2;
 
-const getAgent = (id) => AGENTS.find((a) => a.id === id);
+  const clusters = [
+    { x: cx, y: cy, r: 30, count: 5, label: 'Reasoning', tier: 0 },
+    { x: 160, y: 110, r: 60, count: 6, label: 'Retrieval', tier: 1 },
+    { x: 540, y: 100, r: 55, count: 5, label: 'Embedding', tier: 1 },
+    { x: 120, y: 310, r: 50, count: 5, label: 'Memory', tier: 1 },
+    { x: 560, y: 300, r: 55, count: 5, label: 'Inference', tier: 1 },
+    { x: 350, y: 60, r: 45, count: 4, label: 'Tokenizer', tier: 2 },
+    { x: 350, y: 370, r: 45, count: 4, label: 'Output', tier: 2 },
+    { x: 50, y: 200, r: 35, count: 3, label: 'Index', tier: 2 },
+    { x: 650, y: 200, r: 35, count: 3, label: 'Cache', tier: 2 },
+  ];
 
-const DataPacket = ({ fromAgent, toAgent, delay, accent }) => {
-  const dx = toAgent.x - fromAgent.x;
-  const dy = toAgent.y - fromAgent.y;
+  const nodes = [];
+  const edges = [];
+
+  clusters.forEach((cluster, ci) => {
+    const clusterNodes = [];
+    for (let i = 0; i < cluster.count; i++) {
+      const angle = (i / cluster.count) * Math.PI * 2 + rng() * 0.6;
+      const dist = cluster.r * (0.3 + rng() * 0.7);
+      const size = cluster.tier === 0 ? 4 + rng() * 3 : cluster.tier === 1 ? 2.5 + rng() * 2.5 : 1.5 + rng() * 2;
+      const node = {
+        id: nodes.length,
+        x: cluster.x + Math.cos(angle) * dist,
+        y: cluster.y + Math.sin(angle) * dist,
+        size,
+        cluster: ci,
+        tier: cluster.tier,
+      };
+      clusterNodes.push(node);
+      nodes.push(node);
+    }
+
+    for (let i = 0; i < clusterNodes.length; i++) {
+      for (let j = i + 1; j < clusterNodes.length; j++) {
+        if (rng() < 0.55) {
+          edges.push({ from: clusterNodes[i].id, to: clusterNodes[j].id, intra: true });
+        }
+      }
+    }
+  });
+
+  const clusterCenters = clusters.map((c, ci) => {
+    const cNodes = nodes.filter((n) => n.cluster === ci);
+    return { ci, x: cNodes.reduce((s, n) => s + n.x, 0) / cNodes.length, y: cNodes.reduce((s, n) => s + n.y, 0) / cNodes.length };
+  });
+
+  for (let i = 0; i < clusters.length; i++) {
+    for (let j = i + 1; j < clusters.length; j++) {
+      const dx = clusterCenters[i].x - clusterCenters[j].x;
+      const dy = clusterCenters[i].y - clusterCenters[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 350) {
+        const nodesA = nodes.filter((n) => n.cluster === i);
+        const nodesB = nodes.filter((n) => n.cluster === j);
+        const count = dist < 200 ? 2 : 1;
+        for (let k = 0; k < count; k++) {
+          const a = nodesA[Math.floor(rng() * nodesA.length)];
+          const b = nodesB[Math.floor(rng() * nodesB.length)];
+          edges.push({ from: a.id, to: b.id, intra: false });
+        }
+      }
+    }
+  }
+
+  return { nodes, edges, clusters };
+}
+
+const GRAPH = generateGraph();
+
+const SignalPulse = ({ edge, nodes, delay, accent }) => {
+  const from = nodes[edge.from];
+  const to = nodes[edge.to];
+  const mx = (from.x + to.x) / 2 + (Math.random() - 0.5) * 10;
+  const my = (from.y + to.y) / 2 + (Math.random() - 0.5) * 10;
 
   return (
     <motion.circle
-      r={3}
+      r={2}
       fill={accent}
-      filter="url(#packetGlow)"
-      initial={{ cx: fromAgent.x, cy: fromAgent.y, opacity: 0 }}
+      filter="url(#signalGlow)"
+      initial={{ cx: from.x, cy: from.y, opacity: 0 }}
       animate={{
-        cx: [fromAgent.x, fromAgent.x + dx * 0.5, toAgent.x],
-        cy: [fromAgent.y, fromAgent.y + dy * 0.5, toAgent.y],
-        opacity: [0, 1, 1, 0],
+        cx: [from.x, mx, to.x],
+        cy: [from.y, my, to.y],
+        opacity: [0, 0.9, 0.9, 0],
       }}
       transition={{
-        duration: 2.5,
+        duration: 1.8 + Math.random() * 0.8,
         delay,
         repeat: Infinity,
-        repeatDelay: 3,
+        repeatDelay: 4 + Math.random() * 6,
         ease: 'easeInOut',
       }}
     />
   );
 };
 
-const ConnectionLine = ({ from, to, delay, isDark }) => {
-  const fromA = getAgent(from);
-  const toA = getAgent(to);
-  const lineColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-
-  return (
-    <g>
-      <line
-        x1={fromA.x} y1={fromA.y}
-        x2={toA.x} y2={toA.y}
-        stroke={lineColor}
-        strokeWidth={1}
-      />
-      <motion.line
-        x1={fromA.x} y1={fromA.y}
-        x2={toA.x} y2={toA.y}
-        stroke={isDark ? 'rgba(6,182,212,0.3)' : 'rgba(8,145,178,0.3)'}
-        strokeWidth={1.5}
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: [0, 1, 1, 0], opacity: [0, 0.8, 0.8, 0] }}
-        transition={{
-          duration: 3,
-          delay: delay + 0.5,
-          repeat: Infinity,
-          repeatDelay: 2.5,
-          ease: 'easeInOut',
-        }}
-      />
-    </g>
-  );
-};
-
-const AgentNode = ({ agent, isDark, colors }) => {
-  const isCenter = agent.isCenter;
-  const bgFill = isDark
-    ? (isCenter ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.04)')
-    : (isCenter ? 'rgba(8,145,178,0.12)' : 'rgba(0,0,0,0.03)');
-  const borderStroke = isDark
-    ? (isCenter ? 'rgba(6,182,212,0.5)' : 'rgba(255,255,255,0.1)')
-    : (isCenter ? 'rgba(8,145,178,0.4)' : 'rgba(0,0,0,0.1)');
-
-  return (
-    <g>
-      {isCenter && (
-        <motion.circle
-          cx={agent.x} cy={agent.y} r={agent.size + 12}
-          fill="none"
-          stroke={colors.accent}
-          strokeWidth={1}
-          opacity={0.15}
-          animate={{ r: [agent.size + 12, agent.size + 24, agent.size + 12] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      )}
-
-      <motion.circle
-        cx={agent.x} cy={agent.y} r={agent.size}
-        fill={bgFill}
-        stroke={borderStroke}
-        strokeWidth={1}
-        animate={{
-          scale: isCenter ? [1, 1.04, 1] : [1, 1.06, 1],
-        }}
-        transition={{
-          duration: isCenter ? 4 : 3,
-          delay: isCenter ? 0 : Math.random() * 2,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        style={{ transformOrigin: `${agent.x}px ${agent.y}px` }}
-      />
-
-      <motion.circle
-        cx={agent.x} cy={agent.y}
-        r={4}
-        fill={colors.accent}
-        animate={{ opacity: [0.4, 1, 0.4] }}
-        transition={{
-          duration: 2,
-          delay: Math.random() * 1.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-
-      <text
-        x={agent.x}
-        y={agent.y + agent.size + 18}
-        textAnchor="middle"
-        fill={colors.textMuted}
-        fontSize={11}
-        fontWeight={500}
-        fontFamily="inherit"
-      >
-        {agent.label}
-      </text>
-
-      {isCenter && (
-        <text
-          x={agent.x}
-          y={agent.y + agent.size + 32}
-          textAnchor="middle"
-          fill={colors.accent}
-          fontSize={9}
-          fontWeight={600}
-          fontFamily="inherit"
-          letterSpacing="0.08em"
-        >
-          ACTIVE
-        </text>
-      )}
-    </g>
-  );
-};
-
-const StatusIndicator = ({ agent, colors, delay }) => (
-  <motion.g
-    initial={{ opacity: 0 }}
-    animate={{ opacity: [0, 1, 1, 0] }}
-    transition={{ duration: 2, delay, repeat: Infinity, repeatDelay: 4 }}
-  >
-    <rect
-      x={agent.x + agent.size * 0.5}
-      y={agent.y - agent.size * 0.8}
-      width={48}
-      height={20}
-      rx={10}
-      fill={colors.accent}
-      opacity={0.15}
-    />
-    <circle
-      cx={agent.x + agent.size * 0.5 + 10}
-      cy={agent.y - agent.size * 0.8 + 10}
-      r={3}
-      fill="#22c55e"
-    />
-    <text
-      x={agent.x + agent.size * 0.5 + 18}
-      y={agent.y - agent.size * 0.8 + 14}
-      fontSize={8}
-      fontWeight={600}
-      fill={colors.textSecondary}
-      fontFamily="inherit"
-    >
-      Running
-    </text>
-  </motion.g>
-);
-
 const AIAgentsAnimation = () => {
   const { isDark, colors } = useTheme();
 
+  const signalEdges = useMemo(() => {
+    const rng = seededRandom(99);
+    return GRAPH.edges
+      .filter(() => rng() < 0.4)
+      .map((e, i) => ({ ...e, delay: i * 0.3 + rng() * 2 }));
+  }, []);
+
+  const edgeColor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
+  const edgeHighlight = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+  const labelColor = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.18)';
+
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        width: '100%',
-        maxWidth: 600,
-        margin: '0 auto',
-        position: 'relative',
-      }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      style={{ width: '100%', maxWidth: 700, margin: '0 auto', position: 'relative' }}
     >
       <div style={{
-        position: 'absolute', inset: -40, zIndex: 0,
+        position: 'absolute', inset: -60, zIndex: 0,
         background: isDark
-          ? 'radial-gradient(circle at center, rgba(6,182,212,0.06) 0%, transparent 70%)'
-          : 'radial-gradient(circle at center, rgba(8,145,178,0.04) 0%, transparent 70%)',
-        borderRadius: '50%',
-        filter: 'blur(40px)',
+          ? 'radial-gradient(ellipse 60% 50% at center, rgba(6,182,212,0.07) 0%, transparent 70%)'
+          : 'radial-gradient(ellipse 60% 50% at center, rgba(8,145,178,0.05) 0%, transparent 70%)',
+        filter: 'blur(50px)',
       }} />
 
       <svg
-        viewBox="0 0 600 430"
+        viewBox="0 0 700 420"
         fill="none"
         style={{ width: '100%', height: 'auto', position: 'relative', zIndex: 1 }}
       >
         <defs>
-          <filter id="packetGlow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <filter id="signalGlow">
+            <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <filter id="nodeGlow">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <radialGradient id="centerGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor={colors.accent} stopOpacity={isDark ? 0.2 : 0.15} />
+            <stop offset="100%" stopColor={colors.accent} stopOpacity={0} />
+          </radialGradient>
         </defs>
 
-        {CONNECTIONS.map((conn) => (
-          <ConnectionLine
-            key={`${conn.from}-${conn.to}`}
-            from={conn.from}
-            to={conn.to}
-            delay={conn.delay}
-            isDark={isDark}
-          />
-        ))}
+        <circle cx={350} cy={210} r={120} fill="url(#centerGrad)" />
 
-        {CONNECTIONS.map((conn) => (
-          <DataPacket
-            key={`packet-${conn.from}-${conn.to}`}
-            fromAgent={getAgent(conn.from)}
-            toAgent={getAgent(conn.to)}
-            delay={conn.delay + 1}
+        {GRAPH.edges.map((e, i) => {
+          const from = GRAPH.nodes[e.from];
+          const to = GRAPH.nodes[e.to];
+          return (
+            <line
+              key={`e-${i}`}
+              x1={from.x} y1={from.y}
+              x2={to.x} y2={to.y}
+              stroke={e.intra ? edgeHighlight : edgeColor}
+              strokeWidth={e.intra ? 0.8 : 0.5}
+            />
+          );
+        })}
+
+        {signalEdges.map((e, i) => (
+          <SignalPulse
+            key={`sig-${i}`}
+            edge={e}
+            nodes={GRAPH.nodes}
+            delay={e.delay}
             accent={colors.accent}
           />
         ))}
 
-        {AGENTS.map((agent) => (
-          <AgentNode
-            key={agent.id}
-            agent={agent}
-            isDark={isDark}
-            colors={colors}
-          />
+        {GRAPH.nodes.map((node) => {
+          const isCore = node.tier === 0;
+          const isPrimary = node.tier === 1;
+          const fill = isCore
+            ? colors.accent
+            : isPrimary
+              ? (isDark ? 'rgba(6,182,212,0.6)' : 'rgba(8,145,178,0.5)')
+              : (isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)');
+
+          return (
+            <g key={`n-${node.id}`}>
+              {isCore && (
+                <motion.circle
+                  cx={node.x} cy={node.y} r={node.size + 6}
+                  fill={colors.accent}
+                  opacity={0.1}
+                  filter="url(#nodeGlow)"
+                  animate={{ r: [node.size + 6, node.size + 12, node.size + 6], opacity: [0.1, 0.2, 0.1] }}
+                  transition={{ duration: 3 + Math.random(), repeat: Infinity, ease: 'easeInOut' }}
+                />
+              )}
+              <motion.circle
+                cx={node.x} cy={node.y}
+                r={node.size}
+                fill={fill}
+                animate={
+                  isCore
+                    ? { opacity: [0.7, 1, 0.7] }
+                    : isPrimary
+                      ? { opacity: [0.5, 0.8, 0.5] }
+                      : { opacity: [0.3, 0.6, 0.3] }
+                }
+                transition={{
+                  duration: 2 + Math.random() * 2,
+                  delay: Math.random() * 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              />
+            </g>
+          );
+        })}
+
+        {GRAPH.clusters.map((cluster, i) => (
+          <text
+            key={`label-${i}`}
+            x={cluster.x}
+            y={cluster.y + cluster.r + 18}
+            textAnchor="middle"
+            fill={labelColor}
+            fontSize={9}
+            fontWeight={500}
+            fontFamily="inherit"
+            letterSpacing="0.1em"
+            style={{ textTransform: 'uppercase' }}
+          >
+            {cluster.label}
+          </text>
         ))}
 
-        {AGENTS.filter((a) => !a.isCenter).slice(0, 3).map((agent, i) => (
-          <StatusIndicator
-            key={`status-${agent.id}`}
-            agent={agent}
-            colors={colors}
-            delay={i * 2 + 1}
-          />
-        ))}
+        {[0, 1, 2].map((i) => {
+          const activeClusters = [0, 1, 3];
+          const cluster = GRAPH.clusters[activeClusters[i]];
+          return (
+            <motion.circle
+              key={`pulse-${i}`}
+              cx={cluster.x} cy={cluster.y}
+              r={cluster.r * 0.8}
+              fill="none"
+              stroke={colors.accent}
+              strokeWidth={0.5}
+              initial={{ r: 5, opacity: 0.5 }}
+              animate={{ r: [5, cluster.r * 1.2], opacity: [0.4, 0] }}
+              transition={{
+                duration: 3,
+                delay: i * 2.5 + 1,
+                repeat: Infinity,
+                repeatDelay: 5,
+                ease: 'easeOut',
+              }}
+            />
+          );
+        })}
       </svg>
     </motion.div>
   );

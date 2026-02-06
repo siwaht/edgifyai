@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { Twitter, Linkedin, Github } from 'lucide-react';
+import { Linkedin } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import LegalModal from './LegalModal';
 import Logo from './Logo';
 
 const SOCIAL_LINKS = [
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Linkedin, label: 'LinkedIn', href: '#' },
-  { icon: Github, label: 'GitHub', href: '#' },
+  { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/company/edgeifyai' },
 ];
 
 const NAV_LINKS = [
@@ -53,7 +51,7 @@ const Footer = () => {
 
           <div style={{ display: 'flex', gap: 8 }}>
             {SOCIAL_LINKS.map(({ icon: Icon, label, href }) => (
-              <a key={label} href={href} aria-label={label}
+              <a key={label} href={href} aria-label={label} target="_blank" rel="noopener noreferrer"
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   width: 36, height: 36, borderRadius: 10,

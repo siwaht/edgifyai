@@ -47,7 +47,7 @@ We never sell your personal data to third parties.`,
       heading: '5. Data Retention & Deletion',
       body: `• Contact form submissions are retained for 24 months
 • Agent deployment data is retained for the duration of your service agreement
-• You may request deletion of your data at any time by contacting privacy@edgifyai.com
+• You may request deletion of your data at any time by contacting privacy@edgeifyai.com
 • Upon account termination, all associated data is purged within 30 days`,
     },
     {
@@ -62,7 +62,7 @@ We never sell your personal data to third parties.`,
 • Data portability
 • Withdraw consent at any time
 
-Contact privacy@edgifyai.com to exercise these rights.`,
+Contact privacy@edgeifyai.com to exercise these rights.`,
     },
   ],
 };
@@ -73,7 +73,7 @@ const TERMS_CONTENT = {
   sections: [
     {
       heading: '1. Services',
-      body: `EdgifyAI provides AI agent design, development, deployment, and management services. This includes but is not limited to voice agents, chat agents, ambient agents, deep agents, RAG pipelines, MCP integrations, and multi-agent orchestration systems.
+      body: `EdgeifyAI provides AI agent design, development, deployment, and management services. This includes but is not limited to voice agents, chat agents, ambient agents, deep agents, RAG pipelines, MCP integrations, and multi-agent orchestration systems.
 
 By engaging our services, you agree to these terms in full.`,
     },
@@ -89,7 +89,7 @@ By engaging our services, you agree to these terms in full.`,
     {
       heading: '3. Intellectual Property',
       body: `• Custom agents built for you: You own the configuration, prompts, and custom logic we develop for your specific use case
-• Our platform and tools: EdgifyAI retains ownership of proprietary frameworks, libraries, orchestration systems, and base agent architectures
+• Our platform and tools: EdgeifyAI retains ownership of proprietary frameworks, libraries, orchestration systems, and base agent architectures
 • Training data: You retain ownership of all data you provide. We do not claim rights to your data
 • Open-source components: Some components may use open-source licenses, which will be disclosed`,
     },
@@ -98,7 +98,7 @@ By engaging our services, you agree to these terms in full.`,
       body: `• AI agents may produce inaccurate, incomplete, or unexpected outputs. You are responsible for validating agent outputs in production
 • We do not guarantee that agents will be error-free or uninterrupted
 • Agents operating autonomously should have appropriate guardrails and human-in-the-loop mechanisms as recommended
-• EdgifyAI is not liable for decisions made by deployed agents without adequate human oversight`,
+• EdgeifyAI is not liable for decisions made by deployed agents without adequate human oversight`,
     },
     {
       heading: '5. Service Level Agreement',
@@ -116,7 +116,7 @@ By engaging our services, you agree to these terms in full.`,
     },
     {
       heading: '7. Limitation of Liability',
-      body: `To the maximum extent permitted by law, EdgifyAI's total liability for any claim arising from these terms or our services shall not exceed the fees paid by you in the 12 months preceding the claim. We are not liable for indirect, incidental, consequential, or punitive damages.`,
+      body: `To the maximum extent permitted by law, EdgeifyAI's total liability for any claim arising from these terms or our services shall not exceed the fees paid by you in the 12 months preceding the claim. We are not liable for indirect, incidental, consequential, or punitive damages.`,
     },
     {
       heading: '8. Termination',

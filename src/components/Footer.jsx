@@ -42,7 +42,7 @@ const Footer = () => {
               color: '#ffffff', fontWeight: 700, fontSize: 16,
               boxShadow: '0 4px 12px rgba(6,182,212,0.25)',
             }}>E</div>
-            <span style={{ fontSize: 18, fontWeight: 700, color: colors.text }}>EdgifyAI</span>
+            <span style={{ fontSize: 18, fontWeight: 700, color: colors.text }}>EdgeifyAI</span>
           </a>
 
           <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 28, alignItems: 'center' }} className="footer-nav">
@@ -92,7 +92,7 @@ const Footer = () => {
           justifyContent: 'space-between', gap: 16,
         }}>
           <p style={{ fontSize: 13, color: colors.textMuted, margin: 0 }}>
-            &copy; {new Date().getFullYear()} EdgifyAI Inc.
+            &copy; {new Date().getFullYear()} EdgeifyAI Inc.
           </p>
           <div style={{ display: 'flex', gap: 24 }}>
             {[

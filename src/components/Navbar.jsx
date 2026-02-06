@@ -58,7 +58,7 @@ const Navbar = () => {
               color: '#fff', fontWeight: 800, fontSize: 20,
               boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
             }}>E</div>
-            <span style={{ fontWeight: 700, fontSize: 18 }}>EdgifyAI</span>
+            <span style={{ fontWeight: 700, fontSize: 18 }}>EdgeifyAI</span>
           </a>
 
           {/* Desktop Nav */}

@@ -51,7 +51,7 @@ const Navbar = () => {
           transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}>
           {/* Logo */}
-          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: colors.text }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: colors.text }}>
             <div style={{
               width: 40, height: 40, borderRadius: 12,
               background: 'linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%)',
@@ -65,11 +65,11 @@ const Navbar = () => {
           {/* Desktop Nav */}
           <nav className="hidden md:flex" style={{ display: 'none', alignItems: 'center', gap: 4 }}>
             {NAV_ITEMS.map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} style={{
+              <a key={item.label} href={item.href} style={{
                 padding: '10px 16px', fontSize: 14, fontWeight: 500,
                 color: colors.textSecondary, textDecoration: 'none', borderRadius: 8,
                 transition: 'all 0.2s ease',
-              }}>{item}</a>
+              }}>{item.label}</a>
             ))}
           </nav>
 
@@ -140,10 +140,10 @@ const Navbar = () => {
             >
               <nav style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {NAV_ITEMS.map((item) => (
-                  <a key={item} href={`#${item.toLowerCase()}`} onClick={closeMenu} style={{
+                  <a key={item.label} href={item.href} onClick={closeMenu} style={{
                     padding: '14px 16px', fontSize: 16, fontWeight: 500,
                     color: colors.textSecondary, textDecoration: 'none', borderRadius: 10,
-                  }}>{item}</a>
+                  }}>{item.label}</a>
                 ))}
               </nav>
               <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${colors.border}` }}>

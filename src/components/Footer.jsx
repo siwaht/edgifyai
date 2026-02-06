@@ -7,7 +7,12 @@ const SOCIAL_LINKS = [
   { icon: Github, label: 'GitHub', href: '#' },
 ];
 
-const NAV_LINKS = ['Services', 'Capabilities', 'How It Works', 'Contact'];
+const NAV_LINKS = [
+  { label: 'Services', href: '#services' },
+  { label: 'Capabilities', href: '#capabilities' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Contact', href: '#contact' },
+];
 
 const Footer = () => {
   const { isDark, colors } = useTheme();
@@ -23,7 +28,7 @@ const Footer = () => {
           display: 'flex', flexWrap: 'wrap', alignItems: 'center',
           justifyContent: 'space-between', gap: 24, marginBottom: 32,
         }}>
-          <a href="#" style={{
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{
             display: 'flex', alignItems: 'center', gap: 10,
             textDecoration: 'none',
           }}>
@@ -40,15 +45,15 @@ const Footer = () => {
           <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 28, alignItems: 'center' }} className="footer-nav">
             {NAV_LINKS.map((link) => (
               <a
-                key={link}
-                href={link === 'Contact' ? '#contact' : '#'}
+                key={link.label}
+                href={link.href}
                 style={{
                   fontSize: 14, color: colors.textMuted, textDecoration: 'none',
                   transition: 'color 0.2s ease',
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = colors.text; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = colors.textMuted; }}
-              >{link}</a>
+              >{link.label}</a>
             ))}
           </nav>
 

@@ -8,6 +8,7 @@ import ServiceMatrix from './components/ServiceMatrix';
 import CTA from './components/CTA';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import Marquee from './components/Marquee';
 
 const PageLoader = ({ onComplete }) => {
   const { colors } = useTheme();
@@ -21,11 +22,11 @@ const PageLoader = ({ onComplete }) => {
     <motion.div
       style={{
         position: 'fixed', inset: 0, zIndex: 100,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: colors.bg,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: 24, background: colors.bg,
       }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.5 }}
     >
       <div style={{ position: 'relative', width: 48, height: 48 }}>
         <motion.div
@@ -47,6 +48,15 @@ const PageLoader = ({ onComplete }) => {
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
       </div>
+      <motion.span
+        className="font-display"
+        style={{ fontSize: 16, fontWeight: 600, letterSpacing: '-0.02em', color: colors.textMuted }}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
+        Agenticos
+      </motion.span>
     </motion.div>
   );
 };
@@ -76,6 +86,7 @@ const AppContent = () => {
         <Navbar />
         <main>
           <Hero />
+          <Marquee />
           <ServiceMatrix />
           <Features />
           <CTA />

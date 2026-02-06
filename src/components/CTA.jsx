@@ -28,8 +28,8 @@ const CTA = () => {
           <div style={{
             position: 'absolute', inset: 0, zIndex: 0,
             background: isDark
-              ? 'radial-gradient(circle at 50% -20%, rgba(6,182,212,0.15), transparent 70%), radial-gradient(circle at 50% 120%, rgba(124,58,237,0.15), transparent 70%)'
-              : 'radial-gradient(circle at 50% -20%, rgba(6,182,212,0.1), transparent 70%), radial-gradient(circle at 50% 120%, rgba(124,58,237,0.1), transparent 70%)',
+              ? 'radial-gradient(circle at 50% -20%, rgba(6,182,212,0.15), transparent 70%), radial-gradient(circle at 50% 120%, rgba(20,184,166,0.12), transparent 70%)'
+              : 'radial-gradient(circle at 50% -20%, rgba(8,145,178,0.1), transparent 70%), radial-gradient(circle at 50% 120%, rgba(20,184,166,0.08), transparent 70%)',
           }} />
           <div
             className="absolute top-[-50%] left-[-20%] w-[600px] h-[600px] rounded-full animate-float"
@@ -37,11 +37,11 @@ const CTA = () => {
           />
           <div
             className="absolute bottom-[-50%] right-[-20%] w-[600px] h-[600px] rounded-full animate-float"
-            style={{ background: isDark ? 'rgba(139,92,246,0.1)' : 'rgba(139,92,246,0.06)', filter: 'blur(100px)', animationDelay: '-2s' }}
+            style={{ background: isDark ? 'rgba(20,184,166,0.1)' : 'rgba(20,184,166,0.06)', filter: 'blur(100px)', animationDelay: '-2s' }}
           />
 
           <div style={{ position: 'relative', zIndex: 10 }}>
-            <h2 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
+            <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
               Ready to Get Started?
             </h2>
             <p style={{

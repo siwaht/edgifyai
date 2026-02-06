@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 
 const SERVICES = [
   { icon: Mic, title: 'Voice Agents', description: 'Natural voice interactions powered by advanced speech recognition.', color: '#06b6d4' },
-  { icon: MessageSquare, title: 'Chat Intelligence', description: 'Omnichannel messaging with context-aware responses.', color: '#8b5cf6' },
+  { icon: MessageSquare, title: 'Chat Intelligence', description: 'Omnichannel messaging with context-aware responses.', color: '#14b8a6' },
   { icon: User, title: 'Digital Avatars', description: 'Photorealistic AI representatives for engagement.', color: '#f59e0b' },
   { icon: Video, title: 'Media Generation', description: 'Create professional video and audio at scale.', color: '#ec4899' },
   { icon: Film, title: 'Post-Production', description: 'Automated editing and optimization for media.', color: '#10b981' },
@@ -105,10 +105,10 @@ const ServiceMatrix = () => {
             letterSpacing: '0.05em', textTransform: 'uppercase', borderRadius: 100,
             background: colors.accentMuted, color: colors.accent, marginBottom: 20,
           }}>Services</span>
-          <h2 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
+          <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
             Complete AI Suite
           </h2>
-          <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary, maxWidth: 500, margin: '0 auto' }}>
+          <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary, maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
             Everything you need to build, deploy, and scale intelligent automation.
           </p>
         </motion.div>
@@ -128,8 +128,8 @@ const ServiceMatrix = () => {
               padding: 28, borderRadius: 24, display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', textAlign: 'center',
               background: isDark
-                ? 'linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1))'
-                : 'linear-gradient(135deg, rgba(8,145,178,0.08), rgba(124,58,237,0.08))',
+                ? 'linear-gradient(135deg, rgba(6,182,212,0.1), rgba(20,184,166,0.1))'
+                : 'linear-gradient(135deg, rgba(8,145,178,0.08), rgba(20,184,166,0.08))',
               border: `1px solid ${isDark ? 'rgba(6,182,212,0.2)' : 'rgba(8,145,178,0.2)'}`,
             }}
           >

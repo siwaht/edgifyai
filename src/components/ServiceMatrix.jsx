@@ -1,17 +1,13 @@
 import { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Mic, MessageSquare, Bot, Brain, Database, Plug, Users, Cpu, ArrowUpRight } from 'lucide-react';
+import { Mic, MessageSquare, Bot, Brain, ArrowUpRight } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const SERVICES = [
-  { icon: Mic, title: 'Voice Agents', description: 'Natural voice interactions with real-time speech recognition, synthesis, and conversational flow.', color: '#06b6d4' },
-  { icon: MessageSquare, title: 'Chat Agents', description: 'Omnichannel messaging agents with context-aware responses across web, mobile, and platforms.', color: '#14b8a6' },
-  { icon: Bot, title: 'Ambient Agents', description: 'Background agents that monitor, observe, and act proactively without explicit user prompts.', color: '#8b5cf6' },
-  { icon: Brain, title: 'Deep Agents', description: 'Complex reasoning agents for multi-step planning, research, and autonomous decision-making.', color: '#f59e0b' },
-  { icon: Database, title: 'RAG & Memory', description: 'Retrieval-augmented generation with long-term and short-term agent memory for persistent context.', color: '#ec4899' },
-  { icon: Plug, title: 'MCP & A2A', description: 'Model Context Protocol and Agent-to-Agent communication for tool use and multi-agent orchestration.', color: '#10b981' },
-  { icon: Cpu, title: 'Agent Skills', description: 'Modular skill libraries — from web browsing to code execution — that agents can learn and compose.', color: '#0ea5e9' },
-  { icon: Users, title: 'Human in the Loop', description: 'Configurable approval workflows, escalation paths, and oversight for safety-critical operations.', color: '#a855f7' },
+  { icon: Mic, title: 'Voice Agents', description: 'Natural voice interactions with real-time speech recognition, synthesis, and multi-turn conversational flow.', color: '#06b6d4' },
+  { icon: MessageSquare, title: 'Chat Agents', description: 'Omnichannel messaging agents with context-aware responses across web, mobile, Slack, and more.', color: '#14b8a6' },
+  { icon: Bot, title: 'Ambient Agents', description: 'Background agents that monitor systems, observe patterns, and act proactively without explicit prompts.', color: '#8b5cf6' },
+  { icon: Brain, title: 'Deep Agents', description: 'Complex reasoning agents for multi-step planning, research, analysis, and autonomous decision-making.', color: '#f59e0b' },
 ];
 
 const ServiceCard = ({ service, index }) => {
@@ -123,34 +119,6 @@ const ServiceMatrix = () => {
           {SERVICES.map((service, i) => (
             <ServiceCard key={service.title} service={service} index={i} />
           ))}
-
-          {/* CTA Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.5 }}
-            style={{
-              padding: 28, borderRadius: 24, display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-              background: isDark
-                ? 'linear-gradient(135deg, rgba(6,182,212,0.1), rgba(20,184,166,0.1))'
-                : 'linear-gradient(135deg, rgba(8,145,178,0.08), rgba(20,184,166,0.08))',
-              border: `1px solid ${isDark ? 'rgba(6,182,212,0.2)' : 'rgba(8,145,178,0.2)'}`,
-            }}
-          >
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: colors.text, marginBottom: 8 }}>
-              Need something custom?
-            </h3>
-            <p style={{ fontSize: 14, color: colors.textSecondary, marginBottom: 20 }}>
-              Let's build your perfect solution.
-            </p>
-            <button style={{
-              padding: '12px 24px', fontSize: 14, fontWeight: 600, borderRadius: 10,
-              border: `1px solid ${colors.borderHover}`, background: 'transparent',
-              color: colors.text, cursor: 'pointer',
-            }}>Get in Touch</button>
-          </motion.div>
         </div>
       </div>
     </section>

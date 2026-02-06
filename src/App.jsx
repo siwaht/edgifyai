@@ -6,7 +6,6 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import ServiceMatrix from './components/ServiceMatrix';
 import CTA from './components/CTA';
-import AgentWorkflow from './components/AgentWorkflow';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Marquee from './components/Marquee';
@@ -91,7 +90,6 @@ const AppContent = () => {
           <ServiceMatrix />
           <Features />
           <CTA />
-          <AgentWorkflow />
           <Contact />
         </main>
         <Footer />

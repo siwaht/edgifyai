@@ -1,17 +1,17 @@
-import { Bot, Brain, Zap, Shield, Globe, BarChart3, Workflow, MessageSquare, Database, Lock } from 'lucide-react';
+import { Bot, Brain, Zap, Shield, Mic, MessageSquare, Database, Workflow, GitBranch, Users } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const CAPABILITIES = [
-  { icon: Bot, label: 'Autonomous Agents' },
-  { icon: Brain, label: 'Natural Language Processing' },
-  { icon: Zap, label: 'Real-Time Processing' },
-  { icon: Shield, label: 'Enterprise Security' },
-  { icon: Globe, label: 'Multi-Language Support' },
-  { icon: BarChart3, label: 'Advanced Analytics' },
-  { icon: Workflow, label: 'Workflow Automation' },
-  { icon: MessageSquare, label: 'Conversational AI' },
-  { icon: Database, label: 'Knowledge Base' },
-  { icon: Lock, label: 'Data Privacy' },
+  { icon: Mic, label: 'Voice Agents' },
+  { icon: MessageSquare, label: 'Chat Agents' },
+  { icon: Bot, label: 'Ambient Agents' },
+  { icon: Brain, label: 'Deep Reasoning' },
+  { icon: Database, label: 'RAG Pipelines' },
+  { icon: Workflow, label: 'MCP Tool Use' },
+  { icon: GitBranch, label: 'A2A Protocol' },
+  { icon: Users, label: 'Human in the Loop' },
+  { icon: Shield, label: 'Safety Guardrails' },
+  { icon: Zap, label: 'Agent Memory' },
 ];
 
 const CapabilityItem = ({ icon: Icon, label, isDark }) => (
@@ -52,7 +52,7 @@ const Marquee = () => {
         textTransform: 'uppercase', letterSpacing: '0.08em',
         color: colors.textMuted, marginBottom: 24,
       }}>
-        Platform Capabilities
+        Agent Capabilities
       </p>
 
       <div style={{ position: 'relative' }}>

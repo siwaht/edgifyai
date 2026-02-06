@@ -44,13 +44,13 @@ const CTA = () => {
 
           <div style={{ position: 'relative', zIndex: 10 }}>
             <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
-              Ready to Build Your Agent?
+              Let's Design Your AI Solution
             </h2>
             <p style={{
               fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary,
               maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.7,
             }}>
-              Whether you need a simple chatbot or a fleet of autonomous agents — let's design the right solution together.
+              Whether you need a simple chatbot or a fleet of autonomous agents — we'll architect the right system for your needs.
             </p>
 
             <div className="flex-col sm:flex-row" style={{

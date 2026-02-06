@@ -56,8 +56,14 @@ const Edge = ({ from, to, index, isDark }) => {
   );
 };
 
+// Seeded pseudo-random for stable values across renders
+const seeded = (seed) => {
+  const x = Math.sin(seed * 9301 + 49297) * 49297;
+  return x - Math.floor(x);
+};
+
 // Animated signal that travels along an edge
-const Signal = ({ from, to, delay, accent }) => {
+const Signal = ({ from, to, delay, accent, seed }) => {
   const a = getNode(from);
   const b = getNode(to);
 
@@ -76,7 +82,7 @@ const Signal = ({ from, to, delay, accent }) => {
         duration: 1.8,
         delay,
         repeat: Infinity,
-        repeatDelay: 4 + Math.random() * 3,
+        repeatDelay: 4 + seeded(seed + 100) * 3,
         ease: 'easeInOut',
       }}
     />
@@ -84,7 +90,7 @@ const Signal = ({ from, to, delay, accent }) => {
 };
 
 // Animated edge that lights up
-const ActiveEdge = ({ from, to, delay, isDark }) => {
+const ActiveEdge = ({ from, to, delay, isDark, seed }) => {
   const a = getNode(from);
   const b = getNode(to);
   const glowColor = isDark ? 'rgba(6,182,212,0.25)' : 'rgba(8,145,178,0.2)';
@@ -100,7 +106,7 @@ const ActiveEdge = ({ from, to, delay, isDark }) => {
         duration: 2.5,
         delay,
         repeat: Infinity,
-        repeatDelay: 3 + Math.random() * 4,
+        repeatDelay: 3 + seeded(seed + 200) * 4,
         ease: 'easeInOut',
       }}
     />
@@ -110,6 +116,8 @@ const ActiveEdge = ({ from, to, delay, isDark }) => {
 const Node = ({ node, isDark, colors }) => {
   const isCore = node.layer === 'core';
   const isInner = node.layer === 'inner';
+  const s1 = seeded(node.id + 50);
+  const s2 = seeded(node.id + 80);
 
   const fill = isDark
     ? isCore ? 'rgba(6,182,212,0.2)' : isInner ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)'
@@ -121,7 +129,6 @@ const Node = ({ node, isDark, colors }) => {
 
   return (
     <g>
-      {/* Pulse ring for core node */}
       {isCore && (
         <motion.circle
           cx={node.x} cy={node.y} r={node.r + 8}
@@ -131,7 +138,6 @@ const Node = ({ node, isDark, colors }) => {
         />
       )}
 
-      {/* Node body */}
       <motion.circle
         cx={node.x} cy={node.y} r={node.r}
         fill={fill} stroke={stroke} strokeWidth={1}
@@ -140,15 +146,14 @@ const Node = ({ node, isDark, colors }) => {
           : { opacity: [0.7, 1, 0.7] }
         }
         transition={{
-          duration: isCore ? 3 : 2 + Math.random() * 2,
-          delay: Math.random() * 2,
+          duration: isCore ? 3 : 2 + s1 * 2,
+          delay: s2 * 2,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
         style={{ transformOrigin: `${node.x}px ${node.y}px` }}
       />
 
-      {/* Inner dot */}
       <motion.circle
         cx={node.x} cy={node.y}
         r={isCore ? 5 : isInner ? 3 : 2}
@@ -156,7 +161,7 @@ const Node = ({ node, isDark, colors }) => {
         animate={{ opacity: [0.4, 1, 0.4] }}
         transition={{
           duration: 2.5,
-          delay: Math.random() * 2,
+          delay: s1 * 2,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
@@ -196,7 +201,7 @@ const AgentWorkflow = () => {
 
   // Pre-compute signal delays so they're stable across renders
   const signalDelays = useMemo(
-    () => EDGES.map((_, i) => i * 0.3 + Math.random() * 2),
+    () => EDGES.map((_, i) => i * 0.3 + seeded(i) * 2),
     []
   );
 
@@ -299,6 +304,7 @@ const AgentWorkflow = () => {
                 from={from} to={to}
                 delay={signalDelays[i]}
                 isDark={isDark}
+                seed={i}
               />
             ))}
 
@@ -309,6 +315,7 @@ const AgentWorkflow = () => {
                 from={from} to={to}
                 delay={signalDelays[i] + 0.5}
                 accent={colors.accent}
+                seed={i}
               />
             ))}
 

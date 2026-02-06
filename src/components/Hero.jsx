@@ -119,7 +119,7 @@ const Hero = () => {
             width: '100%', maxWidth: 240, justifyContent: 'center',
             transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
           }}>
-            Start Free Trial
+            Get a Consultation
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
           <button className="group hover:bg-white/5 active:scale-95" style={{
@@ -132,7 +132,7 @@ const Hero = () => {
             transition: 'all 0.2s ease',
           }}>
             <Play size={18} className="fill-current" />
-            Watch Demo
+            View Our Work
           </button>
         </motion.div>
 

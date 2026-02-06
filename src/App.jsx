@@ -6,6 +6,8 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import ServiceMatrix from './components/ServiceMatrix';
 import CTA from './components/CTA';
+import AgentWorkflow from './components/AgentWorkflow';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 const PageLoader = ({ onComplete }) => {
@@ -78,6 +80,8 @@ const AppContent = () => {
           <ServiceMatrix />
           <Features />
           <CTA />
+          <AgentWorkflow />
+          <Contact />
         </main>
         <Footer />
       </motion.div>

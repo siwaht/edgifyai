@@ -50,13 +50,13 @@ const ServiceCard = ({ service, index }) => {
       <div style={{
         position: 'absolute', inset: 0, opacity: spotlight.opacity,
         background: `radial-gradient(600px circle at ${spotlight.x}px ${spotlight.y}px, ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'}, transparent 40%)`,
-        transition: 'opacity 0.2s', pointerEvents: 'none',
+        transition: 'opacity 0.2s', pointerEvents: 'none', zIndex: 0,
       }} />
       {/* Border glow */}
       <div style={{
         position: 'absolute', inset: -1, opacity: spotlight.opacity,
         background: `radial-gradient(400px circle at ${spotlight.x}px ${spotlight.y}px, ${service.color}40, transparent 40%)`,
-        transition: 'opacity 0.2s', borderRadius: 'inherit', zIndex: -1,
+        transition: 'opacity 0.2s', borderRadius: 'inherit', zIndex: 0, pointerEvents: 'none',
       }} />
 
       <div style={{
@@ -66,6 +66,7 @@ const ServiceCard = ({ service, index }) => {
         color: service.color, marginBottom: 24,
         border: `1px solid ${colors.border}`,
         boxShadow: `0 0 20px -5px ${service.color}40`,
+        position: 'relative', zIndex: 1,
       }}>
         <Icon size={28} />
       </div>
@@ -73,12 +74,13 @@ const ServiceCard = ({ service, index }) => {
       <div style={{
         fontSize: 20, fontWeight: 700, color: colors.text, marginBottom: 12,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        position: 'relative', zIndex: 1,
       }}>
         {service.title}
         <ArrowUpRight size={20} className="opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 text-cyan-400" />
       </div>
 
-      <p style={{ fontSize: 15, lineHeight: 1.6, color: colors.textSecondary, flex: 1 }}>
+      <p style={{ fontSize: 15, lineHeight: 1.6, color: colors.textSecondary, flex: 1, position: 'relative', zIndex: 1 }}>
         {service.description}
       </p>
     </motion.div>
@@ -143,7 +145,7 @@ const ServiceMatrix = () => {
               padding: '12px 24px', fontSize: 14, fontWeight: 600, borderRadius: 10,
               border: `1px solid ${colors.borderHover}`, background: 'transparent',
               color: colors.text, cursor: 'pointer',
-            }}>Contact Sales</button>
+            }}>Get in Touch</button>
           </motion.div>
         </div>
       </div>

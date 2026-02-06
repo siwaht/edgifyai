@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { ArrowRight, Check } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const BENEFITS = ['No credit card required', '14-day free trial', 'Cancel anytime'];
+const BENEFITS = ['Free initial consultation', 'Tailored solutions', 'Dedicated support'];
 
 const CTA = () => {
   const ref = useRef(null);
@@ -48,8 +48,8 @@ const CTA = () => {
               fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary,
               maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.7,
             }}>
-              Join thousands of companies using Agenticos to automate their operations
-              and scale their business.
+              Let's discuss how our services can help automate your operations
+              and scale your business.
             </p>
 
             <div className="flex-col sm:flex-row" style={{
@@ -63,7 +63,7 @@ const CTA = () => {
                 background: colors.text, color: colors.bg,
                 width: '100%', maxWidth: 220, justifyContent: 'center',
               }}>
-                Start Free Trial <ArrowRight size={18} />
+                Get in Touch <ArrowRight size={18} />
               </button>
               <button style={{
                 display: 'inline-flex', alignItems: 'center', gap: 10,
@@ -71,7 +71,7 @@ const CTA = () => {
                 border: `1px solid ${colors.borderHover}`, cursor: 'pointer',
                 background: 'transparent', color: colors.text,
                 width: '100%', maxWidth: 220, justifyContent: 'center',
-              }}>Talk to Sales</button>
+              }}>View Services</button>
             </div>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'center', justifyContent: 'center' }}>

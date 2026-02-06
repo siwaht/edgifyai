@@ -84,7 +84,7 @@ const Navbar = () => {
               background: colors.text, color: colors.bg,
               boxShadow: isDark ? '0 0 20px rgba(255,255,255,0.1)' : '0 10px 20px rgba(0,0,0,0.1)',
               transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}>Get Started</button>
+            }}>Contact Us</button>
           </div>
 
           {/* Mobile Actions */}
@@ -146,7 +146,7 @@ const Navbar = () => {
                   width: '100%', padding: '14px 20px', fontSize: 14, fontWeight: 600,
                   borderRadius: 100, border: 'none', cursor: 'pointer',
                   background: colors.text, color: colors.bg,
-                }}>Get Started</button>
+                }}>Contact Us</button>
               </div>
             </motion.div>
           </>

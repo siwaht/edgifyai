@@ -1,15 +1,15 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Network, Shield, Cpu, Globe, Zap, Lock } from 'lucide-react';
+import { Network, Shield, Brain, Workflow, Database, GitBranch } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const FEATURES = [
-  { icon: Network, title: 'Neural Orchestration', description: 'Self-organizing agent swarms that adapt to workload spikes in real-time.', accent: '#06b6d4' },
-  { icon: Shield, title: 'Enterprise Security', description: 'SOC2 Type II compliant with end-to-end encryption and audit logging.', accent: '#10b981' },
-  { icon: Globe, title: 'Global Edge Network', description: '200+ edge locations ensuring sub-50ms latency worldwide.', accent: '#14b8a6' },
-  { icon: Cpu, title: 'Hyper-Scale Compute', description: 'Dedicated GPU clusters optimized for transformer inference.', accent: '#0891b2' },
-  { icon: Zap, title: 'Real-Time Processing', description: 'Stream processing with instant response times for critical operations.', accent: '#f59e0b' },
-  { icon: Lock, title: 'Data Privacy', description: 'Your data never leaves your environment. Full GDPR compliance.', accent: '#059669' },
+  { icon: Network, title: 'Multi-Agent Orchestration', description: 'Coordinate swarms of specialized agents that collaborate, delegate, and self-organize in real-time.', accent: '#06b6d4' },
+  { icon: Brain, title: 'Long & Short-Term Memory', description: 'Persistent memory systems that let agents recall past interactions and maintain context across sessions.', accent: '#8b5cf6' },
+  { icon: Workflow, title: 'Tool Use & MCP', description: 'Agents that browse the web, execute code, query databases, and use any API via Model Context Protocol.', accent: '#14b8a6' },
+  { icon: GitBranch, title: 'A2A Communication', description: 'Agent-to-Agent protocol enabling seamless collaboration between agents across different systems.', accent: '#f59e0b' },
+  { icon: Shield, title: 'Safety & Guardrails', description: 'Built-in content filtering, rate limiting, and configurable boundaries to keep agents aligned and safe.', accent: '#10b981' },
+  { icon: Database, title: 'RAG Pipelines', description: 'Retrieval-augmented generation with vector search, chunking strategies, and real-time knowledge grounding.', accent: '#0ea5e9' },
 ];
 
 const FeatureCard = ({ feature, index }) => {
@@ -84,11 +84,10 @@ const Features = () => {
             background: colors.accentMuted, color: colors.accent, marginBottom: 20,
           }}>Capabilities</span>
           <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
-            Built for Scale
+            Agent Architecture
           </h2>
           <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary, lineHeight: 1.7 }}>
-            Enterprise-grade infrastructure designed to handle millions of requests
-            while maintaining security and reliability.
+            The building blocks that make our agents intelligent — memory, reasoning, tool use, and multi-agent coordination.
           </p>
         </motion.div>
 

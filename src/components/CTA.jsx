@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { ArrowRight, Check } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const BENEFITS = ['Free initial consultation', 'Tailored solutions', 'Dedicated support'];
+const BENEFITS = ['Free architecture review', 'Custom agent design', 'Ongoing support & iteration'];
 
 const CTA = () => {
   const ref = useRef(null);
@@ -44,14 +44,13 @@ const CTA = () => {
 
           <div style={{ position: 'relative', zIndex: 10 }}>
             <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
-              Ready to Get Started?
+              Ready to Build Your Agent?
             </h2>
             <p style={{
               fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary,
               maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.7,
             }}>
-              Let's discuss how our services can help automate your operations
-              and scale your business.
+              Whether you need a simple chatbot or a fleet of autonomous agents — let's design the right solution together.
             </p>
 
             <div className="flex-col sm:flex-row" style={{

@@ -5,10 +5,10 @@ import { useTheme } from '../context/ThemeContext';
 import AIAgentsAnimation from './AIAgentsAnimation';
 
 const STATS = [
-  { value: '40+', label: 'Languages Supported' },
-  { value: '85%', label: 'Cost Reduction' },
+  { value: '12+', label: 'Agent Types' },
+  { value: '99.9%', label: 'Uptime SLA' },
   { value: '24/7', label: 'Autonomous Operation' },
-  { value: '3min', label: 'Avg Deploy Time' },
+  { value: '500+', label: 'Agents Deployed' },
 ];
 
 const containerVariants = {
@@ -84,7 +84,7 @@ const Hero = () => {
             backdropFilter: 'blur(12px)',
           }}>
             <Sparkles size={14} />
-            Next-Generation AI Platform
+            Next-Generation AI Agents
           </span>
         </motion.div>
 
@@ -100,15 +100,14 @@ const Hero = () => {
               backgroundSize: '200% auto',
               animation: 'shimmer 4s linear infinite',
             }}
-          >Autonomous AI</span>
+          >Intelligent Agents</span>
         </motion.h1>
 
         <motion.p variants={itemVariants} style={{
           fontSize: 'clamp(17px, 2.2vw, 20px)', lineHeight: 1.7,
           color: colors.textSecondary, maxWidth: 620, margin: '0 auto 48px', fontWeight: 400,
         }}>
-          Deploy intelligent agents that work 24/7. Scale your operations with
-          AI-powered automation that learns, adapts, and delivers results.
+          From simple chatbots to enterprise-grade autonomous agents — we design, build, and deploy AI agents with memory, reasoning, and real-world tool access.
         </motion.p>
 
         <motion.div variants={itemVariants} className="flex-col sm:flex-row" style={{

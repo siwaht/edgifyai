@@ -4,7 +4,7 @@ import { Send, CheckCircle, Clock, Mail, MessageSquare, AlertCircle, Check } fro
 import { useTheme } from '../context/ThemeContext';
 import { supabase } from '../lib/supabase';
 
-const PROJECT_TYPES = ['Enterprise AI', 'Voice Agents', 'Consulting', 'Custom Dev'];
+const PROJECT_TYPES = ['Voice Agents', 'Chat Agents', 'Deep Agents', 'RAG & Memory', 'Multi-Agent Systems', 'Custom Build'];
 
 const INITIAL_FORM = { name: '', email: '', types: [], message: '' };
 
@@ -151,18 +151,18 @@ const Contact = () => {
             fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 700,
             color: colors.text, marginBottom: 16, lineHeight: 1.15, letterSpacing: '-0.03em',
           }}>
-            Ready to transform your{' '}
+            Ready to build your{' '}
             <span
               className="gradient-text"
               style={{ background: 'linear-gradient(135deg, #06b6d4, #0284c7)' }}
-            >Enterprise?</span>
+            >AI Agent?</span>
           </h2>
 
           <p style={{
             fontSize: 'clamp(15px, 2vw, 17px)', lineHeight: 1.7,
             color: colors.textSecondary, maxWidth: 520, marginBottom: 40,
           }}>
-            Book a consultation with our AI architects. We'll analyze your workflows and propose a custom automation strategy.
+            Book a consultation with our agent architects. We'll map your workflows and design the right agent system for your needs.
           </p>
 
           <ContactInfo isDark={isDark} colors={colors} />
@@ -216,7 +216,7 @@ const Contact = () => {
 
               <div style={{ marginBottom: 20 }}>
                 <label style={labelStyle}>Services Needed <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(select all that apply)</span></label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }} className="form-project-types">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }} className="form-project-types">
                   {PROJECT_TYPES.map((type) => {
                     const isActive = form.types.includes(type);
                     return (

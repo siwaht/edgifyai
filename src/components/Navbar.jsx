@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const NAV_ITEMS = ['Solutions', 'Technology', 'Enterprise', 'Company'];
+const NAV_ITEMS = ['Services', 'Capabilities', 'How It Works', 'Contact'];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);

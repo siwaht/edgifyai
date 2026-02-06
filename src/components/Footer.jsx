@@ -7,7 +7,7 @@ const SOCIAL_LINKS = [
   { icon: Github, label: 'GitHub', href: '#' },
 ];
 
-const NAV_LINKS = ['Features', 'Pricing', 'Docs', 'Blog', 'Contact'];
+const NAV_LINKS = ['Services', 'Capabilities', 'How It Works', 'Contact'];
 
 const Footer = () => {
   const { isDark, colors } = useTheme();

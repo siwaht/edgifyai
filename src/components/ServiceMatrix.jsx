@@ -1,14 +1,17 @@
 import { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Mic, MessageSquare, User, Video, Film, ArrowUpRight } from 'lucide-react';
+import { Mic, MessageSquare, Bot, Brain, Database, Plug, Users, Cpu, ArrowUpRight } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const SERVICES = [
-  { icon: Mic, title: 'Voice Agents', description: 'Natural voice interactions powered by advanced speech recognition.', color: '#06b6d4' },
-  { icon: MessageSquare, title: 'Chat Intelligence', description: 'Omnichannel messaging with context-aware responses.', color: '#14b8a6' },
-  { icon: User, title: 'Digital Avatars', description: 'Photorealistic AI representatives for engagement.', color: '#f59e0b' },
-  { icon: Video, title: 'Media Generation', description: 'Create professional video and audio at scale.', color: '#ec4899' },
-  { icon: Film, title: 'Post-Production', description: 'Automated editing and optimization for media.', color: '#10b981' },
+  { icon: Mic, title: 'Voice Agents', description: 'Natural voice interactions with real-time speech recognition, synthesis, and conversational flow.', color: '#06b6d4' },
+  { icon: MessageSquare, title: 'Chat Agents', description: 'Omnichannel messaging agents with context-aware responses across web, mobile, and platforms.', color: '#14b8a6' },
+  { icon: Bot, title: 'Ambient Agents', description: 'Background agents that monitor, observe, and act proactively without explicit user prompts.', color: '#8b5cf6' },
+  { icon: Brain, title: 'Deep Agents', description: 'Complex reasoning agents for multi-step planning, research, and autonomous decision-making.', color: '#f59e0b' },
+  { icon: Database, title: 'RAG & Memory', description: 'Retrieval-augmented generation with long-term and short-term agent memory for persistent context.', color: '#ec4899' },
+  { icon: Plug, title: 'MCP & A2A', description: 'Model Context Protocol and Agent-to-Agent communication for tool use and multi-agent orchestration.', color: '#10b981' },
+  { icon: Cpu, title: 'Agent Skills', description: 'Modular skill libraries — from web browsing to code execution — that agents can learn and compose.', color: '#0ea5e9' },
+  { icon: Users, title: 'Human in the Loop', description: 'Configurable approval workflows, escalation paths, and oversight for safety-critical operations.', color: '#a855f7' },
 ];
 
 const ServiceCard = ({ service, index }) => {
@@ -107,12 +110,12 @@ const ServiceMatrix = () => {
             padding: '8px 16px', fontSize: 12, fontWeight: 600,
             letterSpacing: '0.05em', textTransform: 'uppercase', borderRadius: 100,
             background: colors.accentMuted, color: colors.accent, marginBottom: 20,
-          }}>Services</span>
+          }}>Our Services</span>
           <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
-            Complete AI Suite
+            AI Agents for Every Need
           </h2>
           <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary, maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
-            Everything you need to build, deploy, and scale intelligent automation.
+            From simple conversational bots to enterprise-grade autonomous systems — we build agents that think, remember, and act.
           </p>
         </motion.div>
 

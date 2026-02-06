@@ -1,35 +1,48 @@
+import { Bot, Brain, Zap, Shield, Globe, BarChart3, Workflow, MessageSquare, Database, Lock } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const LOGOS = [
-  'Accenture', 'Deloitte', 'McKinsey', 'Stripe', 'Shopify',
-  'Notion', 'Figma', 'Linear', 'Vercel', 'Datadog',
+const CAPABILITIES = [
+  { icon: Bot, label: 'Autonomous Agents' },
+  { icon: Brain, label: 'Natural Language Processing' },
+  { icon: Zap, label: 'Real-Time Processing' },
+  { icon: Shield, label: 'Enterprise Security' },
+  { icon: Globe, label: 'Multi-Language Support' },
+  { icon: BarChart3, label: 'Advanced Analytics' },
+  { icon: Workflow, label: 'Workflow Automation' },
+  { icon: MessageSquare, label: 'Conversational AI' },
+  { icon: Database, label: 'Knowledge Base' },
+  { icon: Lock, label: 'Data Privacy' },
 ];
 
-const LogoItem = ({ name, colors }) => (
+const CapabilityItem = ({ icon: Icon, label, isDark }) => (
   <div style={{
-    display: 'flex', alignItems: 'center', gap: 8,
-    padding: '0 40px', whiteSpace: 'nowrap',
-    fontSize: 15, fontWeight: 600, letterSpacing: '-0.01em',
-    color: colors.textMuted, opacity: 0.6,
+    display: 'flex', alignItems: 'center', gap: 10,
+    padding: '0 36px', whiteSpace: 'nowrap',
   }}>
     <div style={{
-      width: 28, height: 28, borderRadius: 6,
-      background: colors.border,
+      width: 32, height: 32, borderRadius: 8,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: 13, fontWeight: 700, color: colors.textMuted,
+      background: isDark ? 'rgba(6,182,212,0.1)' : 'rgba(6,182,212,0.06)',
+      border: `1px solid ${isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.1)'}`,
+      color: isDark ? '#22d3ee' : '#0891b2',
     }}>
-      {name[0]}
+      <Icon size={16} strokeWidth={1.8} />
     </div>
-    {name}
+    <span style={{
+      fontSize: 14, fontWeight: 500, letterSpacing: '-0.01em',
+      color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.45)',
+    }}>
+      {label}
+    </span>
   </div>
 );
 
 const Marquee = () => {
-  const { colors } = useTheme();
+  const { isDark, colors } = useTheme();
 
   return (
     <section style={{
-      padding: '48px 0', background: colors.bg,
+      padding: '44px 0', background: colors.bg,
       borderTop: `1px solid ${colors.border}`,
       borderBottom: `1px solid ${colors.border}`,
       overflow: 'hidden', position: 'relative',
@@ -37,27 +50,27 @@ const Marquee = () => {
       <p style={{
         textAlign: 'center', fontSize: 12, fontWeight: 600,
         textTransform: 'uppercase', letterSpacing: '0.08em',
-        color: colors.textMuted, marginBottom: 28,
+        color: colors.textMuted, marginBottom: 24,
       }}>
-        Trusted by industry leaders
+        Platform Capabilities
       </p>
 
       <div style={{ position: 'relative' }}>
         <div style={{
-          position: 'absolute', left: 0, top: 0, bottom: 0, width: 100, zIndex: 2,
+          position: 'absolute', left: 0, top: 0, bottom: 0, width: 120, zIndex: 2,
           background: `linear-gradient(to right, ${colors.bg}, transparent)`,
         }} />
         <div style={{
-          position: 'absolute', right: 0, top: 0, bottom: 0, width: 100, zIndex: 2,
+          position: 'absolute', right: 0, top: 0, bottom: 0, width: 120, zIndex: 2,
           background: `linear-gradient(to left, ${colors.bg}, transparent)`,
         }} />
 
         <div style={{
           display: 'flex',
-          animation: 'marquee 30s linear infinite',
+          animation: 'marquee 35s linear infinite',
         }}>
-          {[...LOGOS, ...LOGOS].map((name, i) => (
-            <LogoItem key={`${name}-${i}`} name={name} colors={colors} />
+          {[...CAPABILITIES, ...CAPABILITIES].map(({ icon, label }, i) => (
+            <CapabilityItem key={`${label}-${i}`} icon={icon} label={label} isDark={isDark} />
           ))}
         </div>
       </div>

@@ -6,6 +6,7 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import ServiceMatrix from './components/ServiceMatrix';
 import CTA from './components/CTA';
+import NeuralNetworkViz from './components/NeuralNetworkViz';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Marquee from './components/Marquee';
@@ -90,6 +91,7 @@ const AppContent = () => {
           <ServiceMatrix />
           <Features />
           <CTA />
+          <NeuralNetworkViz />
           <Contact />
         </main>
         <Footer />

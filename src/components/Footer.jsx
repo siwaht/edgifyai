@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Twitter, Linkedin, Github } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import LegalModal from './LegalModal';
 
 const SOCIAL_LINKS = [
   { icon: Twitter, label: 'Twitter', href: '#' },
@@ -16,6 +18,7 @@ const NAV_LINKS = [
 
 const Footer = () => {
   const { isDark, colors } = useTheme();
+  const [legalModal, setLegalModal] = useState(null);
 
   return (
     <footer style={{
@@ -38,8 +41,8 @@ const Footer = () => {
               background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
               color: '#ffffff', fontWeight: 700, fontSize: 16,
               boxShadow: '0 4px 12px rgba(6,182,212,0.25)',
-            }}>A</div>
-            <span style={{ fontSize: 18, fontWeight: 700, color: colors.text }}>Agenticos</span>
+            }}>E</div>
+            <span style={{ fontSize: 18, fontWeight: 700, color: colors.text }}>EdgifyAI</span>
           </a>
 
           <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 28, alignItems: 'center' }} className="footer-nav">
@@ -89,17 +92,21 @@ const Footer = () => {
           justifyContent: 'space-between', gap: 16,
         }}>
           <p style={{ fontSize: 13, color: colors.textMuted, margin: 0 }}>
-            &copy; {new Date().getFullYear()} Agenticos Labs Inc.
+            &copy; {new Date().getFullYear()} EdgifyAI Inc.
           </p>
           <div style={{ display: 'flex', gap: 24 }}>
-            {['Privacy', 'Terms'].map((item) => (
-              <a key={item} href="#" style={{
+            {[
+              { label: 'Privacy', type: 'privacy' },
+              { label: 'Terms', type: 'terms' },
+            ].map((item) => (
+              <button key={item.type} onClick={() => setLegalModal(item.type)} style={{
                 fontSize: 13, color: colors.textMuted, textDecoration: 'none',
-                transition: 'color 0.2s ease',
+                transition: 'color 0.2s ease', background: 'none', border: 'none',
+                cursor: 'pointer', padding: 0, fontFamily: 'inherit',
               }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = colors.text; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = colors.textMuted; }}
-              >{item}</a>
+              >{item.label}</button>
             ))}
           </div>
         </div>
@@ -110,6 +117,10 @@ const Footer = () => {
           .footer-nav { display: none !important; }
         }
       `}</style>
+
+      {legalModal && (
+        <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />
+      )}
     </footer>
   );
 };

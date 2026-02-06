@@ -11,7 +11,7 @@ const INITIAL_FORM = { name: '', email: '', types: [], message: '' };
 const ContactInfo = ({ isDark, colors }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
     {[
-      { icon: Mail, title: 'Email Us', lines: ['hello@agenticos.ai', 'support@agenticos.ai'] },
+      { icon: Mail, title: 'Email Us', lines: ['hello@edgifyai.com', 'support@edgifyai.com'] },
       { icon: Clock, title: 'Response Time', lines: ['We typically respond within 24 hours', 'Mon - Fri, 9am - 6pm PST'] },
     ].map(({ icon: Icon, title, lines }) => (
       <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>

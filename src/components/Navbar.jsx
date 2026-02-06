@@ -58,8 +58,8 @@ const Navbar = () => {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: '#fff', fontWeight: 800, fontSize: 20,
               boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
-            }}>A</div>
-            <span style={{ fontWeight: 700, fontSize: 18 }}>Agenticos</span>
+            }}>E</div>
+            <span style={{ fontWeight: 700, fontSize: 18 }}>EdgifyAI</span>
           </a>
 
           {/* Desktop Nav */}

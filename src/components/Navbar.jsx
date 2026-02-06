@@ -7,7 +7,6 @@ const NAV_ITEMS = [
   { label: 'Services', href: '#services' },
   { label: 'Capabilities', href: '#capabilities' },
   { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Contact', href: '#contact' },
 ];
 
 const Navbar = () => {

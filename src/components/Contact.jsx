@@ -71,6 +71,23 @@ const Contact = () => {
       return;
     }
 
+    // Fire webhook to Make.com with form details
+    try {
+      await fetch('https://hook.eu2.make.com/90fx6s1adetomrpb2ah1rf5r6vm1znww', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          project_type: form.types.join(', '),
+          message: form.message.trim(),
+          submitted_at: new Date().toISOString(),
+        }),
+      });
+    } catch {
+      // Webhook failure is non-blocking — form was already saved to Supabase
+    }
+
     setIsSuccess(true);
     setForm(INITIAL_FORM);
     setTimeout(() => setIsSuccess(false), 5000);

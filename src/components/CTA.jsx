@@ -8,79 +8,61 @@ const BENEFITS = ['Free architecture review', 'Custom agent design', 'Ongoing su
 const CTA = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const { isDark, colors } = useTheme();
+  const { isDark } = useTheme();
 
   return (
-    <section ref={ref} style={{ padding: '80px 20px', background: colors.bgAlt }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+    <section ref={ref} className="py-24 px-6 bg-obsidian-light relative overflow-hidden">
+      <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          style={{
-            position: 'relative', padding: 'clamp(40px, 8vw, 80px)',
-            borderRadius: 28, textAlign: 'center', overflow: 'hidden',
-            background: isDark ? 'rgba(28, 28, 36, 0.65)' : colors.bgCard,
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : colors.border}`,
-            backdropFilter: 'blur(12px)',
-            boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.3)' : 'none',
-          }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="relative px-6 py-20 rounded-[2.5rem] text-center overflow-hidden border border-white/10 bg-glass-gradient backdrop-blur-xl shadow-2xl"
         >
-          {/* Background glows */}
-          <div style={{
-            position: 'absolute', inset: 0, zIndex: 0,
-            background: isDark
-              ? 'radial-gradient(circle at 50% -20%, rgba(6,182,212,0.15), transparent 70%), radial-gradient(circle at 50% 120%, rgba(20,184,166,0.12), transparent 70%)'
-              : 'radial-gradient(circle at 50% -20%, rgba(8,145,178,0.1), transparent 70%), radial-gradient(circle at 50% 120%, rgba(20,184,166,0.08), transparent 70%)',
-          }} />
-          <div
-            className="absolute top-[-50%] left-[-20%] w-[600px] h-[600px] rounded-full animate-float"
-            style={{ background: isDark ? 'rgba(6,182,212,0.1)' : 'rgba(6,182,212,0.06)', filter: 'blur(100px)' }}
-          />
-          <div
-            className="absolute bottom-[-50%] right-[-20%] w-[600px] h-[600px] rounded-full animate-float"
-            style={{ background: isDark ? 'rgba(20,184,166,0.1)' : 'rgba(20,184,166,0.06)', filter: 'blur(100px)', animationDelay: '-2s' }}
-          />
+          {/* Background Elements */}
+          <div className="absolute inset-0 z-0">
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-          <div style={{ position: 'relative', zIndex: 10 }}>
-            <h2 className="font-display" style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: colors.text, marginBottom: 16 }}>
-              Let's Design Your AI Solution
+            <div className="absolute top-[-30%] left-[-10%] w-[500px] h-[500px] bg-electric-cyan/10 rounded-full blur-[80px] animate-blob" />
+            <div className="absolute bottom-[-30%] right-[-10%] w-[500px] h-[500px] bg-purple-glow/10 rounded-full blur-[80px] animate-blob animation-delay-2000" />
+
+            {/* Noise Texture */}
+            <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZUZpbHRlciI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbm9pc2VGaWx0ZXIpIi8+PC9zdmc+')] mix-blend-overlay" />
+          </div>
+
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 text-white leading-tight">
+              Let's Design Your <span className="text-electric-cyan">AI Solution</span>
             </h2>
-            <p style={{
-              fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary,
-              maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.7,
-            }}>
+            <p className="text-lg text-gray-400 mb-10 leading-relaxed">
               Whether you need a simple chatbot or a fleet of autonomous agents — we'll architect the right system for your needs.
             </p>
 
-            <div className="flex-col sm:flex-row" style={{
-              display: 'flex', flexDirection: 'column', gap: 16,
-              alignItems: 'center', justifyContent: 'center', marginBottom: 32,
-            }}>
-              <button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                padding: '16px 32px', fontSize: 16, fontWeight: 600, borderRadius: 100,
-                border: 'none', cursor: 'pointer',
-                background: isDark ? 'linear-gradient(135deg, #06b6d4, #0891b2)' : colors.text,
-                color: isDark ? '#ffffff' : colors.bg,
-                boxShadow: isDark ? '0 8px 30px rgba(6,182,212,0.25)' : '0 8px 20px rgba(0,0,0,0.12)',
-                width: '100%', maxWidth: 220, justifyContent: 'center',
-              }}>
-                Get in Touch <ArrowRight size={18} />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <button
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className="group relative px-8 py-4 bg-electric-cyan hover:bg-electric-cyan-dark text-obsidian rounded-full font-bold text-base transition-all duration-300 shadow-[0_0_20px_rgba(0,240,255,0.3)] hover:shadow-[0_0_30px_rgba(0,240,255,0.5)] transform hover:-translate-y-0.5"
+              >
+                <span className="flex items-center justify-center gap-2 relative z-10">
+                  Get in Touch <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </span>
               </button>
-              <button onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                padding: '16px 32px', fontSize: 16, fontWeight: 600, borderRadius: 100,
-                border: `1px solid ${colors.borderHover}`, cursor: 'pointer',
-                background: 'transparent', color: colors.text,
-                width: '100%', maxWidth: 220, justifyContent: 'center',
-              }}>View Services</button>
+
+              <button
+                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-transparent hover:bg-white/5 text-white border border-white/20 hover:border-white/40 rounded-full font-bold text-base transition-all duration-300 backdrop-blur-sm"
+              >
+                View Services
+              </button>
             </div>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'center', justifyContent: 'center' }}>
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
               {BENEFITS.map((b) => (
-                <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: colors.textMuted }}>
-                  <Check size={16} style={{ color: colors.accent }} />
+                <div key={b} className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-electric-cyan/20 text-electric-cyan">
+                    <Check size={12} strokeWidth={3} />
+                  </div>
                   {b}
                 </div>
               ))}

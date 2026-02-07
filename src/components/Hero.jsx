@@ -24,130 +24,79 @@ const itemVariants = {
 const Hero = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const { isDark, colors } = useTheme();
+  const { isDark } = useTheme();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const yParallax = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const opacityFade = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
-    <section ref={ref} style={{
-      position: 'relative', minHeight: '100vh',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '140px 20px 80px', background: colors.bg, overflow: 'hidden',
-    }}>
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-        <div style={{
-          position: 'absolute', top: '-15%', left: '-10%', width: '50vw', height: '50vw',
-          borderRadius: '50%',
-          background: isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.05)',
-          filter: 'blur(120px)',
-          animation: 'float-gentle 10s ease-in-out infinite',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: '-15%', right: '-10%', width: '45vw', height: '45vw',
-          borderRadius: '50%',
-          background: isDark ? 'rgba(20,184,166,0.06)' : 'rgba(20,184,166,0.04)',
-          filter: 'blur(100px)',
-          animation: 'float-gentle 10s ease-in-out infinite', animationDelay: '-4s',
-        }} />
-        <div style={{
-          position: 'absolute', top: '30%', right: '15%', width: '25vw', height: '25vw',
-          borderRadius: '50%',
-          background: isDark ? 'rgba(6,182,212,0.04)' : 'rgba(6,182,212,0.03)',
-          filter: 'blur(80px)',
-          animation: 'float-gentle 10s ease-in-out infinite', animationDelay: '-7s',
-        }} />
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `linear-gradient(${isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)'} 1px, transparent 1px),
-            linear-gradient(90deg, ${isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)'} 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-          maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 70%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 70%)',
-        }} />
+    <section ref={ref} className="relative min-h-screen flex items-center justify-center pt-32 pb-20 overflow-hidden bg-obsidian">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Mesh Gradient / Aurora */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-30">
+          <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-electric-cyan-dim/20 rounded-full blur-[120px] animate-blob" />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[45vw] h-[45vw] bg-purple-glow/20 rounded-full blur-[100px] animate-blob animation-delay-4000" />
+          <div className="absolute top-[30%] right-[15%] w-[25vw] h-[25vw] bg-blue-500/20 rounded-full blur-[80px] animate-blob animation-delay-2000" />
+        </div>
+
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
       </div>
 
       <motion.div
-        style={{ maxWidth: 920, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 10, y: yParallax, opacity: opacityFade }}
+        className="relative z-10 max-w-5xl mx-auto text-center px-6"
+        style={{ y: yParallax, opacity: opacityFade }}
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
       >
-        <motion.div variants={itemVariants}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '8px 20px', fontSize: 13, fontWeight: 500,
-            borderRadius: 100, marginBottom: 32,
-            background: isDark ? 'rgba(6,182,212,0.1)' : 'rgba(6,182,212,0.06)',
-            border: `1px solid ${isDark ? 'rgba(6,182,212,0.2)' : 'rgba(6,182,212,0.15)'}`,
-            color: isDark ? '#22d3ee' : '#0891b2',
-            backdropFilter: 'blur(12px)',
-          }}>
-            <Sparkles size={14} />
+        <motion.div variants={itemVariants} className="flex justify-center mb-8">
+          <span className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-full bg-electric-cyan/5 border border-electric-cyan/20 text-electric-cyan shadow-[0_0_15px_rgba(0,240,255,0.1)] backdrop-blur-md">
+            <Sparkles size={14} className="animate-pulse-slow" />
             Next-Generation AI Agents
           </span>
         </motion.div>
 
-        <motion.h1 variants={itemVariants} className="font-display" style={{
-          fontSize: 'clamp(44px, 7.5vw, 82px)', fontWeight: 800,
-          lineHeight: 1.05, letterSpacing: '-0.04em', marginBottom: 28, color: colors.text,
-        }}>
+        <motion.h1 variants={itemVariants} className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 text-white leading-[1.1]">
           Build the Future with{' '}
-          <span
-            className="gradient-text"
-            style={{
-              background: `linear-gradient(135deg, ${colors.accent}, #14b8a6, ${colors.accent})`,
-              backgroundSize: '200% auto',
-              animation: 'shimmer 4s linear infinite',
-            }}
-          >Intelligent Agents</span>
+          <span className="gradient-text bg-300% animate-shimmer relative inline-block">
+            Intelligent Agents
+            <span className="absolute inset-x-0 bottom-2 h-[20%] bg-electric-cyan/20 blur-xl -z-10" />
+          </span>
         </motion.h1>
 
-        <motion.p variants={itemVariants} style={{
-          fontSize: 'clamp(17px, 2.2vw, 20px)', lineHeight: 1.7,
-          color: colors.textSecondary, maxWidth: 620, margin: '0 auto 48px', fontWeight: 400,
-        }}>
+        <motion.p variants={itemVariants} className="text-lg md:text-xl leading-relaxed text-gray-400 max-w-2xl mx-auto mb-12">
           From simple chatbots to enterprise-grade autonomous agents — we design, build, and deploy AI agents with memory, reasoning, and real-world tool access.
         </motion.p>
 
-        <motion.div variants={itemVariants} className="flex-col sm:flex-row" style={{
-          display: 'flex', flexDirection: 'column', gap: 16,
-          alignItems: 'center', justifyContent: 'center',
-        }}>
-          <button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} className="group hover:scale-[1.03] active:scale-95 transition-all duration-300" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 10,
-            padding: '18px 36px', fontSize: 16, fontWeight: 600, borderRadius: 100,
-            border: 'none', cursor: 'pointer',
-            background: isDark ? 'linear-gradient(135deg, #06b6d4, #0891b2)' : colors.text,
-            color: isDark ? '#ffffff' : colors.bg,
-            boxShadow: isDark ? '0 0 40px rgba(6,182,212,0.2)' : '0 10px 30px rgba(0,0,0,0.15)',
-            width: '100%', maxWidth: 240, justifyContent: 'center',
-          }}>
-            Get a Consultation
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-5">
+          <button
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            className="group w-full sm:w-auto relative px-8 py-4 bg-white text-obsidian rounded-full font-bold text-lg hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(0,240,255,0.4)] overflow-hidden"
+          >
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              Get a Consultation
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-150%] group-hover:animate-shimmer" />
           </button>
-          <button onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })} className="group hover:scale-[1.03] active:scale-95 transition-all duration-200" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 10,
-            padding: '18px 36px', fontSize: 16, fontWeight: 600, borderRadius: 100,
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : colors.border}`, cursor: 'pointer',
-            background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
-            color: colors.text, backdropFilter: 'blur(10px)',
-            width: '100%', maxWidth: 240, justifyContent: 'center',
-          }}>
-            <Play size={16} style={{ fill: 'currentColor' }} />
+
+          <button
+            onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+            className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-lg text-white border border-white/10 hover:bg-white/5 hover:border-white/20 backdrop-blur-sm transition-all duration-300"
+          >
+            <Play size={18} className="fill-current" />
             View Our Work
           </button>
         </motion.div>
 
-        <motion.div variants={itemVariants} style={{ marginTop: 64 }}>
+        <motion.div variants={itemVariants} className="mt-20 relative z-20 transform-gpu">
+          <div className="absolute inset-0 bg-electric-cyan/5 blur-[100px] -z-10 rounded-full" />
           <AIAgentsAnimation />
         </motion.div>
 
-        <motion.div variants={itemVariants} className="grid-cols-2 md:grid-cols-4" style={{
-          marginTop: 72, paddingTop: 40,
-          borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-          display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32,
-        }}>
+        <motion.div variants={itemVariants} className="mt-24 pt-12 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-12">
           {STATS.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -155,16 +104,14 @@ const Hero = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="text-center group cursor-default"
+              className="text-center group"
             >
-              <div className="font-display group-hover:text-cyan-400 transition-colors duration-300" style={{
-                fontSize: 'clamp(28px, 3.5vw, 44px)', fontWeight: 700,
-                color: colors.text, marginBottom: 4, letterSpacing: '-0.03em',
-              }}>{stat.value}</div>
-              <div style={{
-                fontSize: 13, fontWeight: 500, color: colors.textMuted,
-                textTransform: 'uppercase', letterSpacing: '0.06em',
-              }}>{stat.label}</div>
+              <div className="font-display text-4xl md:text-5xl font-bold text-white mb-2 group-hover:text-electric-cyan transition-colors duration-300">
+                {stat.value}
+              </div>
+              <div className="text-sm font-medium text-gray-500 uppercase tracking-widest">
+                {stat.label}
+              </div>
             </motion.div>
           ))}
         </motion.div>

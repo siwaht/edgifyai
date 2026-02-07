@@ -36,21 +36,21 @@ const darkColors = {
 
 const lightColors = {
   bg: '#ffffff',
-  bgAlt: '#f8fafc',
-  bgCard: 'rgba(255, 255, 255, 0.8)',
+  bgAlt: '#f4f6f8',
+  bgCard: 'rgba(255, 255, 255, 0.85)',
   bgCardSolid: '#ffffff',
   text: '#09090b',
-  textSecondary: '#52525b',
-  textMuted: '#a1a1aa',
-  border: 'rgba(0,0,0,0.06)',
-  borderHover: 'rgba(0,0,0,0.12)',
+  textSecondary: '#3f3f46',
+  textMuted: '#71717a',
+  border: 'rgba(0,0,0,0.09)',
+  borderHover: 'rgba(0,0,0,0.16)',
   accent: '#0891b2',
   accentLight: '#06b6d4',
-  accentMuted: 'rgba(8, 145, 178, 0.08)',
+  accentMuted: 'rgba(8, 145, 178, 0.1)',
   warm: '#d97706',
-  warmMuted: 'rgba(217, 119, 6, 0.08)',
+  warmMuted: 'rgba(217, 119, 6, 0.1)',
   success: '#059669',
-  successMuted: 'rgba(5, 150, 105, 0.08)',
+  successMuted: 'rgba(5, 150, 105, 0.1)',
 };
 
 export const ThemeProvider = ({ children }) => {

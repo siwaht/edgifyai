@@ -55,37 +55,34 @@ const Contact = () => {
     setIsSubmitting(true);
     setError(null);
 
-    const { error: submitError } = await supabase
-      .from('contact_submissions')
-      .insert({
-        name: form.name.trim(),
-        email: form.email.trim(),
-        project_type: form.types.join(', '),
-        message: form.message.trim(),
-      });
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      project_type: form.types.join(', '),
+      message: form.message.trim(),
+      submitted_at: new Date().toISOString(),
+    };
+
+    // Fire webhook and Supabase insert in parallel
+    const [supabaseResult] = await Promise.all([
+      supabase.from('contact_submissions').insert({
+        name: payload.name,
+        email: payload.email,
+        project_type: payload.project_type,
+        message: payload.message,
+      }),
+      fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(() => {}), // Webhook failure is non-blocking
+    ]);
 
     setIsSubmitting(false);
 
-    if (submitError) {
+    if (supabaseResult.error) {
       setError('Something went wrong. Please try again.');
       return;
-    }
-
-    // Fire webhook to Make.com with form details
-    try {
-      await fetch('https://hook.eu2.make.com/90fx6s1adetomrpb2ah1rf5r6vm1znww', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          project_type: form.types.join(', '),
-          message: form.message.trim(),
-          submitted_at: new Date().toISOString(),
-        }),
-      });
-    } catch {
-      // Webhook failure is non-blocking — form was already saved to Supabase
     }
 
     setIsSuccess(true);

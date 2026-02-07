@@ -90,7 +90,6 @@ const Contact = () => {
 
     setIsSuccess(true);
     setForm(INITIAL_FORM);
-    setTimeout(() => setIsSuccess(false), 5000);
   }, [form]);
 
   const inputStyle = (field) => ({
@@ -205,6 +204,62 @@ const Contact = () => {
               filter: 'blur(60px)',
             }} />
 
+            {isSuccess ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                style={{
+                  position: 'relative', zIndex: 1,
+                  display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  justifyContent: 'center', textAlign: 'center',
+                  padding: '60px 24px', minHeight: 400,
+                }}
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.15, type: 'spring', stiffness: 200, damping: 15 }}
+                  style={{
+                    width: 80, height: 80, borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #10b981, #06b6d4)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    marginBottom: 28,
+                    boxShadow: '0 12px 40px rgba(16,185,129,0.3)',
+                  }}
+                >
+                  <CheckCircle size={40} color="#ffffff" />
+                </motion.div>
+
+                <h3 style={{
+                  fontSize: 26, fontWeight: 700, color: colors.text,
+                  marginBottom: 12, letterSpacing: '-0.02em',
+                }}>
+                  Message Sent Successfully
+                </h3>
+
+                <p style={{
+                  fontSize: 16, lineHeight: 1.7, color: colors.textSecondary,
+                  maxWidth: 380, marginBottom: 32,
+                }}>
+                  Thank you for reaching out. Our team will review your message and get back to you within 24 hours.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setIsSuccess(false)}
+                  style={{
+                    padding: '14px 32px', borderRadius: 12,
+                    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                    background: isDark ? 'rgba(255,255,255,0.06)' : '#f8fafc',
+                    color: colors.text, fontSize: 15, fontWeight: 600,
+                    cursor: 'pointer', transition: 'all 0.2s ease',
+                  }}
+                >
+                  Send Another Message
+                </button>
+              </motion.div>
+            ) : (
             <form onSubmit={handleSubmit} style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }} className="form-name-email">
                 <div>
@@ -294,17 +349,15 @@ const Contact = () => {
                 </div>
               )}
 
-              <button type="submit" disabled={isSubmitting || isSuccess}
+              <button type="submit" disabled={isSubmitting}
                 style={{
                   width: '100%', padding: '16px 24px', borderRadius: 14,
                   border: 'none', cursor: isSubmitting ? 'wait' : 'pointer',
                   fontSize: 16, fontWeight: 600,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                  background: isSuccess
-                    ? '#10b981'
-                    : 'linear-gradient(135deg, #06b6d4, #0284c7)',
+                  background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
                   color: '#ffffff',
-                  boxShadow: isSuccess ? 'none' : '0 8px 30px rgba(6,182,212,0.3)',
+                  boxShadow: '0 8px 30px rgba(6,182,212,0.3)',
                   transition: 'all 0.3s ease',
                   opacity: isSubmitting ? 0.7 : 1,
                 }}
@@ -320,13 +373,12 @@ const Contact = () => {
                       borderRadius: '50%',
                     }}
                   />
-                ) : isSuccess ? (
-                  <><CheckCircle size={20} /> Message Sent!</>
                 ) : (
                   <><Send size={18} /> Send Message</>
                 )}
               </button>
             </form>
+            )}
           </div>
         </motion.div>
       </div>

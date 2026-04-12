@@ -37,7 +37,7 @@ const Navbar = () => {
 
   return (
     <>
-      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, padding: '16px 20px' }}>
+      <header role="banner" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, padding: '16px 20px' }}>
         <div style={{
           maxWidth: 1200, margin: '0 auto',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -56,7 +56,7 @@ const Navbar = () => {
           </a>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex" style={{ display: 'none', alignItems: 'center', gap: 4 }}>
+          <nav className="desktop-nav" aria-label="Main navigation" style={{ alignItems: 'center', gap: 4 }}>
             {NAV_ITEMS.map((item) => (
               <a key={item.label} href={item.href} style={{
                 padding: '10px 16px', fontSize: 14, fontWeight: 500,
@@ -67,7 +67,7 @@ const Navbar = () => {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex" style={{ display: 'none', alignItems: 'center', gap: 12 }}>
+          <div className="desktop-actions" style={{ alignItems: 'center', gap: 12 }}>
             <button onClick={toggleTheme} aria-label="Toggle theme" style={{
               padding: 10, borderRadius: 10, border: 'none', cursor: 'pointer',
               background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
@@ -86,7 +86,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Actions */}
-          <div className="flex md:hidden" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="mobile-actions" style={{ alignItems: 'center', gap: 8 }}>
             <button onClick={toggleTheme} aria-label="Toggle theme" style={{
               padding: 10, borderRadius: 10, border: 'none', cursor: 'pointer',
               background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
@@ -150,6 +150,17 @@ const Navbar = () => {
           </>
         )}
       </AnimatePresence>
+
+      <style>{`
+        .desktop-nav { display: none; }
+        .desktop-actions { display: none; }
+        .mobile-actions { display: flex; }
+        @media (min-width: 768px) {
+          .desktop-nav { display: flex !important; }
+          .desktop-actions { display: flex !important; }
+          .mobile-actions { display: none !important; }
+        }
+      `}</style>
     </>
   );
 };

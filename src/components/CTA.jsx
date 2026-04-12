@@ -53,7 +53,7 @@ const CTA = () => {
               Whether you need a simple chatbot or a fleet of autonomous agents — we'll architect the right system for your needs.
             </p>
 
-            <div className="flex-col sm:flex-row" style={{
+            <div className="cta-buttons" style={{
               display: 'flex', flexDirection: 'column', gap: 16,
               alignItems: 'center', justifyContent: 'center', marginBottom: 32,
             }}>
@@ -88,6 +88,12 @@ const CTA = () => {
           </div>
         </motion.div>
       </div>
+
+      <style>{`
+        @media (min-width: 640px) {
+          .cta-buttons { flex-direction: row !important; }
+        }
+      `}</style>
     </section>
   );
 };

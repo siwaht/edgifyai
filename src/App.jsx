@@ -84,7 +84,7 @@ const AppContent = () => {
         transition={{ duration: 0.4 }}
       >
         <Navbar />
-        <main>
+        <main role="main">
           <Hero />
           <Marquee />
           <ServiceMatrix />

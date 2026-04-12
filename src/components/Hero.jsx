@@ -110,7 +110,7 @@ const Hero = () => {
           From simple chatbots to enterprise-grade autonomous agents — we design, build, and deploy AI agents with memory, reasoning, and real-world tool access.
         </motion.p>
 
-        <motion.div variants={itemVariants} className="flex-col sm:flex-row" style={{
+        <motion.div variants={itemVariants} className="hero-buttons" style={{
           display: 'flex', flexDirection: 'column', gap: 16,
           alignItems: 'center', justifyContent: 'center',
         }}>
@@ -143,7 +143,7 @@ const Hero = () => {
           <AIAgentsAnimation />
         </motion.div>
 
-        <motion.div variants={itemVariants} className="grid-cols-2 md:grid-cols-4" style={{
+        <motion.div variants={itemVariants} className="hero-stats" style={{
           marginTop: 72, paddingTop: 40,
           borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
           display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32,
@@ -169,6 +169,15 @@ const Hero = () => {
           ))}
         </motion.div>
       </motion.div>
+
+      <style>{`
+        @media (min-width: 640px) {
+          .hero-buttons { flex-direction: row !important; }
+        }
+        @media (min-width: 768px) {
+          .hero-stats { grid-template-columns: repeat(4, 1fr) !important; }
+        }
+      `}</style>
     </section>
   );
 };

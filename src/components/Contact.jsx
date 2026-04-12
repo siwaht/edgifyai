@@ -58,35 +58,46 @@ const Contact = () => {
     const payload = {
       name: form.name.trim(),
       email: form.email.trim(),
-      project_type: form.types.join(', '),
+      project_type: form.types.join(', ') || 'General Inquiry',
       message: form.message.trim(),
       submitted_at: new Date().toISOString(),
     };
 
-    // Fire webhook and Supabase insert in parallel
-    const [supabaseResult] = await Promise.all([
-      supabase.from('contact_submissions').insert({
-        name: payload.name,
-        email: payload.email,
-        project_type: payload.project_type,
-        message: payload.message,
-      }),
-      fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      }).catch(() => {}), // Webhook failure is non-blocking
-    ]);
-
-    setIsSubmitting(false);
-
-    if (supabaseResult.error) {
-      setError('Something went wrong. Please try again.');
+    // Basic client-side validation
+    if (!payload.name || !payload.email || !payload.message) {
+      setError('Please fill in all required fields.');
+      setIsSubmitting(false);
       return;
     }
 
-    setIsSuccess(true);
-    setForm(INITIAL_FORM);
+    try {
+      // Fire webhook and Supabase insert in parallel
+      const [supabaseResult] = await Promise.all([
+        supabase.from('contact_submissions').insert({
+          name: payload.name,
+          email: payload.email,
+          project_type: payload.project_type,
+          message: payload.message,
+        }),
+        fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }).catch(() => null), // Webhook failure is non-blocking
+      ]);
+
+      if (supabaseResult?.error) {
+        setError('Something went wrong. Please try again.');
+        return;
+      }
+
+      setIsSuccess(true);
+      setForm(INITIAL_FORM);
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }, [form]);
 
   const inputStyle = (field) => ({
@@ -260,25 +271,29 @@ const Contact = () => {
             <form onSubmit={handleSubmit} style={{ position: 'relative', zIndex: 1 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }} className="form-name-email">
                 <div>
-                  <label style={labelStyle}>Your Name</label>
+                  <label htmlFor="contact-name" style={labelStyle}>Your Name</label>
                   <input
+                    id="contact-name"
                     type="text" required value={form.name}
                     onChange={(e) => updateField('name', e.target.value)}
                     onFocus={() => setFocusedField('name')}
                     onBlur={() => setFocusedField(null)}
                     style={inputStyle('name')}
                     placeholder="John Doe"
+                    autoComplete="name"
                   />
                 </div>
                 <div>
-                  <label style={labelStyle}>Email Address</label>
+                  <label htmlFor="contact-email" style={labelStyle}>Email Address</label>
                   <input
+                    id="contact-email"
                     type="email" required value={form.email}
                     onChange={(e) => updateField('email', e.target.value)}
                     onFocus={() => setFocusedField('email')}
                     onBlur={() => setFocusedField(null)}
                     style={inputStyle('email')}
                     placeholder="john@company.com"
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -322,8 +337,9 @@ const Contact = () => {
               </div>
 
               <div style={{ marginBottom: 24 }}>
-                <label style={labelStyle}>Message</label>
+                <label htmlFor="contact-message" style={labelStyle}>Message</label>
                 <textarea
+                  id="contact-message"
                   rows={4} required value={form.message}
                   onChange={(e) => updateField('message', e.target.value)}
                   onFocus={() => setFocusedField('message')}
@@ -334,7 +350,7 @@ const Contact = () => {
               </div>
 
               {error && (
-                <div style={{
+                <div role="alert" aria-live="polite" style={{
                   display: 'flex', alignItems: 'center', gap: 8,
                   padding: '12px 16px', borderRadius: 12, marginBottom: 20,
                   background: 'rgba(239,68,68,0.08)',

@@ -71,25 +71,21 @@ const Contact = () => {
     }
 
     try {
-      // Fire webhook and Supabase insert in parallel
-      const [supabaseResult] = await Promise.all([
-        supabase.from('contact_submissions').insert({
-          name: payload.name,
-          email: payload.email,
-          project_type: payload.project_type,
-          message: payload.message,
-        }),
-        fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }).catch(() => null), // Webhook failure is non-blocking
-      ]);
+      // Send to Make.com webhook (no-cors to avoid CORS blocking)
+      await fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload),
+      });
 
-      if (supabaseResult?.error) {
-        setError('Something went wrong. Please try again.');
-        return;
-      }
+      // Supabase insert is non-blocking / best-effort
+      supabase.from('contact_submissions').insert({
+        name: payload.name,
+        email: payload.email,
+        project_type: payload.project_type,
+        message: payload.message,
+      }).then(() => {}).catch(() => {});
 
       setIsSuccess(true);
       setForm(INITIAL_FORM);

@@ -2,7 +2,6 @@ import { useState, useRef, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Send, CheckCircle, Clock, Mail, MessageSquare, AlertCircle, Check } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { supabase } from '../lib/supabase';
 
 const PROJECT_TYPES = ['Voice Agents', 'Chat Agents', 'Deep Agents', 'RAG & Memory', 'Multi-Agent Systems', 'Custom Build'];
 
@@ -60,10 +59,8 @@ const Contact = () => {
       email: form.email.trim(),
       project_type: form.types.join(', ') || 'General Inquiry',
       message: form.message.trim(),
-      submitted_at: new Date().toISOString(),
     };
 
-    // Basic client-side validation
     if (!payload.name || !payload.email || !payload.message) {
       setError('Please fill in all required fields.');
       setIsSubmitting(false);
@@ -71,21 +68,25 @@ const Contact = () => {
     }
 
     try {
-      // Send to Make.com webhook (no-cors to avoid CORS blocking)
-      await fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload),
-      });
+      const [apiRes] = await Promise.all([
+        fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }),
+        fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...payload, submitted_at: new Date().toISOString() }),
+        }).catch(() => null),
+      ]);
 
-      // Supabase insert is non-blocking / best-effort
-      supabase.from('contact_submissions').insert({
-        name: payload.name,
-        email: payload.email,
-        project_type: payload.project_type,
-        message: payload.message,
-      }).then(() => {}).catch(() => {});
+      const data = await apiRes.json();
+
+      if (!apiRes.ok) {
+        setError(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
 
       setIsSuccess(true);
       setForm(INITIAL_FORM);

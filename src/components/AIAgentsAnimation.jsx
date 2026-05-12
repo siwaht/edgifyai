@@ -1,6 +1,11 @@
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
+const seeded = (s) => {
+  const x = Math.sin(s * 9301 + 49297) * 49297;
+  return x - Math.floor(x);
+};
+
 const AGENTS = [
   { id: 'orchestrator', label: 'Orchestrator', x: 300, y: 200, size: 44, isCenter: true },
   { id: 'data', label: 'Data Agent', x: 120, y: 80, size: 34 },
@@ -25,66 +30,55 @@ const CONNECTIONS = [
 
 const getAgent = (id) => AGENTS.find((a) => a.id === id);
 
-const DataPacket = ({ fromAgent, toAgent, delay, accent }) => {
-  const dx = toAgent.x - fromAgent.x;
-  const dy = toAgent.y - fromAgent.y;
-
-  return (
-    <motion.circle
-      r={3}
-      fill={accent}
-      filter="url(#packetGlow)"
-      initial={{ cx: fromAgent.x, cy: fromAgent.y, opacity: 0 }}
-      animate={{
-        cx: [fromAgent.x, fromAgent.x + dx * 0.5, toAgent.x],
-        cy: [fromAgent.y, fromAgent.y + dy * 0.5, toAgent.y],
-        opacity: [0, 1, 1, 0],
-      }}
-      transition={{
-        duration: 2.5,
-        delay,
-        repeat: Infinity,
-        repeatDelay: 3,
-        ease: 'easeInOut',
-      }}
-    />
-  );
-};
+const DataPacket = ({ fromAgent, toAgent, delay, accent }) => (
+  <motion.circle
+    r={3}
+    fill={accent}
+    filter="url(#packetGlow)"
+    initial={{ cx: fromAgent.x, cy: fromAgent.y, opacity: 0 }}
+    animate={{
+      cx: [fromAgent.x, fromAgent.x + (toAgent.x - fromAgent.x) * 0.5, toAgent.x],
+      cy: [fromAgent.y, fromAgent.y + (toAgent.y - fromAgent.y) * 0.5, toAgent.y],
+      opacity: [0, 1, 1, 0],
+    }}
+    transition={{
+      duration: 2.5, delay,
+      repeat: Infinity, repeatDelay: 3, ease: 'easeInOut',
+    }}
+  />
+);
 
 const ConnectionLine = ({ from, to, delay, isDark }) => {
   const fromA = getAgent(from);
   const toA = getAgent(to);
-  const lineColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
 
   return (
     <g>
       <line
-        x1={fromA.x} y1={fromA.y}
-        x2={toA.x} y2={toA.y}
-        stroke={lineColor}
+        x1={fromA.x} y1={fromA.y} x2={toA.x} y2={toA.y}
+        stroke={isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}
         strokeWidth={1}
       />
       <motion.line
-        x1={fromA.x} y1={fromA.y}
-        x2={toA.x} y2={toA.y}
+        x1={fromA.x} y1={fromA.y} x2={toA.x} y2={toA.y}
         stroke={isDark ? 'rgba(6,182,212,0.3)' : 'rgba(8,145,178,0.3)'}
         strokeWidth={1.5}
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: [0, 1, 1, 0], opacity: [0, 0.8, 0.8, 0] }}
         transition={{
-          duration: 3,
-          delay: delay + 0.5,
-          repeat: Infinity,
-          repeatDelay: 2.5,
-          ease: 'easeInOut',
+          duration: 3, delay: delay + 0.5,
+          repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut',
         }}
       />
     </g>
   );
 };
 
-const AgentNode = ({ agent, isDark, colors }) => {
+const AgentNode = ({ agent, index, isDark, colors }) => {
   const isCenter = agent.isCenter;
+  const s1 = seeded(index * 3 + 1);
+  const s2 = seeded(index * 5 + 7);
+
   const bgFill = isDark
     ? (isCenter ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.04)')
     : (isCenter ? 'rgba(8,145,178,0.12)' : 'rgba(0,0,0,0.03)');
@@ -92,17 +86,21 @@ const AgentNode = ({ agent, isDark, colors }) => {
     ? (isCenter ? 'rgba(6,182,212,0.5)' : 'rgba(255,255,255,0.1)')
     : (isCenter ? 'rgba(8,145,178,0.4)' : 'rgba(0,0,0,0.1)');
 
+  const pulseR = agent.size + 14;
+
   return (
     <g>
       {isCenter && (
         <motion.circle
-          cx={agent.x} cy={agent.y} r={agent.size + 12}
+          cx={agent.x} cy={agent.y}
+          r={pulseR}
           fill="none"
           stroke={colors.accent}
           strokeWidth={1}
           opacity={0.15}
-          animate={{ r: [agent.size + 12, agent.size + 24, agent.size + 12] }}
+          animate={{ scale: [1, 1.5, 1], opacity: [0.15, 0, 0.15] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: `${agent.x}px ${agent.y}px` }}
         />
       )}
 
@@ -111,12 +109,10 @@ const AgentNode = ({ agent, isDark, colors }) => {
         fill={bgFill}
         stroke={borderStroke}
         strokeWidth={1}
-        animate={{
-          scale: isCenter ? [1, 1.04, 1] : [1, 1.06, 1],
-        }}
+        animate={{ scale: isCenter ? [1, 1.04, 1] : [1, 1.06, 1] }}
         transition={{
-          duration: isCenter ? 4 : 3,
-          delay: isCenter ? 0 : Math.random() * 2,
+          duration: isCenter ? 4 : 2.5 + s1,
+          delay: s2 * 2,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
@@ -124,15 +120,12 @@ const AgentNode = ({ agent, isDark, colors }) => {
       />
 
       <motion.circle
-        cx={agent.x} cy={agent.y}
-        r={4}
+        cx={agent.x} cy={agent.y} r={4}
         fill={colors.accent}
         animate={{ opacity: [0.4, 1, 0.4] }}
         transition={{
-          duration: 2,
-          delay: Math.random() * 1.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
+          duration: 2, delay: s1 * 1.5,
+          repeat: Infinity, ease: 'easeInOut',
         }}
       />
 
@@ -175,23 +168,18 @@ const StatusIndicator = ({ agent, colors, delay }) => (
     <rect
       x={agent.x + agent.size * 0.5}
       y={agent.y - agent.size * 0.8}
-      width={48}
-      height={20}
-      rx={10}
-      fill={colors.accent}
-      opacity={0.15}
+      width={48} height={20} rx={10}
+      fill={colors.accent} opacity={0.15}
     />
     <circle
       cx={agent.x + agent.size * 0.5 + 10}
       cy={agent.y - agent.size * 0.8 + 10}
-      r={3}
-      fill="#22c55e"
+      r={3} fill="#22c55e"
     />
     <text
       x={agent.x + agent.size * 0.5 + 18}
       y={agent.y - agent.size * 0.8 + 14}
-      fontSize={8}
-      fontWeight={600}
+      fontSize={8} fontWeight={600}
       fill={colors.textSecondary}
       fontFamily="inherit"
     >
@@ -208,12 +196,7 @@ const AIAgentsAnimation = () => {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        width: '100%',
-        maxWidth: 600,
-        margin: '0 auto',
-        position: 'relative',
-      }}
+      style={{ width: '100%', maxWidth: 600, margin: '0 auto', position: 'relative' }}
     >
       <div style={{
         position: 'absolute', inset: -40, zIndex: 0,
@@ -228,6 +211,7 @@ const AIAgentsAnimation = () => {
         viewBox="0 0 600 430"
         fill="none"
         style={{ width: '100%', height: 'auto', position: 'relative', zIndex: 1 }}
+        aria-label="AI agent network visualization"
       >
         <defs>
           <filter id="packetGlow">
@@ -242,10 +226,8 @@ const AIAgentsAnimation = () => {
         {CONNECTIONS.map((conn) => (
           <ConnectionLine
             key={`${conn.from}-${conn.to}`}
-            from={conn.from}
-            to={conn.to}
-            delay={conn.delay}
-            isDark={isDark}
+            from={conn.from} to={conn.to}
+            delay={conn.delay} isDark={isDark}
           />
         ))}
 
@@ -259,10 +241,11 @@ const AIAgentsAnimation = () => {
           />
         ))}
 
-        {AGENTS.map((agent) => (
+        {AGENTS.map((agent, i) => (
           <AgentNode
             key={agent.id}
             agent={agent}
+            index={i}
             isDark={isDark}
             colors={colors}
           />

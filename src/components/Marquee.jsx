@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Bot, Brain, Zap, Shield, Mic, MessageSquare, Database, Workflow, GitBranch, Users } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 const CAPABILITIES = [
   { icon: Mic, label: 'Voice Agents' },

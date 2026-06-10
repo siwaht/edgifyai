@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Linkedin, ArrowUpRight } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 import LegalModal from './LegalModal';
 import Logo from './Logo';
 

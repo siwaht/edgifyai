@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 const seed = (s) => {
   const x = Math.sin(s * 9301 + 49297) * 49297;
@@ -84,7 +84,7 @@ const buildEdges = (nodes) => {
 const NODES = buildNodes();
 const EDGES = buildEdges(NODES);
 
-const Neuron = ({ node, isDark, colors }) => {
+const Neuron = ({ node, isDark }) => {
   const s1 = seed(node.x * 7 + node.y * 13);
   const fill = isDark ? `${node.color}1a` : `${node.color}12`;
   const stroke = isDark ? `${node.color}55` : `${node.color}40`;
@@ -131,7 +131,7 @@ const Neuron = ({ node, isDark, colors }) => {
   );
 };
 
-const SignalPulse = ({ edge, index, colors }) => {
+const SignalPulse = ({ edge, index }) => {
   const d = seed(index * 17 + 3);
   const fromLayer = LAYERS[edge.from.layer];
   return (
@@ -243,12 +243,12 @@ const NeuralNetworkViz = () => {
 
             {/* Animated signals */}
             {animatedEdges.map((edge, i) => (
-              <SignalPulse key={`sig-${edge.id}`} edge={edge} index={i} colors={colors} />
+              <SignalPulse key={`sig-${edge.id}`} edge={edge} index={i} />
             ))}
 
             {/* Nodes */}
             {NODES.map((node) => (
-              <Neuron key={node.id} node={node} isDark={isDark} colors={colors} />
+              <Neuron key={node.id} node={node} isDark={isDark} />
             ))}
 
             {/* Layer labels with colored accent */}

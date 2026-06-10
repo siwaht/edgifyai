@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 const seeded = (s) => {
   const x = Math.sin(s * 9301 + 49297) * 49297;

@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Send, CheckCircle, Clock, Mail, MessageSquare, AlertCircle, Check } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 const PROJECT_TYPES = ['Voice Agents', 'Chat Agents', 'Deep Agents', 'RAG & Memory', 'Multi-Agent Systems', 'Custom Build'];
 

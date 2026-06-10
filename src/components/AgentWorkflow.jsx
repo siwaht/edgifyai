@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 // Neural network node positions — spread across the SVG canvas
 const NODES = [
@@ -42,7 +42,7 @@ const EDGES = [
 
 const getNode = (id) => NODES[id];
 
-const Edge = ({ from, to, index, isDark }) => {
+const Edge = ({ from, to, isDark }) => {
   const a = getNode(from);
   const b = getNode(to);
   const baseColor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)';
@@ -294,7 +294,7 @@ const AgentWorkflow = () => {
 
             {/* Static edges */}
             {EDGES.map(([from, to], i) => (
-              <Edge key={`e-${i}`} from={from} to={to} index={i} isDark={isDark} />
+              <Edge key={`e-${i}`} from={from} to={to} isDark={isDark} />
             ))}
 
             {/* Animated edges */}

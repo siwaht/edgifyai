@@ -1,4 +1,4 @@
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 /**
  * EdgeifyAI Logo
@@ -6,7 +6,7 @@ import { useTheme } from '../context/ThemeContext';
  * Style: Geometric, gradient, modern SaaS/AI aesthetic
  */
 const Logo = ({ size = 40, showText = true, className = '' }) => {
-  const { isDark, colors } = useTheme();
+  const { colors } = useTheme();
   const s = size;
   const textSize = Math.round(s * 0.45);
 

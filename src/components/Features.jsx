@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Network, Shield, Brain, Workflow, Database, GitBranch, Cpu, Users } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 const FEATURES = [
   { icon: Brain, title: 'Long & Short-Term Memory', description: 'Persistent memory systems that let agents recall past interactions and maintain context across sessions.', accent: '#8b5cf6' },

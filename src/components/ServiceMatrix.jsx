@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Mic, MessageSquare, Bot, Brain, ArrowUpRight } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme';
 
 const SERVICES = [
   {

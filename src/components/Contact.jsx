@@ -74,7 +74,7 @@ const Contact = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         }),
-        fetch('https://hook.eu2.make.com/eb6kxqhjieaceijtzwqcqs5makqr37cy', {
+        fetch('https://hook.eu2.make.com/mcgnqhptgj77mjg42kx5lbuj8w52zhov', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...payload, submitted_at: new Date().toISOString() }),

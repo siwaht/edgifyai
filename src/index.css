@@ -1,12 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&family=Outfit:wght@400;500;600;700;800&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  line-height: 1.6;
+  line-height: 1.5;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -27,6 +21,11 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+button {
+  font-family: inherit;
 }
 
 body {
@@ -111,6 +110,10 @@ body {
   100% { background-position: 200% 0; }
 }
 
+@keyframes border-spin {
+  to { transform: rotate(360deg); }
+}
+
 @keyframes pulse-ring {
   0% { transform: scale(1); opacity: 0.15; }
   100% { transform: scale(1.6); opacity: 0; }
@@ -118,6 +121,9 @@ body {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

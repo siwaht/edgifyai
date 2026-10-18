@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { Bot, Brain, Zap, Shield, Mic, MessageSquare, Database, Workflow, GitBranch, Users } from 'lucide-react';
+import { Eye, Brain, Plug, ShieldCheck, Mic, MessageSquare, BookOpenText, PhoneCall, GitBranch, Users, MousePointerClick, AudioLines } from 'lucide-react';
 import { useTheme } from '../context/theme';
 
 const CAPABILITIES = [
-  { icon: Mic, label: 'Voice Agents' },
+  { icon: PhoneCall, label: 'Voice Calling Agents' },
+  { icon: AudioLines, label: 'Voice Chat Agents' },
   { icon: MessageSquare, label: 'Chat Agents' },
-  { icon: Bot, label: 'Ambient Agents' },
-  { icon: Brain, label: 'Deep Reasoning' },
-  { icon: Database, label: 'RAG Pipelines' },
-  { icon: Workflow, label: 'MCP Tool Use' },
+  { icon: Eye, label: 'Vision Agents' },
+  { icon: BookOpenText, label: 'RAG Agents' },
+  { icon: MousePointerClick, label: 'Computer Use' },
+  { icon: Plug, label: 'MCP Tools' },
   { icon: GitBranch, label: 'A2A Protocol' },
+  { icon: Mic, label: 'Speech-to-Speech' },
+  { icon: Brain, label: 'Agent Memory' },
   { icon: Users, label: 'Human in the Loop' },
-  { icon: Shield, label: 'Safety Guardrails' },
-  { icon: Zap, label: 'Agent Memory' },
+  { icon: ShieldCheck, label: 'Guardrails' },
 ];
 
 const Dot = ({ isDark }) => (

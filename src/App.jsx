@@ -17,7 +17,7 @@ const PageLoader = ({ onComplete }) => {
   const { colors } = useTheme();
 
   useEffect(() => {
-    const timer = setTimeout(onComplete, 1500);
+    const timer = setTimeout(onComplete, 900);
     return () => clearTimeout(timer);
   }, [onComplete]);
 

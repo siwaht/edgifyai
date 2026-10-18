@@ -36,8 +36,8 @@ const Footer = () => {
             <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ textDecoration: 'none', display: 'inline-block', marginBottom: 14 }}>
               <Logo size={36} />
             </a>
-            <p style={{ fontSize: 14, color: colors.textMuted, lineHeight: 1.7 }}>
-              We design, build, and deploy production-ready AI agents for enterprise workflows.
+            <p style={{ fontSize: 14, color: colors.textMuted, lineHeight: 1.6 }}>
+              We design, build, and deploy production-ready voice, chat, vision, and RAG agents that work around the clock.
             </p>
           </div>
 

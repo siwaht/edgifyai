@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use(express.json());
+app.use(express.json({ limit: '20kb' }));
 
 if (!process.env.DATABASE_URL) {
   console.error('DATABASE_URL is not set');
@@ -31,21 +31,27 @@ async function initDb() {
   `);
 }
 
+const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const clean = (value, max) => (typeof value === 'string' ? value.trim().slice(0, max) : '');
+
 app.post('/api/contact', async (req, res) => {
-  const { name, email, project_type, message } = req.body;
+  const name = clean(req.body?.name, 200);
+  const email = clean(req.body?.email, 320);
+  const projectType = clean(req.body?.project_type, 500) || 'General Inquiry';
+  const message = clean(req.body?.message, 5000);
 
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Please fill in all required fields.' });
   }
 
-  if (name.trim().length === 0 || email.trim().length === 0 || message.trim().length === 0) {
-    return res.status(400).json({ error: 'Fields cannot be empty.' });
+  if (!EMAIL_PATTERN.test(email)) {
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
 
   try {
     await pool.query(
       'INSERT INTO contact_submissions (name, email, project_type, message) VALUES ($1, $2, $3, $4)',
-      [name.trim(), email.trim(), project_type || 'General Inquiry', message.trim()]
+      [name, email, projectType, message]
     );
     res.json({ success: true });
   } catch (err) {

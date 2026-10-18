@@ -1,12 +1,9 @@
+import { useId } from 'react';
 import { useTheme } from '../context/theme';
 
-/**
- * EdgeifyAI Logo
- * Logomark: Abstract "E" formed by 3 horizontal bars with a neural-network node accent
- * Style: Geometric, gradient, modern SaaS/AI aesthetic
- */
 const Logo = ({ size = 40, showText = true, className = '' }) => {
   const { colors } = useTheme();
+  const gradId = `logoGrad-${useId().replace(/:/g, '')}`;
   const s = size;
   const textSize = Math.round(s * 0.45);
 
@@ -22,28 +19,17 @@ const Logo = ({ size = 40, showText = true, className = '' }) => {
         style={{ flexShrink: 0 }}
       >
         <defs>
-          <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#06b6d4" />
             <stop offset="50%" stopColor="#0ea5e9" />
             <stop offset="100%" stopColor="#14b8a6" />
           </linearGradient>
-          <linearGradient id="logoGradAlt" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#06b6d4" />
-            <stop offset="100%" stopColor="#8b5cf6" />
-          </linearGradient>
-          <filter id="logoGlow">
-            <feGaussianBlur stdDeviation="2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
         {/* Background rounded square */}
         <rect
           x="0" y="0" width="48" height="48" rx="12"
-          fill="url(#logoGrad)"
+          fill={`url(#${gradId})`}
         />
 
         {/* Abstract "E" — 3 horizontal bars */}
@@ -56,7 +42,7 @@ const Logo = ({ size = 40, showText = true, className = '' }) => {
 
         {/* Neural node accent — small circle at the end of middle bar */}
         <circle cx="32" cy="24" r="4" fill="#fff" opacity="0.9" />
-        <circle cx="32" cy="24" r="2" fill="url(#logoGrad)" />
+        <circle cx="32" cy="24" r="2" fill={`url(#${gradId})`} />
 
         {/* Connection lines from node */}
         <line x1="32" y1="24" x2="37" y2="15" stroke="#fff" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />

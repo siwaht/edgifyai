@@ -5,10 +5,10 @@ export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(getInitialTheme);
 
   useEffect(() => {
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
     const root = document.documentElement;
     root.classList.toggle('dark', isDark);
     root.classList.toggle('light', !isDark);
+    root.style.colorScheme = isDark ? 'dark' : 'light';
   }, [isDark]);
 
   useEffect(() => {
@@ -20,7 +20,13 @@ export const ThemeProvider = ({ children }) => {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  const toggleTheme = useCallback(() => setIsDark((prev) => !prev), []);
+  const toggleTheme = useCallback(() => {
+    setIsDark((prev) => {
+      const next = !prev;
+      localStorage.setItem('theme', next ? 'dark' : 'light');
+      return next;
+    });
+  }, []);
   const colors = isDark ? darkColors : lightColors;
 
   const value = useMemo(() => ({ isDark, toggleTheme, colors }), [isDark, toggleTheme, colors]);

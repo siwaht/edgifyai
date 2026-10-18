@@ -8,12 +8,12 @@ const seeded = (s) => {
 
 const AGENTS = [
   { id: 'orchestrator', label: 'Orchestrator', x: 300, y: 200, size: 44, isCenter: true },
-  { id: 'data', label: 'Data Agent', x: 120, y: 80, size: 34 },
-  { id: 'code', label: 'Code Agent', x: 480, y: 80, size: 34 },
-  { id: 'analysis', label: 'Analysis', x: 520, y: 260, size: 34 },
-  { id: 'deploy', label: 'Deploy', x: 80, y: 260, size: 34 },
-  { id: 'monitor', label: 'Monitor', x: 180, y: 370, size: 30 },
-  { id: 'optimize', label: 'Optimize', x: 420, y: 370, size: 30 },
+  { id: 'data', label: 'Voice Calls', x: 120, y: 80, size: 34 },
+  { id: 'code', label: 'Voice Chat', x: 480, y: 80, size: 34 },
+  { id: 'analysis', label: 'Vision', x: 520, y: 260, size: 34 },
+  { id: 'deploy', label: 'Chat', x: 80, y: 260, size: 34 },
+  { id: 'monitor', label: 'RAG', x: 180, y: 370, size: 30 },
+  { id: 'optimize', label: 'Computer Use', x: 420, y: 370, size: 30 },
 ];
 
 const CONNECTIONS = [

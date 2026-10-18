@@ -1,17 +1,17 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Network, Shield, Brain, Workflow, Database, GitBranch, Cpu, Users } from 'lucide-react';
+import { Network, ShieldCheck, Brain, Plug, GitBranch, Gauge, Users, Activity } from 'lucide-react';
 import { useTheme } from '../context/theme';
 
 const FEATURES = [
-  { icon: Brain, title: 'Long & Short-Term Memory', description: 'Persistent memory systems that let agents recall past interactions and maintain context across sessions.', accent: '#8b5cf6' },
-  { icon: Database, title: 'RAG Pipelines', description: 'Retrieval-augmented generation with vector search, chunking strategies, and real-time knowledge grounding.', accent: '#0ea5e9' },
-  { icon: Workflow, title: 'Tool Use via MCP', description: 'Agents that browse the web, execute code, query databases, and use any API via Model Context Protocol.', accent: '#14b8a6' },
-  { icon: GitBranch, title: 'Agent-to-Agent (A2A)', description: 'Seamless inter-agent communication enabling delegation, collaboration, and multi-agent workflows.', accent: '#f59e0b' },
-  { icon: Network, title: 'Multi-Agent Orchestration', description: 'Coordinate swarms of specialized agents that plan, delegate, and self-organize around complex tasks.', accent: '#06b6d4' },
-  { icon: Cpu, title: 'Composable Skills', description: 'Modular skill libraries — from web browsing to code execution — that agents can learn, share, and compose.', accent: '#ec4899' },
-  { icon: Users, title: 'Human in the Loop', description: 'Configurable approval workflows, escalation paths, and oversight for safety-critical agent operations.', accent: '#a855f7' },
-  { icon: Shield, title: 'Safety & Guardrails', description: 'Built-in content filtering, rate limiting, and configurable boundaries to keep agents aligned and safe.', accent: '#10b981' },
+  { icon: Brain, title: 'Persistent Memory', description: 'Agents remember customers, preferences, and past conversations across every channel and session.', accent: '#0ea5e9' },
+  { icon: Plug, title: 'MCP Tool Access', description: 'Connect agents to CRMs, calendars, databases, and any API through the Model Context Protocol standard.', accent: '#14b8a6' },
+  { icon: GitBranch, title: 'Agent-to-Agent (A2A)', description: 'Agents discover and delegate to each other using the open A2A protocol, even across vendors.', accent: '#f59e0b' },
+  { icon: Network, title: 'Multi-Agent Orchestration', description: 'Supervisor and specialist agents plan, split, and verify complex work so nothing falls through the cracks.', accent: '#06b6d4' },
+  { icon: Gauge, title: 'Low-Latency Voice Stack', description: 'Streaming speech recognition, reasoning, and synthesis tuned for natural, human-speed conversation.', accent: '#f43f5e' },
+  { icon: Activity, title: 'Evals & Observability', description: 'Every call and chat is traced, scored, and replayable, so quality improves with each release.', accent: '#10b981' },
+  { icon: Users, title: 'Human in the Loop', description: 'Approval steps, live takeover, and smart escalation keep people in control of high-stakes actions.', accent: '#0891b2' },
+  { icon: ShieldCheck, title: 'Guardrails & Compliance', description: 'PII redaction, prompt-injection defense, and audit trails built for SOC 2, HIPAA, and GDPR teams.', accent: '#059669' },
 ];
 
 const FeatureCard = ({ feature, index }) => {
@@ -25,22 +25,23 @@ const FeatureCard = ({ feature, index }) => {
       viewport={{ once: true }}
       transition={{ duration: 0.45, delay: index * 0.07 }}
       style={{
-        padding: '28px 26px',
+        padding: '28px 24px',
         borderRadius: 20,
-        background: isDark ? 'rgba(20,20,30,0.5)' : '#ffffff',
-        border: `1px solid ${isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)'}`,
-        backdropFilter: 'blur(12px)',
-        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        background: isDark ? 'rgba(20,20,28,0.55)' : '#ffffff',
+        border: `1px solid ${colors.border}`,
+        boxShadow: isDark ? 'none' : '0 1px 3px rgba(15,23,42,0.05)',
+        transition: 'border-color 0.3s ease',
         cursor: 'default',
         position: 'relative',
         overflow: 'hidden',
+        height: '100%',
       }}
       whileHover={{
         y: -4,
+        borderColor: `${feature.accent}40`,
         boxShadow: isDark
-          ? `0 16px 48px rgba(0,0,0,0.35), 0 0 0 1px ${feature.accent}18`
-          : `0 16px 40px rgba(0,0,0,0.08), 0 0 0 1px ${feature.accent}18`,
-        borderColor: isDark ? `${feature.accent}25` : `${feature.accent}18`,
+          ? `0 16px 48px rgba(0,0,0,0.35)`
+          : `0 16px 40px rgba(15,23,42,0.08)`,
       }}
     >
       {/* Subtle corner glow */}
@@ -66,7 +67,7 @@ const FeatureCard = ({ feature, index }) => {
       }}>
         {feature.title}
       </h3>
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: colors.textSecondary }}>
+      <p style={{ fontSize: 14, lineHeight: 1.6, color: colors.textSecondary }}>
         {feature.description}
       </p>
     </motion.div>
@@ -101,26 +102,26 @@ const Features = () => {
         >
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '7px 16px', borderRadius: 100, marginBottom: 20,
-            background: isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.07)',
-            border: `1px solid ${isDark ? 'rgba(6,182,212,0.16)' : 'rgba(6,182,212,0.2)'}`,
+            padding: '7px 16px', borderRadius: 100, marginBottom: 24,
+            background: colors.accentMuted,
+            border: `1px solid ${isDark ? 'rgba(34,211,238,0.18)' : 'rgba(8,145,178,0.2)'}`,
           }}>
-            <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: isDark ? '#22d3ee' : '#0891b2' }}>
-              Under the Hood
+            <span style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: colors.accent }}>
+              The Agent Stack
             </span>
           </div>
           <h2 className="font-display" style={{
-            fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 800, color: colors.text,
-            marginBottom: 18, letterSpacing: '-0.03em', lineHeight: 1.1,
+            fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 800, color: colors.text,
+            marginBottom: 16, letterSpacing: '-0.035em', lineHeight: 1.1,
           }}>
-            What Powers Our Agents
+            Built on the Standards Shaping 2026
           </h2>
-          <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary, lineHeight: 1.7 }}>
-            The technical building blocks behind every agent we deploy — memory, reasoning, tool access, and multi-agent coordination.
+          <p style={{ fontSize: 'clamp(16px, 2vw, 18px)', color: colors.textSecondary, lineHeight: 1.6 }}>
+            Memory, open protocols, real-time voice, and enterprise-grade safety. These are the building blocks inside every agent we ship.
           </p>
         </motion.div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
           {FEATURES.map((feature, i) => (
             <FeatureCard key={feature.title} feature={feature} index={i} />
           ))}

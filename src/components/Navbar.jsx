@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: 'Services', href: '#services' },
   { label: 'Capabilities', href: '#capabilities' },
   { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Contact', href: '#contact' },
 ];
 
 const NavLink = ({ label, href, onClick }) => {
@@ -47,6 +48,18 @@ const Navbar = () => {
   }, []);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    const onResize = () => { if (window.innerWidth >= 768) setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [menuOpen]);
 
   const navBg = scrolled
     ? isDark ? 'rgba(10, 10, 15, 0.82)' : 'rgba(255, 255, 255, 0.82)'
@@ -125,7 +138,7 @@ const Navbar = () => {
                 e.currentTarget.style.boxShadow = isDark ? '0 4px 20px rgba(6,182,212,0.25)' : '0 4px 16px rgba(0,0,0,0.15)';
               }}
             >
-              Get Started
+              Book a Call
             </button>
           </div>
 
@@ -144,7 +157,8 @@ const Navbar = () => {
             </button>
             <button
               onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Toggle menu"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
               style={{
                 width: 38, height: 38, borderRadius: 10, border: 'none', cursor: 'pointer',
                 background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',

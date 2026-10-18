@@ -4,9 +4,9 @@ import { ArrowRight, Check, Zap } from 'lucide-react';
 import { useTheme } from '../context/theme';
 
 const BENEFITS = [
-  'Free architecture review',
-  'Custom agent design',
-  'Ongoing support & iteration',
+  'Free 30-minute strategy call',
+  'Working pilot in 2-4 weeks',
+  'Ongoing tuning & support',
 ];
 
 const CTA = () => {
@@ -17,7 +17,7 @@ const CTA = () => {
   return (
     <section ref={ref} style={{
       padding: 'clamp(72px,10vw,120px) 20px',
-      background: isDark ? '#0d0d14' : '#f8fafc',
+      background: colors.bgAlt,
     }}>
       <div style={{ maxWidth: 860, margin: '0 auto' }}>
         <motion.div
@@ -70,13 +70,13 @@ const CTA = () => {
               fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 800, color: colors.text,
               marginBottom: 18, letterSpacing: '-0.03em', lineHeight: 1.1,
             }}>
-              Let's Design Your AI Solution
+              Put Your First Agent to Work
             </h2>
             <p style={{
-              fontSize: 'clamp(15px, 2vw, 18px)', color: colors.textSecondary,
-              maxWidth: 480, margin: '0 auto 40px', lineHeight: 1.7,
+              fontSize: 'clamp(16px, 2vw, 18px)', color: colors.textSecondary,
+              maxWidth: 520, margin: '0 auto 40px', lineHeight: 1.6,
             }}>
-              Whether you need a simple chatbot or a fleet of autonomous agents — we'll architect the right system for your needs.
+              Start with one high-impact workflow, like answering calls, qualifying leads, or reading documents. Then scale to a full team of agents as results come in.
             </p>
 
             <div className="cta-buttons" style={{

@@ -3,7 +3,17 @@ import { motion, useInView } from 'framer-motion';
 import { Send, CheckCircle, Clock, Mail, MessageSquare, AlertCircle, Check } from 'lucide-react';
 import { useTheme } from '../context/theme';
 
-const PROJECT_TYPES = ['Voice Agents', 'Chat Agents', 'Deep Agents', 'RAG & Memory', 'Multi-Agent Systems', 'Custom Build'];
+const PROJECT_TYPES = ['Voice Calling Agents', 'Voice Chat Agents', 'Chat Agents', 'Vision Agents', 'RAG Agents', 'Multi-Agent Systems'];
+
+const WEBHOOK_URL = 'https://hook.eu2.make.com/mcgnqhptgj77mjg42kx5lbuj8w52zhov';
+const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+const postJson = (url, body) =>
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  }).then((res) => res.ok, () => false);
 
 const INITIAL_FORM = { name: '', email: '', types: [], message: '' };
 
@@ -66,35 +76,24 @@ const Contact = () => {
       setIsSubmitting(false);
       return;
     }
+    if (!EMAIL_PATTERN.test(payload.email)) {
+      setError('Please enter a valid email address.');
+      setIsSubmitting(false);
+      return;
+    }
 
-    try {
-      const [apiRes] = await Promise.all([
-        fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }),
-        fetch('https://hook.eu2.make.com/mcgnqhptgj77mjg42kx5lbuj8w52zhov', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...payload, submitted_at: new Date().toISOString() }),
-        }).catch(() => null),
-      ]);
+    const results = await Promise.all([
+      postJson('/api/contact', payload),
+      postJson(WEBHOOK_URL, { ...payload, submitted_at: new Date().toISOString() }),
+    ]);
 
-      const data = await apiRes.json();
-
-      if (!apiRes.ok) {
-        setError(data.error || 'Something went wrong. Please try again.');
-        return;
-      }
-
+    if (results.some(Boolean)) {
       setIsSuccess(true);
       setForm(INITIAL_FORM);
-    } catch {
-      setError('Network error. Please check your connection and try again.');
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      setError('We could not send your message. Please try again or email us directly.');
     }
+    setIsSubmitting(false);
   }, [form]);
 
   const inputStyle = (field) => ({
@@ -130,7 +129,7 @@ const Contact = () => {
   return (
     <section ref={ref} id="contact" style={{
       padding: 'clamp(60px, 10vw, 120px) 20px',
-      background: isDark ? '#0d0d14' : '#f8fafc',
+      background: colors.bgAlt,
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -168,14 +167,14 @@ const Contact = () => {
             </span>
           </div>
 
-          <h2 style={{
-            fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 700,
-            color: colors.text, marginBottom: 16, lineHeight: 1.15, letterSpacing: '-0.03em',
+          <h2 className="font-display" style={{
+            fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800,
+            color: colors.text, marginBottom: 16, lineHeight: 1.1, letterSpacing: '-0.035em',
           }}>
-            Ready to build your{' '}
+            Ready to launch your{' '}
             <span
               className="gradient-text"
-              style={{ background: 'linear-gradient(135deg, #06b6d4, #0284c7)' }}
+              style={{ background: 'linear-gradient(135deg, #06b6d4, #10b981)' }}
             >AI Agent?</span>
           </h2>
 
@@ -183,7 +182,7 @@ const Contact = () => {
             fontSize: 'clamp(15px, 2vw, 17px)', lineHeight: 1.7,
             color: colors.textSecondary, maxWidth: 520, marginBottom: 40,
           }}>
-            Book a consultation with our agent architects. We'll map your workflows and design the right agent system for your needs.
+            Book a free strategy call with our agent architects. We'll map your workflows, pick the right voice, chat, or vision stack, and scope a production pilot in weeks, not quarters.
           </p>
 
           <ContactInfo isDark={isDark} colors={colors} />
@@ -278,6 +277,7 @@ const Contact = () => {
                     style={inputStyle('name')}
                     placeholder="John Doe"
                     autoComplete="name"
+                    maxLength={200}
                   />
                 </div>
                 <div>
@@ -291,6 +291,7 @@ const Contact = () => {
                     style={inputStyle('email')}
                     placeholder="john@company.com"
                     autoComplete="email"
+                    maxLength={320}
                   />
                 </div>
               </div>
@@ -310,8 +311,10 @@ const Contact = () => {
                               : [...prev.types, type],
                           }));
                         }}
+                        aria-pressed={isActive}
                         style={{
                           padding: '10px 12px', borderRadius: 10, fontSize: 13, fontWeight: 500,
+                          fontFamily: 'inherit', textAlign: 'center', lineHeight: 1.3,
                           cursor: 'pointer', transition: 'all 0.2s ease',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                           border: `1px solid ${isActive
@@ -342,7 +345,8 @@ const Contact = () => {
                   onFocus={() => setFocusedField('message')}
                   onBlur={() => setFocusedField(null)}
                   style={{ ...inputStyle('message'), resize: 'none' }}
-                  placeholder="Tell us about your project..."
+                  placeholder="Tell us about the workflow you want to automate..."
+                  maxLength={5000}
                 />
               </div>
 
@@ -363,6 +367,7 @@ const Contact = () => {
                 style={{
                   width: '100%', padding: '16px 24px', borderRadius: 14,
                   border: 'none', cursor: isSubmitting ? 'wait' : 'pointer',
+                  fontFamily: 'inherit',
                   fontSize: 16, fontWeight: 600,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                   background: 'linear-gradient(135deg, #06b6d4, #0284c7)',

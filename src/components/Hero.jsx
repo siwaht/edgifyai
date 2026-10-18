@@ -5,10 +5,10 @@ import { useTheme } from '../context/theme';
 import AIAgentsAnimation from './AIAgentsAnimation';
 
 const STATS = [
-  { value: '12+', label: 'Agent Types' },
-  { value: '99.9%', label: 'Uptime SLA' },
-  { value: '24/7', label: 'Autonomous Ops' },
-  { value: '500+', label: 'Agents Deployed' },
+  { value: '6', label: 'Agent Types' },
+  { value: '<800ms', label: 'Voice Latency' },
+  { value: '24/7', label: 'Always On' },
+  { value: '30+', label: 'Languages' },
 ];
 
 const containerVariants = {
@@ -57,7 +57,7 @@ const Hero = () => {
         <div style={{
           position: 'absolute', top: '25%', right: '10%', width: '30vw', height: '30vw',
           borderRadius: '50%',
-          background: isDark ? 'radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%)' : 'radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%)',
+          background: isDark ? 'radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%)' : 'radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 70%)',
           filter: 'blur(80px)',
           animation: 'float-gentle 14s ease-in-out infinite', animationDelay: '-8s',
         }} />
@@ -88,43 +88,44 @@ const Hero = () => {
             border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'}`,
             color: colors.textSecondary,
           }}>
-            <Sparkles size={13} style={{ color: '#22d3ee' }} />
-            Next-Generation AI Agents
+            <span style={{ position: 'relative', display: 'inline-flex', width: 8, height: 8 }}>
+              <span style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: colors.success, animation: 'pulse-ring 1.8s ease-out infinite' }} />
+              <span style={{ position: 'relative', width: 8, height: 8, borderRadius: '50%', background: colors.success }} />
+            </span>
+            Voice, Chat & Vision Agents for 2026
             <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4,
               padding: '4px 12px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-              background: isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.1)',
-              color: isDark ? '#22d3ee' : '#0891b2',
+              background: colors.accentMuted,
+              color: colors.accent,
               letterSpacing: '0.02em',
-            }}>New</span>
+            }}><Sparkles size={12} /> New</span>
           </div>
         </motion.div>
 
         {/* Headline */}
         <motion.h1 variants={itemVariants} className="font-display" style={{
-          fontSize: 'clamp(46px, 8vw, 90px)', fontWeight: 800,
-          lineHeight: 1.02, letterSpacing: '-0.04em', marginBottom: 28, color: colors.text,
+          fontSize: 'clamp(44px, 8vw, 88px)', fontWeight: 800,
+          lineHeight: 1.05, letterSpacing: '-0.045em', marginBottom: 28, color: colors.text,
         }}>
-          Build the Future
+          AI Agents That
           <br />
-          <span style={{ position: 'relative', display: 'inline-block' }}>
-            <span
-              className="gradient-text"
-              style={{
-                background: `linear-gradient(135deg, #06b6d4 0%, #14b8a6 50%, #06b6d4 100%)`,
-                backgroundSize: '200% auto',
-                animation: 'shimmer 5s linear infinite',
-              }}
-            >with Intelligent</span>
-          </span>
-          {' '}Agents
+          <span
+            className="gradient-text"
+            style={{
+              background: 'linear-gradient(110deg, #06b6d4 0%, #10b981 35%, #22d3ee 65%, #06b6d4 100%)',
+              backgroundSize: '200% auto',
+              animation: 'shimmer 6s linear infinite',
+            }}
+          >Talk, See & Act</span>
         </motion.h1>
 
         {/* Subheading */}
         <motion.p variants={itemVariants} style={{
-          fontSize: 'clamp(17px, 2.2vw, 20px)', lineHeight: 1.75,
-          color: colors.textSecondary, maxWidth: 580, margin: '0 auto 52px', fontWeight: 400,
+          fontSize: 'clamp(17px, 2.2vw, 20px)', lineHeight: 1.6,
+          color: colors.textSecondary, maxWidth: 620, margin: '0 auto 48px', fontWeight: 400,
         }}>
-          From simple chatbots to enterprise-grade autonomous agents — we design, build, and deploy AI agents with memory, reasoning, and real-world tool access.
+          We design and deploy production-ready voice calling agents, real-time voice chat, omnichannel chat, vision, and RAG agents that answer customers, run workflows, and grow your business around the clock.
         </motion.p>
 
         {/* CTA buttons */}
@@ -160,7 +161,7 @@ const Hero = () => {
                 : '0 8px 24px rgba(6,182,212,0.35)';
             }}
           >
-            Get a Consultation
+            Book a Free Strategy Call
             <ArrowRight size={17} />
           </button>
           <button
@@ -215,7 +216,6 @@ const Hero = () => {
                 transition={{ delay: i * 0.08, duration: 0.5 }}
                 style={{ textAlign: 'center', position: 'relative' }}
               >
-                {i > 0 && i % 2 === 0 ? null : null}
                 <div className="font-display" style={{
                   fontSize: 'clamp(30px, 4vw, 48px)', fontWeight: 800,
                   letterSpacing: '-0.04em', marginBottom: 6,

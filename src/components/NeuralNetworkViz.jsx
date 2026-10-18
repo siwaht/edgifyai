@@ -11,32 +11,32 @@ const seed = (s) => {
 const LAYERS = [
   {
     x: 80, count: 4, r: 9,
-    label: 'User Input',
-    tags: ['Voice', 'Text', 'API', 'Event'],
+    label: 'Multimodal Input',
+    tags: ['Phone call', 'Voice', 'Chat', 'Image / Video'],
     color: '#06b6d4',
   },
   {
     x: 250, count: 6, r: 11,
     label: 'Context & Memory',
-    tags: ['RAG', 'Short-term', 'Long-term', 'Knowledge', 'History', 'Embeddings'],
-    color: '#8b5cf6',
+    tags: ['Agentic RAG', 'Session memory', 'Customer profile', 'Knowledge graph', 'History', 'Vector search'],
+    color: '#0ea5e9',
   },
   {
     x: 430, count: 6, r: 11,
     label: 'Reasoning & Planning',
-    tags: ['Chain-of-thought', 'Tool selection', 'Goal decomp', 'A2A routing', 'Guardrails', 'Evaluation'],
+    tags: ['Planning', 'Tool selection', 'Task breakdown', 'A2A routing', 'Guardrails', 'Self-check'],
     color: '#14b8a6',
   },
   {
     x: 610, count: 5, r: 10,
-    label: 'Skill Execution',
-    tags: ['MCP tools', 'Code exec', 'Web browse', 'DB query', 'API call'],
+    label: 'Tool Execution',
+    tags: ['MCP tools', 'CRM update', 'Computer use', 'Booking', 'API call'],
     color: '#f59e0b',
   },
   {
     x: 770, count: 3, r: 9,
     label: 'Agent Output',
-    tags: ['Response', 'Action', 'Escalation'],
+    tags: ['Spoken reply', 'Action taken', 'Human handoff'],
     color: '#10b981',
   },
 ];
@@ -119,7 +119,7 @@ const Neuron = ({ node, isDark }) => {
         <text
           x={node.x + node.r + 6}
           y={node.y + 4}
-          fill={isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)'}
+          fill={isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)'}
           fontSize={8}
           fontFamily="inherit"
           fontWeight={500}
@@ -165,8 +165,8 @@ const NeuralNetworkViz = () => {
 
   return (
     <section ref={ref} id="how-it-works" style={{
-      padding: '80px 20px 40px',
-      background: isDark ? '#0d0d14' : '#f8fafc',
+      padding: 'clamp(80px,10vw,128px) 20px clamp(48px,6vw,72px)',
+      background: colors.bg,
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -180,30 +180,31 @@ const NeuralNetworkViz = () => {
 
       <div style={{ maxWidth: 1000, margin: '0 auto', position: 'relative', zIndex: 10 }}>
         <motion.div
-          style={{ textAlign: 'center', marginBottom: 40 }}
+          style={{ textAlign: 'center', marginBottom: 48 }}
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '8px 16px', fontSize: 12, fontWeight: 600,
-            letterSpacing: '0.05em', textTransform: 'uppercase', borderRadius: 100,
-            background: isDark ? 'rgba(139,92,246,0.12)' : 'rgba(124,58,237,0.08)',
-            color: isDark ? '#a78bfa' : '#7c3aed',
-            marginBottom: 20,
-          }}>Agent Pipeline</span>
+            padding: '7px 16px', fontSize: 12, fontWeight: 600,
+            letterSpacing: '0.08em', textTransform: 'uppercase', borderRadius: 100,
+            background: colors.accentMuted,
+            border: `1px solid ${isDark ? 'rgba(34,211,238,0.18)' : 'rgba(8,145,178,0.2)'}`,
+            color: colors.accent,
+            marginBottom: 24,
+          }}>How It Works</span>
           <h2 className="font-display" style={{
-            fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 700,
-            color: colors.text, marginBottom: 12,
+            fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 800,
+            color: colors.text, marginBottom: 16, letterSpacing: '-0.035em', lineHeight: 1.1,
           }}>
-            From Input to Intelligent Action
+            From First Word to Finished Task
           </h2>
           <p style={{
-            fontSize: 'clamp(14px, 2vw, 16px)', color: colors.textSecondary,
-            maxWidth: 520, margin: '0 auto', lineHeight: 1.7,
+            fontSize: 'clamp(16px, 2vw, 18px)', color: colors.textSecondary,
+            maxWidth: 600, margin: '0 auto', lineHeight: 1.6,
           }}>
-            Every request flows through memory retrieval, reasoning, tool selection, and execution — just like a neural network, but built for real-world agent tasks.
+            Whether a customer calls, types, or shares a photo, every request flows through memory, reasoning, and real tool use, ending in a spoken answer, a completed action, or a smooth handoff to your team.
           </p>
         </motion.div>
 
@@ -218,7 +219,7 @@ const NeuralNetworkViz = () => {
             fill="none"
             style={{ width: '100%', height: 'auto' }}
             role="img"
-            aria-label="AI agent pipeline visualization showing data flowing from user input through memory, reasoning, skill execution, to agent output"
+            aria-label="AI agent pipeline: multimodal input flows through context and memory, reasoning and planning, and tool execution to the agent output"
           >
             <defs>
               <filter id="nnGlow">

@@ -1,67 +1,80 @@
-import { useState, useRef, useCallback } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Send, CheckCircle, Clock, Mail, MessageSquare, AlertCircle, Check } from 'lucide-react';
-import { useTheme } from '../context/theme';
+import { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, CircleCheck, Clock, Mail, CalendarCheck, CircleAlert, Check } from 'lucide-react';
+import { BRAND, SERVICE_NAMES } from '../data/site';
+import './Contact.css';
 
-const PROJECT_TYPES = ['Voice Calling Agents', 'Voice Chat Agents', 'Chat Agents', 'Vision Agents', 'RAG Agents', 'Multi-Agent Systems'];
+const SERVICE_OPTIONS = [...SERVICE_NAMES, 'Not sure yet'];
 
+// Production is deployed as a static site, so the Make.com webhook is the delivery path that always works.
+// The /api/contact route is used when the Express server is running (local dev / full-stack deploys).
 const WEBHOOK_URL = 'https://hook.eu2.make.com/mcgnqhptgj77mjg42kx5lbuj8w52zhov';
 const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const REQUEST_TIMEOUT_MS = 15000;
 
-const postJson = (url, body) =>
-  fetch(url, {
+const post = (url, body) => {
+  const signal = typeof AbortSignal !== 'undefined' && AbortSignal.timeout
+    ? AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+    : undefined;
+  return fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-  }).then((res) => res.ok, () => false);
+    signal,
+  });
+};
 
-const INITIAL_FORM = { name: '', email: '', types: [], message: '' };
+// A static host can answer POST /api/contact with index.html and a 200, so only a JSON success counts.
+const sendToApi = (payload) =>
+  post('/api/contact', payload)
+    .then(async (res) => {
+      if (!res.ok) return false;
+      const data = await res.json().catch(() => null);
+      return data?.success === true;
+    })
+    .catch(() => false);
 
-const ContactInfo = ({ isDark, colors }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-    {[
-      { icon: Mail, title: 'Email Us', lines: ['hello@edgeifyai.com', 'support@edgeifyai.com'] },
-      { icon: Clock, title: 'Response Time', lines: ['We typically respond within 24 hours', 'Mon - Fri, 9am - 6pm PST'] },
-    ].map(({ icon: Icon, title, lines }) => (
-      <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-        <div style={{
-          padding: 14, borderRadius: 16,
-          background: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
-          boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.2)' : '0 4px 20px rgba(0,0,0,0.06)',
-          border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'}`,
-          flexShrink: 0,
-        }}>
-          <Icon size={22} style={{ color: '#06b6d4' }} />
-        </div>
-        <div>
-          <h4 style={{ fontSize: 16, fontWeight: 600, color: colors.text, marginBottom: 4 }}>{title}</h4>
-          {lines.map((line) => (
-            <p key={line} style={{ fontSize: 14, color: colors.textMuted, lineHeight: 1.6 }}>{line}</p>
-          ))}
-        </div>
-      </div>
-    ))}
-  </div>
-);
+const sendToWebhook = (payload) =>
+  post(WEBHOOK_URL, { ...payload, submitted_at: new Date().toISOString() })
+    .then((res) => res.ok)
+    .catch(() => false);
+
+const INITIAL_FORM = { name: '', email: '', types: [], message: '', website: '' };
+
+const CONTACT_INFO = [
+  {
+    icon: Mail,
+    title: 'Email',
+    lines: [
+      <a key="hello" href={`mailto:${BRAND.email}`}>{BRAND.email}</a>,
+      <a key="support" href={`mailto:${BRAND.supportEmail}`}>{BRAND.supportEmail}</a>,
+    ],
+  },
+  { icon: Clock, title: 'Response time', lines: ['Within one business day', 'Mon–Fri, 9am–6pm PT'] },
+  { icon: CalendarCheck, title: 'What happens next', lines: ['We reply with times for a 30-minute call', 'and a few questions about your workflow'] },
+];
 
 const Contact = () => {
-  const { isDark, colors } = useTheme();
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
-
   const [form, setForm] = useState(INITIAL_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
-  const [focusedField, setFocusedField] = useState(null);
 
-  const updateField = useCallback((field, value) => {
+  const updateField = useCallback((field) => (e) => {
+    const { value } = e.target;
     setForm((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const toggleType = useCallback((type) => {
+    setForm((prev) => ({
+      ...prev,
+      types: prev.types.includes(type) ? prev.types.filter((t) => t !== type) : [...prev.types, type],
+    }));
   }, []);
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    if (isSubmitting) return;
     setError(null);
 
     const payload = {
@@ -72,352 +85,229 @@ const Contact = () => {
     };
 
     if (!payload.name || !payload.email || !payload.message) {
-      setError('Please fill in all required fields.');
-      setIsSubmitting(false);
+      setError('Please fill in your name, email, and a short message.');
       return;
     }
     if (!EMAIL_PATTERN.test(payload.email)) {
       setError('Please enter a valid email address.');
-      setIsSubmitting(false);
       return;
     }
 
-    const results = await Promise.all([
-      postJson('/api/contact', payload),
-      postJson(WEBHOOK_URL, { ...payload, submitted_at: new Date().toISOString() }),
-    ]);
+    // Honeypot: real visitors never see or fill this field.
+    if (form.website) {
+      setIsSuccess(true);
+      setForm(INITIAL_FORM);
+      return;
+    }
+
+    setIsSubmitting(true);
+    const results = await Promise.all([sendToApi(payload), sendToWebhook(payload)]);
+    setIsSubmitting(false);
 
     if (results.some(Boolean)) {
       setIsSuccess(true);
       setForm(INITIAL_FORM);
     } else {
-      setError('We could not send your message. Please try again or email us directly.');
+      setError(`We could not send your message. Please try again or email us at ${BRAND.email}.`);
     }
-    setIsSubmitting(false);
-  }, [form]);
-
-  const inputStyle = (field) => ({
-    width: '100%',
-    padding: '14px 16px',
-    borderRadius: 12,
-    border: `1px solid ${focusedField === field
-      ? '#06b6d4'
-      : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)'}`,
-    background: isDark
-      ? (focusedField === field ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.05)')
-      : (focusedField === field ? '#ffffff' : '#f8fafc'),
-    color: colors.text,
-    fontSize: 15,
-    outline: 'none',
-    transition: 'all 0.2s ease',
-    fontFamily: 'inherit',
-    boxShadow: focusedField === field
-      ? isDark ? '0 0 0 3px rgba(6,182,212,0.15)' : '0 0 0 3px rgba(6,182,212,0.1)'
-      : 'none',
-  });
-
-  const labelStyle = {
-    display: 'block',
-    fontSize: 12,
-    fontWeight: 600,
-    textTransform: 'uppercase',
-    letterSpacing: '0.06em',
-    color: colors.textMuted,
-    marginBottom: 8,
-  };
+  }, [form, isSubmitting]);
 
   return (
-    <section ref={ref} id="contact" style={{
-      padding: 'clamp(60px, 10vw, 120px) 20px',
-      background: colors.bgAlt,
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      <div style={{
-        position: 'absolute', top: -200, right: -200, width: 600, height: 600,
-        borderRadius: '50%', pointerEvents: 'none',
-        background: isDark ? 'rgba(6,182,212,0.06)' : 'rgba(6,182,212,0.04)',
-        filter: 'blur(120px)',
-      }} />
-      <div style={{
-        position: 'absolute', bottom: -200, left: -200, width: 500, height: 500,
-        borderRadius: '50%', pointerEvents: 'none',
-        background: isDark ? 'rgba(14,165,233,0.05)' : 'rgba(14,165,233,0.03)',
-        filter: 'blur(120px)',
-      }} />
-
-      <div style={{
-        maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1,
-        display: 'grid', gridTemplateColumns: '1fr', gap: 48,
-      }} className="contact-grid">
+    <section id="contact" className="section section--alt">
+      <div className="contact__glow" aria-hidden="true" />
+      <div className="container contact">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          className="contact__intro"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '8px 16px', borderRadius: 100, marginBottom: 24,
-            background: isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.08)',
-            border: `1px solid ${isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.2)'}`,
-          }}>
-            <MessageSquare size={14} style={{ color: '#06b6d4' }} />
-            <span style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: isDark ? '#22d3ee' : '#0891b2' }}>
-              Get in Touch
-            </span>
-          </div>
-
-          <h2 className="font-display" style={{
-            fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800,
-            color: colors.text, marginBottom: 16, lineHeight: 1.1, letterSpacing: '-0.035em',
-          }}>
-            Ready to launch your{' '}
-            <span
-              className="gradient-text"
-              style={{ background: 'linear-gradient(135deg, #06b6d4, #10b981)' }}
-            >AI Agent?</span>
+          <span className="eyebrow">Contact</span>
+          <h2 className="section-title">
+            Tell us what you want to <span className="grad-text">automate</span>
           </h2>
-
-          <p style={{
-            fontSize: 'clamp(15px, 2vw, 17px)', lineHeight: 1.7,
-            color: colors.textSecondary, maxWidth: 520, marginBottom: 40,
-          }}>
-            Book a free strategy call with our agent architects. We'll map your workflows, pick the right voice, chat, or vision stack, and scope a production pilot in weeks, not quarters.
+          <p className="section-lead">
+            Book a free strategy call with our agent team. We will look at your workflows, recommend
+            the right voice, chat, or vision setup, and outline a pilot you can launch in weeks.
           </p>
 
-          <ContactInfo isDark={isDark} colors={colors} />
+          <ul className="contact__info">
+            {CONTACT_INFO.map(({ icon: Icon, title, lines }) => (
+              <li key={title}>
+                <span className="icon-tile"><Icon size={19} strokeWidth={1.8} /></span>
+                <div>
+                  <h3 className="contact__info-title">{title}</h3>
+                  {lines.map((line, i) => (
+                    <p key={i} className="contact__info-line">{line}</p>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div style={{
-            borderRadius: 24, padding: 'clamp(24px, 4vw, 40px)',
-            background: isDark ? 'rgba(28, 28, 36, 0.6)' : 'rgba(255,255,255,0.9)',
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}`,
-            backdropFilter: 'blur(20px)',
-            boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.3)' : '0 20px 60px rgba(0,0,0,0.06)',
-            position: 'relative', overflow: 'hidden',
-          }}>
-            <div style={{
-              position: 'absolute', top: -60, right: -60, width: 200, height: 200,
-              borderRadius: '50%', pointerEvents: 'none',
-              background: isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.04)',
-              filter: 'blur(60px)',
-            }} />
-
-            {isSuccess ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-                style={{
-                  position: 'relative', zIndex: 1,
-                  display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', textAlign: 'center',
-                  padding: '60px 24px', minHeight: 400,
-                }}
-              >
+          <div className="contact__card card">
+            <AnimatePresence mode="wait" initial={false}>
+              {isSuccess ? (
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.15, type: 'spring', stiffness: 200, damping: 15 }}
-                  style={{
-                    width: 80, height: 80, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #10b981, #06b6d4)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    marginBottom: 28,
-                    boxShadow: '0 12px 40px rgba(16,185,129,0.3)',
-                  }}
+                  key="success"
+                  className="contact__success"
+                  role="status"
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <CheckCircle size={40} color="#ffffff" />
+                  <motion.span
+                    className="contact__success-icon"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.1, type: 'spring', stiffness: 220, damping: 16 }}
+                  >
+                    <CircleCheck size={34} />
+                  </motion.span>
+                  <h3 className="contact__success-title font-display">Thanks, your message is in</h3>
+                  <p className="contact__success-text">
+                    We will reply within one business day with a few times for a strategy call.
+                  </p>
+                  <button type="button" className="btn btn-secondary" onClick={() => setIsSuccess(false)}>
+                    Send another message
+                  </button>
                 </motion.div>
-
-                <h3 style={{
-                  fontSize: 26, fontWeight: 700, color: colors.text,
-                  marginBottom: 12, letterSpacing: '-0.02em',
-                }}>
-                  Message Sent Successfully
-                </h3>
-
-                <p style={{
-                  fontSize: 16, lineHeight: 1.7, color: colors.textSecondary,
-                  maxWidth: 380, marginBottom: 32,
-                }}>
-                  Thank you for reaching out. Our team will review your message and get back to you within 24 hours.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => setIsSuccess(false)}
-                  style={{
-                    padding: '14px 32px', borderRadius: 12,
-                    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    background: isDark ? 'rgba(255,255,255,0.06)' : '#f8fafc',
-                    color: colors.text, fontSize: 15, fontWeight: 600,
-                    cursor: 'pointer', transition: 'all 0.2s ease',
-                  }}
+              ) : (
+                <motion.form
+                  key="form"
+                  onSubmit={handleSubmit}
+                  noValidate
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  Send Another Message
-                </button>
-              </motion.div>
-            ) : (
-            <form onSubmit={handleSubmit} style={{ position: 'relative', zIndex: 1 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }} className="form-name-email">
-                <div>
-                  <label htmlFor="contact-name" style={labelStyle}>Your Name</label>
-                  <input
-                    id="contact-name"
-                    type="text" required value={form.name}
-                    onChange={(e) => updateField('name', e.target.value)}
-                    onFocus={() => setFocusedField('name')}
-                    onBlur={() => setFocusedField(null)}
-                    style={inputStyle('name')}
-                    placeholder="John Doe"
-                    autoComplete="name"
-                    maxLength={200}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="contact-email" style={labelStyle}>Email Address</label>
-                  <input
-                    id="contact-email"
-                    type="email" required value={form.email}
-                    onChange={(e) => updateField('email', e.target.value)}
-                    onFocus={() => setFocusedField('email')}
-                    onBlur={() => setFocusedField(null)}
-                    style={inputStyle('email')}
-                    placeholder="john@company.com"
-                    autoComplete="email"
-                    maxLength={320}
-                  />
-                </div>
-              </div>
+                  <div className="contact__row">
+                    <div className="field">
+                      <label htmlFor="contact-name" className="field__label">Your name</label>
+                      <input
+                        id="contact-name"
+                        className="field__input"
+                        type="text"
+                        required
+                        value={form.name}
+                        onChange={updateField('name')}
+                        placeholder="Jane Smith"
+                        autoComplete="name"
+                        maxLength={200}
+                      />
+                    </div>
+                    <div className="field">
+                      <label htmlFor="contact-email" className="field__label">Work email</label>
+                      <input
+                        id="contact-email"
+                        className="field__input"
+                        type="email"
+                        required
+                        value={form.email}
+                        onChange={updateField('email')}
+                        placeholder="jane@company.com"
+                        autoComplete="email"
+                        maxLength={320}
+                      />
+                    </div>
+                  </div>
 
-              <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle}>Services Needed <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(select all that apply)</span></label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }} className="form-project-types">
-                  {PROJECT_TYPES.map((type) => {
-                    const isActive = form.types.includes(type);
-                    return (
-                      <button key={type} type="button"
-                        onClick={() => {
-                          setForm((prev) => ({
-                            ...prev,
-                            types: isActive
-                              ? prev.types.filter((t) => t !== type)
-                              : [...prev.types, type],
-                          }));
-                        }}
-                        aria-pressed={isActive}
-                        style={{
-                          padding: '10px 12px', borderRadius: 10, fontSize: 13, fontWeight: 500,
-                          fontFamily: 'inherit', textAlign: 'center', lineHeight: 1.3,
-                          cursor: 'pointer', transition: 'all 0.2s ease',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                          border: `1px solid ${isActive
-                            ? isDark ? 'rgba(6,182,212,0.3)' : 'rgba(6,182,212,0.3)'
-                            : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
-                          background: isActive
-                            ? isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.08)'
-                            : isDark ? 'rgba(255,255,255,0.05)' : '#f8fafc',
-                          color: isActive
-                            ? isDark ? '#22d3ee' : '#0891b2'
-                            : colors.textSecondary,
-                        }}
+                  <fieldset className="field">
+                    <legend className="field__label">
+                      What are you interested in? <span className="field__hint">Select all that apply</span>
+                    </legend>
+                    <div className="chips">
+                      {SERVICE_OPTIONS.map((type) => {
+                        const isActive = form.types.includes(type);
+                        return (
+                          <button
+                            key={type}
+                            type="button"
+                            className={`chip ${isActive ? 'is-active' : ''}`}
+                            onClick={() => toggleType(type)}
+                            aria-pressed={isActive}
+                          >
+                            {isActive && <Check size={13} strokeWidth={2.75} />}
+                            {type}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+
+                  <div className="field">
+                    <label htmlFor="contact-message" className="field__label">What would you like to automate?</label>
+                    <textarea
+                      id="contact-message"
+                      className="field__input field__textarea"
+                      rows={5}
+                      required
+                      value={form.message}
+                      onChange={updateField('message')}
+                      placeholder="For example: we miss a lot of calls after 5pm and want an agent that answers, qualifies, and books appointments."
+                      maxLength={5000}
+                    />
+                  </div>
+
+                  {/* Honeypot field for bots */}
+                  <div className="sr-only" aria-hidden="true">
+                    <label htmlFor="contact-website">Website</label>
+                    <input
+                      id="contact-website"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={form.website}
+                      onChange={updateField('website')}
+                    />
+                  </div>
+
+                  <AnimatePresence>
+                    {error && (
+                      <motion.div
+                        key="error"
+                        role="alert"
+                        className="contact__error"
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
                       >
-                        {isActive && <Check size={14} strokeWidth={2.5} />}
-                        {type}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+                        <CircleAlert size={16} />
+                        {error}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-              <div style={{ marginBottom: 24 }}>
-                <label htmlFor="contact-message" style={labelStyle}>Message</label>
-                <textarea
-                  id="contact-message"
-                  rows={4} required value={form.message}
-                  onChange={(e) => updateField('message', e.target.value)}
-                  onFocus={() => setFocusedField('message')}
-                  onBlur={() => setFocusedField(null)}
-                  style={{ ...inputStyle('message'), resize: 'none' }}
-                  placeholder="Tell us about the workflow you want to automate..."
-                  maxLength={5000}
-                />
-              </div>
-
-              {error && (
-                <div role="alert" aria-live="polite" style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '12px 16px', borderRadius: 12, marginBottom: 20,
-                  background: 'rgba(239,68,68,0.08)',
-                  border: '1px solid rgba(239,68,68,0.15)',
-                  color: '#f87171', fontSize: 14,
-                }}>
-                  <AlertCircle size={16} />
-                  {error}
-                </div>
+                  <button type="submit" className="btn btn-primary btn-block contact__submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner" aria-hidden="true" />
+                        Sending…
+                      </>
+                    ) : (
+                      <>
+                        Send message
+                        <Send size={16} className="btn-arrow" />
+                      </>
+                    )}
+                  </button>
+                  <p className="contact__note">We reply within one business day. No spam, ever.</p>
+                </motion.form>
               )}
-
-              <button type="submit" disabled={isSubmitting}
-                style={{
-                  width: '100%', padding: '16px 24px', borderRadius: 14,
-                  border: 'none', cursor: isSubmitting ? 'wait' : 'pointer',
-                  fontFamily: 'inherit',
-                  fontSize: 16, fontWeight: 600,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                  background: 'linear-gradient(135deg, #06b6d4, #0284c7)',
-                  color: '#ffffff',
-                  boxShadow: '0 8px 30px rgba(6,182,212,0.3)',
-                  transition: 'all 0.3s ease',
-                  opacity: isSubmitting ? 0.7 : 1,
-                }}
-              >
-                {isSubmitting ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    style={{
-                      width: 20, height: 20,
-                      border: '2px solid rgba(255,255,255,0.3)',
-                      borderTopColor: '#ffffff',
-                      borderRadius: '50%',
-                    }}
-                  />
-                ) : (
-                  <><Send size={18} /> Send Message</>
-                )}
-              </button>
-            </form>
-            )}
+            </AnimatePresence>
           </div>
         </motion.div>
       </div>
-
-      <style>{`
-        @media (min-width: 768px) {
-          .contact-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 64px !important;
-            align-items: start;
-          }
-        }
-        @media (max-width: 600px) {
-          .form-name-email {
-            grid-template-columns: 1fr !important;
-          }
-          .form-project-types {
-            grid-template-columns: 1fr 1fr !important;
-          }
-        }
-        input::placeholder, textarea::placeholder {
-          color: ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.3)'};
-        }
-      `}</style>
     </section>
   );
 };

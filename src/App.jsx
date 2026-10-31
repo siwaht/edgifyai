@@ -1,92 +1,66 @@
-import { useEffect, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
-import { useTheme } from './context/theme';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import Features from './components/Features';
+import Marquee from './components/Marquee';
 import ServiceMatrix from './components/ServiceMatrix';
+import Features from './components/Features';
 import CTA from './components/CTA';
 import NeuralNetworkViz from './components/NeuralNetworkViz';
 import Contact from './components/Contact';
-import Logo from './components/Logo';
 import Footer from './components/Footer';
-import Marquee from './components/Marquee';
+import Logo from './components/Logo';
 
-const PageLoader = ({ onComplete }) => {
-  const { colors } = useTheme();
+const LOADER_MS = 750;
 
-  useEffect(() => {
-    const timer = setTimeout(onComplete, 900);
-    return () => clearTimeout(timer);
-  }, [onComplete]);
-
-  return (
+const PageLoader = () => (
+  <motion.div
+    className="page-loader"
+    role="status"
+    aria-label="Loading EdgeifyAI"
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+  >
     <motion.div
-      style={{
-        position: 'fixed', inset: 0, zIndex: 100,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        gap: 24, background: colors.bg,
-      }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 8, filter: 'blur(6px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div style={{ position: 'relative', width: 48, height: 48 }}>
-        <motion.div
-          style={{
-            width: 48, height: 48, borderRadius: '50%',
-            border: `2px solid ${colors.accentMuted}`,
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-        />
-        <motion.div
-          style={{
-            position: 'absolute', inset: 0,
-            width: 48, height: 48, borderRadius: '50%',
-            border: '2px solid transparent',
-            borderTopColor: colors.accent,
-          }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        />
-      </div>
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-      >
-        <Logo size={36} />
-      </motion.div>
+      <Logo size={40} />
     </motion.div>
-  );
-};
+    <div className="page-loader__bar">
+      <motion.span
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: LOADER_MS / 1000, ease: [0.65, 0, 0.35, 1] }}
+      />
+    </div>
+  </motion.div>
+);
 
 const AppContent = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { colors } = useTheme();
-  const handleLoaded = useCallback(() => setIsLoading(false), []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), LOADER_MS);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        {isLoading && <PageLoader onComplete={handleLoaded} />}
+      <a href="#main" className="skip-link">Skip to content</a>
+
+      <AnimatePresence>
+        {isLoading && <PageLoader key="loader" />}
       </AnimatePresence>
 
-      <div className="noise-overlay" />
+      <div className="noise-overlay" aria-hidden="true" />
 
-      <motion.div
-        style={{
-          position: 'relative', overflowX: 'hidden',
-          background: colors.bg, color: colors.text, minHeight: '100vh',
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoading ? 0 : 1 }}
-        transition={{ duration: 0.4 }}
-      >
+      <div style={{ position: 'relative', overflowX: 'clip', minHeight: '100vh' }}>
         <Navbar />
-        <main role="main">
-          <Hero />
+        <main id="main" tabIndex={-1} style={{ outline: 'none' }}>
+          <Hero ready={!isLoading} />
           <Marquee />
           <ServiceMatrix />
           <Features />
@@ -95,7 +69,7 @@ const AppContent = () => {
           <Contact />
         </main>
         <Footer />
-      </motion.div>
+      </div>
     </>
   );
 };
@@ -103,7 +77,9 @@ const AppContent = () => {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <MotionConfig reducedMotion="user">
+        <AppContent />
+      </MotionConfig>
     </ThemeProvider>
   );
 }

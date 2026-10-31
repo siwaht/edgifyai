@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Behind Replit's / Vite's proxy, so read the client IP from X-Forwarded-For (one hop).
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '20kb' }));
 
 if (!process.env.DATABASE_URL) {
@@ -34,7 +36,31 @@ async function initDb() {
 const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const clean = (value, max) => (typeof value === 'string' ? value.trim().slice(0, max) : '');
 
-app.post('/api/contact', async (req, res) => {
+// Minimal in-memory rate limit for the public contact endpoint (per IP, per window).
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 5;
+const hits = new Map();
+
+const rateLimit = (req, res, next) => {
+  const now = Date.now();
+  const key = req.ip || 'unknown';
+  const recent = (hits.get(key) || []).filter((t) => now - t < RATE_WINDOW_MS);
+  if (recent.length >= RATE_MAX) {
+    return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+  }
+  recent.push(now);
+  hits.set(key, recent);
+  return next();
+};
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, times] of hits) {
+    if (times.every((t) => now - t >= RATE_WINDOW_MS)) hits.delete(key);
+  }
+}, RATE_WINDOW_MS).unref();
+
+app.post('/api/contact', rateLimit, async (req, res) => {
   const name = clean(req.body?.name, 200);
   const email = clean(req.body?.email, 320);
   const projectType = clean(req.body?.project_type, 500) || 'General Inquiry';

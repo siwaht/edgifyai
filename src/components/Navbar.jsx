@@ -1,48 +1,59 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, ArrowRight } from 'lucide-react';
 import { useTheme } from '../context/theme';
+import { NAV_ITEMS } from '../data/site';
 import Logo from './Logo';
+import './Navbar.css';
 
-const NAV_ITEMS = [
-  { label: 'Services', href: '#services' },
-  { label: 'Capabilities', href: '#capabilities' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Contact', href: '#contact' },
-];
+const useActiveSection = (ids) => {
+  const [active, setActive] = useState(null);
 
-const NavLink = ({ label, href, onClick }) => {
-  const { colors } = useTheme();
+  useEffect(() => {
+    const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!sections.length || !('IntersectionObserver' in window)) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      // A section counts as active while it crosses the upper-middle band of the viewport.
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [ids]);
+
+  return active;
+};
+
+const SECTION_IDS = NAV_ITEMS.map((item) => item.id);
+
+const ThemeToggle = () => {
+  const { isDark, toggleTheme } = useTheme();
   return (
-    <a
-      href={href}
-      onClick={onClick}
-      className="nav-link"
-      style={{
-        position: 'relative',
-        padding: '10px 16px',
-        fontSize: 14,
-        fontWeight: 500,
-        color: colors.textSecondary,
-        textDecoration: 'none',
-        borderRadius: 8,
-        transition: 'color 0.2s ease',
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.color = colors.text; }}
-      onMouseLeave={(e) => { e.currentTarget.style.color = colors.textSecondary; }}
+    <button
+      type="button"
+      className="icon-btn"
+      onClick={toggleTheme}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {label}
-    </a>
+      {isDark ? <Sun size={17} /> : <Moon size={17} />}
+    </button>
   );
 };
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isDark, toggleTheme, colors } = useTheme();
+  const active = useActiveSection(SECTION_IDS);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -50,123 +61,61 @@ const Navbar = () => {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
-    const onResize = () => { if (window.innerWidth >= 768) setMenuOpen(false); };
+    const onResize = () => { if (window.innerWidth >= 860) setMenuOpen(false); };
+    document.body.classList.add('scroll-locked');
     window.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
     return () => {
+      document.body.classList.remove('scroll-locked');
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('resize', onResize);
     };
   }, [menuOpen]);
 
-  const navBg = scrolled
-    ? isDark ? 'rgba(10, 10, 15, 0.82)' : 'rgba(255, 255, 255, 0.82)'
-    : 'transparent';
-
-  const navBorder = scrolled
-    ? `1px solid ${isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)'}`
-    : '1px solid transparent';
+  const scrollToTop = (e) => {
+    e.preventDefault();
+    closeMenu();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <>
-      <header role="banner" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, padding: '14px 20px' }}>
-        <div style={{
-          maxWidth: 1200, margin: '0 auto',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: scrolled ? '11px 24px' : '14px 24px',
-          borderRadius: 20,
-          background: navBg,
-          backdropFilter: scrolled ? 'blur(20px) saturate(200%)' : 'none',
-          WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(200%)' : 'none',
-          border: navBorder,
-          boxShadow: scrolled
-            ? isDark ? '0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.04)' : '0 8px 24px rgba(0,0,0,0.07)'
-            : 'none',
-          transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}>
-          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ textDecoration: 'none' }}>
-            <Logo size={38} />
+      <header className={`nav ${scrolled || menuOpen ? 'nav--scrolled' : ''}`}>
+        <div className="nav__bar">
+          <a href="#top" onClick={scrollToTop} className="nav__brand" aria-label="EdgeifyAI home">
+            <Logo size={34} />
           </a>
 
-          <nav className="desktop-nav" aria-label="Main navigation" style={{ alignItems: 'center', gap: 2 }}>
+          <nav className="nav__links" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => (
-              <NavLink key={item.label} label={item.label} href={item.href} />
+              <a
+                key={item.id}
+                href={item.href}
+                className={`nav__link ${active === item.id ? 'is-active' : ''}`}
+                aria-current={active === item.id ? 'location' : undefined}
+              >
+                {item.label}
+              </a>
             ))}
           </nav>
 
-          <div className="desktop-actions" style={{ alignItems: 'center', gap: 10 }}>
-            <button
-              onClick={toggleTheme}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-              style={{
-                width: 38, height: 38, borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                color: colors.textSecondary,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.1)';
-                e.currentTarget.style.color = colors.text;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
-                e.currentTarget.style.color = colors.textSecondary;
-              }}
-            >
-              {isDark ? <Sun size={17} /> : <Moon size={17} />}
-            </button>
-            <button
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              style={{
-                padding: '10px 22px', fontSize: 14, fontWeight: 600, borderRadius: 100,
-                border: 'none', cursor: 'pointer',
-                background: isDark ? 'linear-gradient(135deg, #06b6d4, #0891b2)' : colors.text,
-                color: '#ffffff',
-                boxShadow: isDark ? '0 4px 20px rgba(6,182,212,0.25)' : '0 4px 16px rgba(0,0,0,0.15)',
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                letterSpacing: '-0.01em',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = isDark ? '0 8px 28px rgba(6,182,212,0.35)' : '0 8px 24px rgba(0,0,0,0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = isDark ? '0 4px 20px rgba(6,182,212,0.25)' : '0 4px 16px rgba(0,0,0,0.15)';
-              }}
-            >
+          <div className="nav__actions">
+            <ThemeToggle />
+            <a href="#contact" className="btn btn-primary btn-sm nav__cta">
               Book a Call
-            </button>
-          </div>
-
-          <div className="mobile-actions" style={{ alignItems: 'center', gap: 8 }}>
+              <ArrowRight size={15} className="btn-arrow" />
+            </a>
             <button
-              onClick={toggleTheme}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-              style={{
-                width: 38, height: 38, borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                color: colors.textSecondary,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              {isDark ? <Sun size={17} /> : <Moon size={17} />}
-            </button>
-            <button
+              type="button"
+              className="icon-btn nav__menu-btn"
               onClick={() => setMenuOpen((v) => !v)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
-              style={{
-                width: 38, height: 38, borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                color: colors.text,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
+              aria-controls="mobile-menu"
             >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+              {menuOpen ? <X size={19} /> : <Menu size={19} />}
             </button>
           </div>
         </div>
@@ -177,72 +126,44 @@ const Navbar = () => {
           <>
             <motion.div
               key="overlay"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="nav__overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={closeMenu}
-              style={{
-                position: 'fixed', inset: 0, zIndex: 40,
-                background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)',
-              }}
             />
             <motion.div
               key="menu"
-              initial={{ opacity: 0, y: -12, scale: 0.97 }}
+              id="mobile-menu"
+              className="nav__mobile"
+              initial={{ opacity: 0, y: -10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.97 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                position: 'fixed', top: 76, left: 16, right: 16, zIndex: 50,
-                padding: 20, borderRadius: 18,
-                background: isDark ? 'rgba(18,18,26,0.96)' : 'rgba(255,255,255,0.97)',
-                border: `1px solid ${colors.border}`,
-                boxShadow: isDark
-                  ? '0 24px 48px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.05)'
-                  : '0 24px 48px rgba(0,0,0,0.12)',
-                backdropFilter: 'blur(20px)',
-              }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             >
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {NAV_ITEMS.map((item) => (
-                  <a key={item.label} href={item.href} onClick={closeMenu} style={{
-                    padding: '13px 16px', fontSize: 16, fontWeight: 500,
-                    color: colors.textSecondary, textDecoration: 'none', borderRadius: 12,
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
-                    e.currentTarget.style.color = colors.text;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = colors.textSecondary;
-                  }}
-                  >{item.label}</a>
+              <nav aria-label="Mobile navigation">
+                {NAV_ITEMS.map((item, i) => (
+                  <motion.a
+                    key={item.id}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className={`nav__mobile-link ${active === item.id ? 'is-active' : ''}`}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.04 * i + 0.05 }}
+                  >
+                    {item.label}
+                    <ArrowRight size={16} />
+                  </motion.a>
                 ))}
               </nav>
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${colors.border}` }}>
-                <button onClick={() => { closeMenu(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }} style={{
-                  width: '100%', padding: '13px 20px', fontSize: 15, fontWeight: 600,
-                  borderRadius: 100, border: 'none', cursor: 'pointer',
-                  background: isDark ? 'linear-gradient(135deg, #06b6d4, #0891b2)' : colors.text,
-                  color: '#ffffff',
-                  boxShadow: isDark ? '0 4px 20px rgba(6,182,212,0.3)' : '0 4px 16px rgba(0,0,0,0.15)',
-                }}>Get Started</button>
-              </div>
+              <a href="#contact" onClick={closeMenu} className="btn btn-primary btn-block" style={{ marginTop: 14 }}>
+                Book a Free Strategy Call
+              </a>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-
-      <style>{`
-        .desktop-nav { display: none; }
-        .desktop-actions { display: none; }
-        .mobile-actions { display: flex; }
-        @media (min-width: 768px) {
-          .desktop-nav { display: flex !important; }
-          .desktop-actions { display: flex !important; }
-          .mobile-actions { display: none !important; }
-        }
-      `}</style>
     </>
   );
 };

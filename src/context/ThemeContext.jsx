@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { ThemeContext, getInitialTheme, darkColors, lightColors } from './theme';
+import { ThemeContext, getInitialTheme, readStoredTheme, storeTheme, darkColors, lightColors } from './theme';
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(getInitialTheme);
@@ -9,12 +9,14 @@ export const ThemeProvider = ({ children }) => {
     root.classList.toggle('dark', isDark);
     root.classList.toggle('light', !isDark);
     root.style.colorScheme = isDark ? 'dark' : 'light';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', isDark ? darkColors.bg : lightColors.bg);
   }, [isDark]);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e) => {
-      if (!localStorage.getItem('theme')) setIsDark(e.matches);
+      if (!readStoredTheme()) setIsDark(e.matches);
     };
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
@@ -23,12 +25,12 @@ export const ThemeProvider = ({ children }) => {
   const toggleTheme = useCallback(() => {
     setIsDark((prev) => {
       const next = !prev;
-      localStorage.setItem('theme', next ? 'dark' : 'light');
+      storeTheme(next ? 'dark' : 'light');
       return next;
     });
   }, []);
-  const colors = isDark ? darkColors : lightColors;
 
+  const colors = isDark ? darkColors : lightColors;
   const value = useMemo(() => ({ isDark, toggleTheme, colors }), [isDark, toggleTheme, colors]);
 
   return (

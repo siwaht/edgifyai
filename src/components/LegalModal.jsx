@@ -1,133 +1,123 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { useTheme } from '../context/theme';
+import { BRAND } from '../data/site';
+import './LegalModal.css';
+
+const LAST_UPDATED = 'October 2026';
 
 const PRIVACY_CONTENT = {
   title: 'Privacy Policy',
-  lastUpdated: 'February 2026',
   sections: [
     {
-      heading: '1. Information We Collect',
-      body: `We collect information you provide directly when using our AI agent services, including:
-• Contact details (name, email, company) submitted through our forms
-• Project requirements and technical specifications shared during consultations
-• Usage data and interaction logs from deployed AI agents (anonymized)
-• Technical metadata such as browser type, IP address, and device information
+      heading: '1. Who we are',
+      body: `${BRAND.legalName} ("EdgeifyAI", "we", "us") is an AI agent agency. We design, build, and operate voice, chat, vision, knowledge, and workflow agents for businesses. This policy explains how we handle personal data collected through this website and through the agents we build for clients.`,
+    },
+    {
+      heading: '2. Information we collect',
+      body: `• Contact details you submit through our forms, such as your name, email address, and message
+• Project details you share with us during calls and consultations
+• Basic technical data such as browser type, device information, and IP address
+• For client deployments: conversation logs, call recordings, and transcripts, only as configured and agreed with the client`,
+    },
+    {
+      heading: '3. How we use your information',
+      body: `• To reply to inquiries and schedule strategy calls
+• To scope, deliver, monitor, and improve the agents we build for you
+• To send service updates related to an active engagement
+• To keep our services secure and meet legal obligations
 
-We do not collect, store, or process the content of conversations handled by your deployed agents unless explicitly configured by you.`,
+We never sell personal data. We do not use client conversations to train third-party foundation models unless the client explicitly opts in.`,
     },
     {
-      heading: '2. How We Use Your Information',
-      body: `Your information is used to:
-• Deliver, maintain, and improve our AI agent services
-• Respond to inquiries and provide technical support
-• Train and fine-tune agent models only with your explicit consent
-• Send service updates and relevant communications
-• Ensure security, detect fraud, and comply with legal obligations
-
-We never sell your personal data to third parties.`,
+      heading: '4. AI-specific data practices',
+      body: `• Agent memory: customer memory is scoped to each client environment and encrypted at rest
+• Knowledge (RAG) data: documents ingested for retrieval stay in the client's designated storage and are never shared across clients
+• Model providers: agent requests are processed by vetted AI model providers under agreements that prohibit training on client data
+• Tool and audit logs: execution logs are kept for debugging and quality review, then deleted according to the client's retention settings`,
     },
     {
-      heading: '3. AI-Specific Data Practices',
-      body: `• Agent Memory: Short-term and long-term agent memory data is scoped to your environment and encrypted at rest
-• RAG Data: Documents ingested for retrieval-augmented generation remain within your designated storage and are not shared across clients
-• Model Inputs/Outputs: We do not use your agent interactions to train foundation models unless you opt in
-• MCP Tool Logs: Tool execution logs via Model Context Protocol are retained for 30 days for debugging, then purged`,
+      heading: '5. Service providers',
+      body: `We use trusted providers for hosting, databases, workflow automation, telephony, and AI model inference. For example, contact form submissions are stored in our database and forwarded to our workflow automation provider so our team is notified. These providers may only process data on our instructions.`,
     },
     {
-      heading: '4. Data Security',
-      body: `We implement industry-standard security measures including:
-• AES-256 encryption at rest and TLS 1.3 in transit
+      heading: '6. Security',
+      body: `• Encryption in transit (TLS) and at rest
 • Role-based access controls and audit logging
-• Regular penetration testing and vulnerability assessments
-• SOC 2 Type II compliance (in progress)
-• Data residency options for enterprise clients`,
+• PII redaction options for transcripts and logs
+• Regular security reviews of our infrastructure and agent deployments`,
     },
     {
-      heading: '5. Data Retention & Deletion',
-      body: `• Contact form submissions are retained for 24 months
-• Agent deployment data is retained for the duration of your service agreement
-• You may request deletion of your data at any time by contacting privacy@edgeifyai.com
-• Upon account termination, all associated data is purged within 30 days`,
+      heading: '7. Retention and deletion',
+      body: `• Contact form submissions are kept for up to 24 months
+• Client deployment data is kept for the duration of the service agreement
+• When an engagement ends, client data is deleted within 30 days unless the law requires otherwise`,
     },
     {
-      heading: '6. Third-Party Services',
-      body: `We may use third-party services for hosting, analytics, and payment processing. These providers are contractually bound to protect your data and only process it as instructed by us. Current providers include cloud infrastructure, payment processors, and analytics platforms.`,
-    },
-    {
-      heading: '7. Your Rights',
-      body: `Depending on your jurisdiction, you may have the right to:
-• Access, correct, or delete your personal data
-• Object to or restrict processing
-• Data portability
-• Withdraw consent at any time
-
-Contact privacy@edgeifyai.com to exercise these rights.`,
+      heading: '8. Your rights',
+      body: `Depending on where you live, you may have the right to access, correct, delete, or export your personal data, and to object to or restrict certain processing. To exercise these rights, email ${BRAND.privacyEmail}.`,
     },
   ],
 };
 
 const TERMS_CONTENT = {
   title: 'Terms of Service',
-  lastUpdated: 'February 2026',
   sections: [
     {
       heading: '1. Services',
-      body: `EdgeifyAI provides AI agent design, development, deployment, and management services. This includes but is not limited to voice agents, chat agents, ambient agents, deep agents, RAG pipelines, MCP integrations, and multi-agent orchestration systems.
-
-By engaging our services, you agree to these terms in full.`,
+      body: `EdgeifyAI provides AI agent strategy, design, development, deployment, and ongoing management. This includes voice calling agents, voice assistants, chat and support agents, vision and document agents, knowledge (RAG) agents, workflow and computer-use agents, and the integrations and multi-agent systems that connect them. The scope of each engagement is set out in a written proposal or service agreement.`,
     },
     {
-      heading: '2. Client Responsibilities',
+      heading: '2. Client responsibilities',
       body: `You agree to:
-• Provide accurate information and requirements for agent development
-• Ensure your use of deployed agents complies with applicable laws and regulations
-• Not use our agents for illegal, harmful, deceptive, or discriminatory purposes
-• Maintain appropriate human oversight for safety-critical agent deployments
-• Promptly report any agent behavior that appears unsafe or unintended`,
+• Provide accurate requirements, access, and content needed to build your agents
+• Use deployed agents in line with applicable laws, including call-recording, consent, and AI disclosure rules
+• Not use agents for illegal, harmful, deceptive, or discriminatory purposes
+• Keep appropriate human oversight for high-stakes or safety-critical decisions
+• Tell us promptly about any agent behaviour that seems unsafe or unintended`,
     },
     {
-      heading: '3. Intellectual Property',
-      body: `• Custom agents built for you: You own the configuration, prompts, and custom logic we develop for your specific use case
-• Our platform and tools: EdgeifyAI retains ownership of proprietary frameworks, libraries, orchestration systems, and base agent architectures
-• Training data: You retain ownership of all data you provide. We do not claim rights to your data
-• Open-source components: Some components may use open-source licenses, which will be disclosed`,
+      heading: '3. Ownership',
+      body: `• Your data: you keep full ownership of all data you provide and that your agents collect
+• Your agent: you own the prompts, conversation designs, configurations, and custom logic we build for you, once paid for
+• Our tooling: EdgeifyAI keeps ownership of its internal frameworks, libraries, and reusable components
+• Open-source components are used under their own licenses, which we disclose on request`,
     },
     {
-      heading: '4. AI Agent Limitations & Disclaimers',
-      body: `• AI agents may produce inaccurate, incomplete, or unexpected outputs. You are responsible for validating agent outputs in production
-• We do not guarantee that agents will be error-free or uninterrupted
-• Agents operating autonomously should have appropriate guardrails and human-in-the-loop mechanisms as recommended
-• EdgeifyAI is not liable for decisions made by deployed agents without adequate human oversight`,
+      heading: '4. AI limitations',
+      body: `• AI agents can produce inaccurate or unexpected outputs. We test thoroughly, but no agent is error-free
+• We recommend guardrails, approval steps, and human escalation for consequential actions, and we build them in by default
+• EdgeifyAI is not liable for decisions made by agents operating outside the oversight measures we recommend`,
     },
     {
-      heading: '5. Service Level Agreement',
-      body: `• We target 99.9% uptime for managed agent deployments
-• Scheduled maintenance windows will be communicated 48 hours in advance
-• Support response times: Critical issues within 4 hours, standard issues within 24 hours
-• Custom SLAs are available for enterprise clients`,
+      heading: '5. Support and availability',
+      body: `• Managed deployments target 99.9% monthly uptime
+• Planned maintenance is announced at least 48 hours in advance
+• Support response targets: critical issues within 4 hours, standard issues within one business day
+• Custom service levels are available in enterprise agreements`,
     },
     {
-      heading: '6. Payment & Billing',
-      body: `• Fees are based on the scope of services agreed upon in your service agreement
-• Invoices are due within 30 days of issuance
-• We reserve the right to suspend services for accounts overdue by more than 60 days
-• Pricing changes will be communicated 30 days in advance`,
+      heading: '6. Fees and billing',
+      body: `• Fees follow the proposal or service agreement for your engagement
+• Invoices are due within 30 days of issue
+• We may pause services for accounts more than 60 days overdue
+• We give at least 30 days' notice of any pricing changes for ongoing services`,
     },
     {
-      heading: '7. Limitation of Liability',
-      body: `To the maximum extent permitted by law, EdgeifyAI's total liability for any claim arising from these terms or our services shall not exceed the fees paid by you in the 12 months preceding the claim. We are not liable for indirect, incidental, consequential, or punitive damages.`,
+      heading: '7. Limitation of liability',
+      body: `To the maximum extent permitted by law, EdgeifyAI's total liability for any claim relating to these terms or our services is limited to the fees you paid in the 12 months before the claim. We are not liable for indirect, incidental, consequential, or punitive damages.`,
     },
     {
       heading: '8. Termination',
-      body: `• Either party may terminate with 30 days written notice
-• Upon termination, we will provide a data export within 14 days upon request
-• All deployed agents will be decommissioned within 30 days of termination
-• Sections on IP, liability, and data practices survive termination`,
+      body: `• Either party may end an ongoing engagement with 30 days' written notice
+• On request, we provide an export of your data and agent configuration within 14 days
+• Deployed agents are decommissioned within 30 days of termination
+• The sections on ownership, liability, and data survive termination`,
     },
     {
-      heading: '9. Governing Law',
-      body: `These terms are governed by the laws of the State of California, United States. Any disputes shall be resolved through binding arbitration in San Francisco, CA.`,
+      heading: '9. Governing law',
+      body: `These terms are governed by the laws of the State of California, United States. Disputes will be resolved through binding arbitration in San Francisco, California.`,
     },
   ],
 };
@@ -138,113 +128,75 @@ const CONTENT_MAP = {
 };
 
 const LegalModal = ({ type, onClose }) => {
-  const { isDark, colors } = useTheme();
   const content = CONTENT_MAP[type];
+  const closeRef = useRef(null);
+  const titleId = `legal-title-${type}`;
+
+  useEffect(() => {
+    const previouslyFocused = document.activeElement;
+    closeRef.current?.focus();
+    document.body.classList.add('scroll-locked');
+
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.classList.remove('scroll-locked');
+      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+    };
+  }, [onClose]);
+
   if (!content) return null;
 
-  return (
-    <AnimatePresence>
+  return createPortal(
+    <motion.div
+      className="legal__overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+    >
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        style={{
-          position: 'fixed', inset: 0, zIndex: 100,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(8px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 20,
-        }}
+        className="legal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 24, scale: 0.98 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(e) => e.stopPropagation()}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 30, scale: 0.97 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            width: '100%', maxWidth: 680, maxHeight: '85vh',
-            borderRadius: 20, overflow: 'hidden',
-            background: isDark ? '#141418' : '#ffffff',
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
-            boxShadow: isDark
-              ? '0 30px 80px rgba(0,0,0,0.5)'
-              : '0 30px 80px rgba(0,0,0,0.15)',
-            display: 'flex', flexDirection: 'column',
-          }}
-        >
-          {/* Header */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '20px 28px',
-            borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-            flexShrink: 0,
-          }}>
-            <div>
-              <h2 style={{
-                fontSize: 20, fontWeight: 700, color: colors.text, margin: 0,
-              }}>{content.title}</h2>
-              <p style={{
-                fontSize: 12, color: colors.textMuted, margin: '4px 0 0',
-              }}>Last updated: {content.lastUpdated}</p>
-            </div>
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              style={{
-                padding: 8, borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-                color: colors.textSecondary,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'background 0.2s',
-              }}
-            >
-              <X size={18} />
-            </button>
+        <header className="legal__header">
+          <div>
+            <h2 id={titleId} className="legal__title font-display">{content.title}</h2>
+            <p className="legal__meta">Last updated: {LAST_UPDATED}</p>
           </div>
+          <button ref={closeRef} type="button" className="icon-btn" onClick={onClose} aria-label="Close">
+            <X size={18} />
+          </button>
+        </header>
 
-          {/* Body */}
-          <div style={{
-            padding: '24px 28px', overflowY: 'auto', flex: 1,
-          }}>
-            {content.sections.map((section) => (
-              <div key={section.heading} style={{ marginBottom: 28 }}>
-                <h3 style={{
-                  fontSize: 15, fontWeight: 600, color: colors.text,
-                  marginBottom: 10,
-                }}>{section.heading}</h3>
-                <p style={{
-                  fontSize: 14, lineHeight: 1.8, color: colors.textSecondary,
-                  whiteSpace: 'pre-line', margin: 0,
-                }}>{section.body}</p>
-              </div>
-            ))}
-          </div>
+        <div className="legal__body">
+          {content.sections.map((section) => (
+            <section key={section.heading} className="legal__section">
+              <h3>{section.heading}</h3>
+              <p>{section.body}</p>
+            </section>
+          ))}
+          <p className="legal__contact">
+            Questions? Email <a href={`mailto:${BRAND.privacyEmail}`}>{BRAND.privacyEmail}</a>.
+          </p>
+        </div>
 
-          {/* Footer */}
-          <div style={{
-            padding: '16px 28px',
-            borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-            flexShrink: 0,
-            textAlign: 'right',
-          }}>
-            <button
-              onClick={onClose}
-              style={{
-                padding: '10px 24px', fontSize: 14, fontWeight: 600,
-                borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
-                color: colors.text,
-                transition: 'background 0.2s',
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </motion.div>
+        <footer className="legal__footer">
+          <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>Close</button>
+        </footer>
       </motion.div>
-    </AnimatePresence>
+    </motion.div>,
+    document.body,
   );
 };
 

@@ -1,0 +1,77 @@
+.cta {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: clamp(52px, 8vw, 88px) clamp(24px, 6vw, 80px);
+  border-radius: 32px;
+  overflow: hidden;
+  text-align: center;
+  /* Gradient hairline border: solid fill on the padding box, gradient on the border box. */
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--surface-solid), var(--surface-solid)) padding-box,
+    linear-gradient(140deg, var(--accent-line), var(--border) 35%, var(--border) 65%, color-mix(in srgb, var(--success) 35%, transparent)) border-box;
+  box-shadow: var(--card-shadow-hover);
+}
+
+.cta__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 55% at 50% -10%, var(--glow-1), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 85% 110%, var(--glow-2), transparent 70%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 40%, transparent 85%);
+  mask-image: radial-gradient(ellipse at 50% 30%, #000 40%, transparent 85%);
+}
+
+.cta__content {
+  position: relative;
+}
+
+.cta__title {
+  font-size: clamp(32px, 5vw, 56px);
+}
+
+.cta__lead {
+  max-width: 580px;
+  margin: 0 auto 38px;
+}
+
+.cta__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.cta__actions .btn {
+  width: 100%;
+  max-width: 300px;
+}
+
+.cta__benefits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 26px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border);
+}
+
+.cta__benefits li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+@media (min-width: 640px) {
+  .cta__actions { flex-direction: row; }
+  .cta__actions .btn { width: auto; max-width: none; }
+}

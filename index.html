@@ -2,88 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EdgeifyAI | AI Agent Agency for Voice, Chat & Vision Agents</title>
-    <meta name="description" content="EdgeifyAI is an AI agent agency. We design, build, and run custom voice calling, chat and support, vision, knowledge (RAG), and workflow agents that answer customers and handle real work 24/7." />
-    <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#08090d" />
-    <link rel="canonical" href="https://edgeifyai.com/" />
-
-    <!-- Apply the saved or system theme before first paint to avoid a light/dark flash. -->
-    <script>
-      (function () {
-        var root = document.documentElement;
-        var dark = true;
-        try {
-          var saved = localStorage.getItem('theme');
-          dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-        } catch (e) { /* storage unavailable: keep dark default */ }
-        root.classList.add(dark ? 'dark' : 'light');
-        root.style.colorScheme = dark ? 'dark' : 'light';
-      })();
-    </script>
-
-    <!-- Open Graph -->
+    <title>EdgifyAI Implementation</title>
+    <meta
+      name="description"
+      content="EdgifyAI builds and runs production AI agents — voice calling, chat, vision and computer-use — that handle customer conversations and automate back-office workflows end to end."
+    />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="EdgeifyAI | AI Agents That Talk, See & Get Work Done" />
-    <meta property="og:description" content="Custom voice, chat, vision, and workflow AI agents, designed, built, and managed by EdgeifyAI. Live pilot in 2–4 weeks." />
-    <meta property="og:url" content="https://edgeifyai.com/" />
-    <meta property="og:site_name" content="EdgeifyAI" />
-    <meta property="og:image" content="https://edgeifyai.com/image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <!-- Twitter Card -->
+    <meta property="og:title" content="EdgifyAI — Voice, Vision & Chat AI Agents for Business" />
+    <meta
+      property="og:description"
+      content="Voice calling agents, chat agents, vision agents and computer-use automation, designed, built and operated for you."
+    />
+    <meta property="og:image" content="https://bolt.new/static/og_default.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EdgeifyAI | AI Agents That Talk, See & Get Work Done" />
-    <meta name="twitter:description" content="Custom voice, chat, vision, and workflow AI agents, designed, built, and managed by EdgeifyAI. Live pilot in 2–4 weeks." />
-    <meta name="twitter:image" content="https://edgeifyai.com/image.png" />
-
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      "name": "EdgeifyAI",
-      "url": "https://edgeifyai.com",
-      "logo": "https://edgeifyai.com/favicon.svg",
-      "image": "https://edgeifyai.com/image.png",
-      "description": "AI agent agency that designs, builds, and manages voice calling, voice assistant, chat and support, vision and document, knowledge (RAG), and workflow automation agents.",
-      "email": "hello@edgeifyai.com",
-      "sameAs": [
-        "https://www.linkedin.com/company/edgeifyai"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "email": "hello@edgeifyai.com",
-        "contactType": "sales"
-      },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "AI Agent Development Services",
-        "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Voice Calling Agents", "description": "AI receptionists and sales agents that answer and place phone calls, book appointments, and qualify leads" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Voice Assistants", "description": "Real-time voice assistants for websites and apps" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Chat & Support Agents", "description": "Support agents for web chat, WhatsApp, Slack, Teams, and email that resolve requests end to end" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vision & Document Agents", "description": "Agents that read invoices, forms, contracts, and photos and push the data into your systems" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Knowledge Agents (RAG)", "description": "Assistants that answer from your own documents and data with cited sources" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Workflow & Computer-Use Agents", "description": "Agents that operate browsers and desktop apps to automate back-office work" } }
-        ]
-      }
-    }
-    </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <meta name="twitter:title" content="EdgifyAI — Voice, Vision & Chat AI Agents for Business" />
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
   </head>
   <body>
     <div id="root"></div>
-    <noscript>
-      <p>EdgeifyAI requires JavaScript to run. Please enable JavaScript in your browser, or email us at hello@edgeifyai.com.</p>
-    </noscript>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
